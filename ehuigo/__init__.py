@@ -4,6 +4,7 @@ from flask import Flask, flash, redirect, url_for
 import logging
 
 from . import views
+from .extensions import db
 
 
 def create_app(config=None):
@@ -19,7 +20,7 @@ def create_app(config=None):
     # app.register_blueprint(views.admin)
 
     # database
-    # db.init_app(app)
+    db.init_app(app)
 
     # logger
     init_app_logger(app)
