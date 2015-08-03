@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+        <!-- Meta, title, CSS, favicons, etc. -->
+        <meta charset="utf-8">
+        <meta https-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="description" content="易回购">
+        <meta name="keywords" content="易回购">
+        <meta name="author" content="whypro">
+
+        <title>易回购</title>
+
+        <!-- 新 Bootstrap 核心 CSS 文件 -->
+        <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap.min.css">
+
+        <!-- 可选的Bootstrap主题文件（一般不用引入） -->
+        <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
+
+        <link rel="stylesheet" href="../../static/style.css">
+
+        <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+        <link rel="icon" href="/favicon.ico">
+    </head>
+    <body>
+
+        <div class="container-fluid">
+            <nav class="navbar navbar-inverse">
+                <div class="container-fluid">
+                    <!-- Brand and toggle get grouped for better mobile display -->
+                    <div class="navbar-header">
+                        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#e-huigou-menu" aria-expanded="false">
+                            <span class="sr-only">Toggle navigation</span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                        </button>
+                        <a class="navbar-brand" href="#">易回购</a>
+                    </div>
+
+                    <!-- Collect the nav links, forms, and other content for toggling -->
+                    <div class="collapse navbar-collapse" id="e-huigou-menu">
+                        <ul class="nav navbar-nav">
+                            <li class="active"><a href="#">首页 <span class="sr-only">(current)</span></a></li>
+                            <li><a href="#">旧机回收</a></li>
+                            <li><a href="#">诚聘英才</a></li>
+                            <li><a href="#">关于我们</a></li>
+
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Dropdown <span class="caret"></span></a>
+                                <ul class="dropdown-menu">
+                                    <li><a href="#">Action</a></li>
+                                    <li><a href="#">Another action</a></li>
+                                    <li><a href="#">Something else here</a></li>
+                                    <li role="separator" class="divider"></li>
+                                    <li><a href="#">Separated link</a></li>
+                                    <li role="separator" class="divider"></li>
+                                    <li><a href="#">One more separated link</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                        <ul class="nav navbar-nav navbar-right">
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">管理 <span class="caret"></span></a>
+                                <ul class="dropdown-menu">
+                                    <li><a href="#">修改资料</a></li>
+                                    <li role="separator" class="divider"></li>
+                                    <li><a href="#">注销</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                        <form class="navbar-form navbar-right hidden-sm" role="search">
+                            <div class="form-group">
+                                <label class="sr-only" for="key">Key</label>
+                                <input name="key" type="text" class="form-control" placeholder="请输入手机型号……">
+                            </div>
+                            <button type="submit" class="btn btn-default">搜索</button>
+                        </form>
+                    </div><!-- /.navbar-collapse -->
+                </div><!-- /.container-fluid -->
+            </nav>
+        </div>
+
+        <div class="container">
+            <div class="row">
+                <div class="col-md-3 col-sm-3">
+                    <ul class="nav nav-pills nav-stacked">
+                        <li><a href="#">品牌管理</a></li>
+                        <li class="active"><a href="#">产品管理</a></li>
+                        <li><a href="#">产品估价管理</a></li>
+                        <li><a href="#">问题及候选项管理</a></li>
+                    </ul>
+                    <div class="clearfix visible-xs-block"><hr /></div>
+                </div>
+                <div class="col-md-9 col-sm-9">
+                    <div class="row">
+                        <div class="col-md-3 col-sm-4 col-xs-6">
+                            <div class="thumbnail">
+                                <img alt="Bootstrap Thumbnail First" src="../../static/iPhone6-white.jpg" />
+                                <div class="caption">
+                                    <h4>iPhone 6</h4>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-sm-4 col-xs-6">
+                            <div class="thumbnail">
+                                <img alt="Bootstrap Thumbnail Second" src="../../static/iPhone6p-white.jpg" />
+                                <div class="caption">
+                                    <h4>iPhone 6 Plus</h4>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-sm-4 col-xs-6">
+                            <div class="thumbnail">
+                                <img alt="Bootstrap Thumbnail Third" src="../../static/iPhone5s.jpg" />
+                                <div class="caption">
+                                    <h4>iPhone 5S</h4>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-sm-4 col-xs-6">
+                            <div class="thumbnail">
+                                <img alt="Bootstrap Thumbnail Third" src="../../static/iPhone-5c.jpg" />
+                                <div class="caption">
+                                    <h4>iPhone 5C</h4>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="text-center">
+                            <button class="btn btn-default" type="button" data-toggle="modal" data-target="#add-product">
+                                <span class="glyphicon glyphicon-plus" aria-label="add-answer-label"></span>
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Modal -->
+            <div class="modal fade" id="add-product" tabindex="-1" role="dialog" aria-labelledby="add-product-label">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            <h4 class="modal-title" id="add-product-label">添加产品</h4>
+                        </div>
+                        <div class="modal-body">
+                            <form class="form-horizontal">
+                                <div class="form-group">
+                                    <label for="product-manufacturer" class="col-sm-2 control-label">产品品牌</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" name="product-manufacturer" class="form-control" id="product-manufacturer">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="product-model" class="col-sm-2 control-label">产品型号</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" name="product-model" class="form-control" id="product-model">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="product-price" class="col-sm-2 control-label">基准价格</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" name="product-price" class="form-control" id="product-price">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="product-photo" class="col-sm-2 control-label">产品图片</label>
+                                    <div class="col-sm-10">
+                                        <input type="file" name="product-photo" class="form-control" id="product-photo">
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-primary">保存</button>
+                            <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <hr />
+                    <p class="text-center"><small>关于我们 · 联系我们 · 免责声明 · 帮助中心 · 移动应用</small></p>
+                    <p class="text-center">
+                        <small>&copy;2015 e-Huigo, all rights reserved</small>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- jQuery文件。务必在bootstrap.min.js 之前引入 -->
+        <script src="https://cdn.bootcss.com/jquery/1.11.3/jquery.min.js"></script>
+
+        <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
+        <script src="https://cdn.bootcss.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+
+    </body>
+</html>
