@@ -83,7 +83,7 @@
 
         <div class="container">
             <div class="row">
-                <div class="col-md-3">
+                <div class="col-md-3 col-sm-3">
 
                     <ul class="nav nav-pills nav-stacked">
                         <li><a href="#">品牌管理</a></li>
@@ -92,91 +92,82 @@
                         <li class="active"><a href="#">问题及候选项管理</a></li>
                     </ul>
                 </div>
-                <div class="col-md-9">
-                    <div class="panel panel-default">
-                        <div class="panel-heading">
-                            <h3 class="panel-title">Panel title</h3>
+                <div class="col-md-9 col-sm-9">
+                    <div class="panel-group" id="questions" role="tablist" aria-multiselectable="true">
+
+                        <div class="panel panel-default">
+                            <div class="panel-heading" role="tab" id="question-1-heading">
+                                <h3 class="panel-title">
+                                    <a role="button" data-toggle="collapse" data-parent="#questions" href="#question-1-collapse" aria-expanded="true" aria-controls="question-1-collapse">
+                                        进液情况
+                                    </a>
+                                </h3>
+                            </div>
+                            <div id="question-1-collapse" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="question-1-heading">
+                                <div class="panel-body">
+                                    <div class="btn-group" role="group">
+                                        <button type="button" class="btn btn-default">无进水</button>
+                                        <button type="button" class="btn btn-default">有进水</button>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <div class="panel-body">
-                            Panel content
+
+                        <div class="panel panel-default">
+                            <div class="panel-heading" role="tab" id="question-2-heading">
+                                <h3 class="panel-title">
+                                    <a class="collapsed" role="button" data-toggle="collapse" data-parent="#questions" href="#question-2-collapse" aria-expanded="false" aria-controls="question-2-collapse">
+                                        外观成色
+                                    </a>
+                                </h3>
+                            </div>
+                            <div id="question-2-collapse" class="panel-collapse collapse" role="tabpanel" aria-labelledby="question-2-heading">
+                                <div class="panel-body">
+                                    <div class="btn-group" data-toggle="buttons">
+                                        <button type="button" class="btn btn-default">全新未激活</button>
+                                        <button type="button" class="btn btn-default">无使用痕迹</button>
+                                        <button type="button" class="btn btn-default">轻微使用痕迹</button>
+                                        <button type="button" class="btn btn-default">明显使用痕迹</button>
+                                        <button type="button" class="btn btn-default">残裂或变形</button>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
+
+                        <div class="panel panel-default">
+                            <div class="panel-heading" role="tab" id="question-3-heading">
+                                <h3 class="panel-title">
+                                    <a class="collapsed" role="button" data-toggle="collapse" data-parent="#questions" href="#question-3-collapse" aria-expanded="false" aria-controls="question-3-collapse">
+                                        显示屏情况
+                                    </a>
+                                </h3>
+                            </div>
+                            <div id="question-3-collapse" class="panel-collapse collapse" role="tabpanel" aria-labelledby="question-3-heading">
+                                <div class="panel-body">
+                                    <div class="btn-group" data-toggle="buttons">
+                                        <button type="button" class="btn btn-default">显示屏正常</button>
+                                        <button type="button" class="btn btn-default">有坏点</button>
+                                        <button type="button" class="btn btn-default">无法显示</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="panel panel-default">
+                            <div class="panel-heading" role="tab" id="question-4-heading">
+                                <h3 class="panel-title text-center">
+                                    <a role="button" data-parent="#questions" href="">
+                                        <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                                    </a>
+                                </h3>
+                            </div>
+                        </div>
+
                     </div>
 
-                    <div class="col-md-2 col-sm-2 col-xs-4">
-                        <a href="#" class="thumbnail">
-                            <img alt="logo" src="../../static/logo/mid-11.png" />
-                        </a>
-                    </div>
-                    <div class="col-md-2 col-sm-2 col-xs-4">
-                        <a href="#" class="thumbnail">
-                            <img alt="logo" src="../../static/logo/mid-12.png" />
-                        </a>
-                    </div>
-                    <div class="col-md-2 col-sm-2 col-xs-4">
-                        <a href="#" class="thumbnail">
-                            <img alt="logo" src="../../static/logo/mid-15.png" />
-                        </a>
-                    </div>
-                    <div class="col-md-2 col-sm-2 col-xs-4">
-                        <a href="#" class="thumbnail">
-                            <img alt="logo" src="../../static/logo/mid-20.png" />
-                        </a>
-                    </div>
-                    <div class="col-md-2 col-sm-2 col-xs-4">
-                        <a href="#" class="thumbnail">
-                            <img alt="logo" src="../../static/logo/mid-21.png" />
-                        </a>
-                    </div>
-                    <div class="col-md-2 col-sm-2 col-xs-4">
-                        <a href="#" class="thumbnail">
-                            <img alt="logo" src="../../static/logo/mid-24.png" />
-                        </a>
-                    </div>
-                    <div class="col-md-2 col-sm-2 col-xs-4">
-                        <a href="#" class="thumbnail" data-toggle="modal" data-target="#add-manufacturer">
-                            <img alt="logo" src="../../static/logo/add.png" />
-                        </a>
-                    </div>
                 </div>
             </div>
 
-            <!-- Modal -->
-            <div class="modal fade" id="add-manufacturer" tabindex="-1" role="dialog" aria-labelledby="add-manufacturer-label">
-                <div class="modal-dialog" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                            <h4 class="modal-title" id="add-manufacturer-label">添加品牌</h4>
-                        </div>
-                        <div class="modal-body">
-                            <form class="form-horizontal">
-                                <div class="form-group">
-                                    <label for="manufacturer-name" class="col-sm-2 control-label">品牌名称</label>
-                                    <div class="col-sm-10">
-                                        <input type="text" name="manufacturer-name" class="form-control" id="manufacturer-name">
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label for="manufacturer-alias" class="col-sm-2 control-label">品牌别名</label>
-                                    <div class="col-sm-10">
-                                        <input type="text" name="manufacturer-alias" class="form-control" id="manufacturer-alias">
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label for="manufacturer-logo" class="col-sm-2 control-label">品牌图标</label>
-                                    <div class="col-sm-10">
-                                        <input type="file" name="manufacturer-logo" class="form-control" id="manufacturer-logo">
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-primary">保存</button>
-                            <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
         </div>
 
         <div class="container">
