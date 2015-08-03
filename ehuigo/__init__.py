@@ -4,7 +4,7 @@ from flask import Flask, flash, redirect, url_for
 import logging
 
 from . import views
-from .extensions import db
+from .extensions import db, migrate
 
 
 def create_app(config=None):
@@ -19,8 +19,9 @@ def create_app(config=None):
     # app.register_blueprint(views.member)
     # app.register_blueprint(views.admin)
 
-    # database
+    # database & migrate
     db.init_app(app)
+    migrate.init_app(app, db)
 
     # logger
     init_app_logger(app)

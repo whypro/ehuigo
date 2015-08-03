@@ -4,7 +4,7 @@ from __future__ import unicode_literals
 import subprocess
 
 from flask.ext.script import Manager, Server
-# from flask.ext.migrate import Migrate, MigrateCommand
+from flask.ext.migrate import  MigrateCommand
 
 from ehuigo import create_app
 from ehuigo import config
@@ -13,10 +13,9 @@ from ehuigo.extensions import db
 
 
 app = create_app(config.Config)
-# migrate = Migrate(app, db)
 
 manager = Manager(app)
-# manager.add_command('db', MigrateCommand)
+manager.add_command('db', MigrateCommand)
 # manager.add_command('debug', Server(host='127.0.0.1', port=8080, debug=True))
 
 @manager.command

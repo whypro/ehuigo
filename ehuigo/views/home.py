@@ -10,13 +10,13 @@ home = Blueprint('home', __name__)
 
 @home.route('/')
 def index():
-    manufacturers = Manufacturer.query.all()
+    manufacturers = Manufacturer.query.limit(current_app.config['HOT_MANUFACTURER_NUM']).all()
     hot_products = Product.query.order_by(Product.price.desc()).limit(current_app.config['HOT_PRODUCT_NUM']).all()
     return render_template('index.html', manufacturers=manufacturers, hot_products=hot_products)
 
 
-@home.route('/eval/<int:id>/')
-def eval(product_id):
+@home.route('/eval/<int:product_id>/')
+def evaluate(product_id):
     product = Product.query.get_or_404(product_id)
     return render_template('eval.html', product=product)
 

@@ -26,4 +26,5 @@ class Config(object):
     # Flask-SQLAlchemy Debugging Option
     # SQLALCHEMY_ECHO = True
 
-    HOT_PRODUCT_NUM = 6
+    HOT_PRODUCT_NUM = 4
+    HOT_MANUFACTURER_NUM = 6
