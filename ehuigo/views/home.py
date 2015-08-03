@@ -16,9 +16,14 @@ def index():
 
 
 @home.route('/eval/<int:product_id>/')
-def evaluate(product_id):
+def show_evaluation(product_id):
     product = Product.query.get_or_404(product_id)
     return render_template('eval.html', product=product)
+
+
+@home.route('/eval/', methods=['POST'])
+def evaluate():
+    return redirect('home.index')
 
 
 @home.route('/init/')

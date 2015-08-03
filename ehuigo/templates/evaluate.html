@@ -1,0 +1,45 @@
+{% extends '_base.html' %}
+{% block title %}报价{% endblock %}
+{% block content %}
+            <div class="row">
+                <div class="col-md-3 col-sm-6 col-xs-12">
+                    <img class="img-responsive" alt="" src="{{ url_for('static', filename='iPhone-5c.jpg') }}" />
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="page-header">
+                        <h3>手机报价</h3>
+                    </div>
+                </div>
+                
+            </div>
+
+            <div class="row">
+                <div class="col-md-12">
+                    <form class="form-horizontal" action="{{ url_for('home.evaluate') }}" method="post">
+                        {% for question in product.questions %}
+                        <div class="form-group">
+                            <label class="col-md-2 col-sm-2 col-xs-3 control-label">{{ question.content }}</label>
+                            <div class="col-md-10 col-sm-10 col-xs-9">
+                                <div class="btn-group" data-toggle="buttons">
+                                    {% for answer in question.answers %}
+                                    <label class="btn btn-default{% if not loop.index0 %} active{% endif %}">
+                                        <input type="radio" name="question-{{ question.id }}" id="answer-{{ answer.id }}" value="{{ answer.id }}" autocomplete="off"{% if not loop.index0 %} checked{% endif %}>{{ answer.content }}
+                                    </label>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+
+                        <div class="form-group">
+                            <div class="col-md-offset-2 col-sm-offset-2 col-xs-offset-3 col-md-10 col-sm-10 col-xs-9">
+                                <button type="submit" class="btn btn-success">报价</button>
+                            </div>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+{% endblock %}
