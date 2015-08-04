@@ -1,4 +1,5 @@
-#-*- coding:utf-8 -*-
+#!/usr/bin/env python
+# -*- coding:utf-8 -*-
 from bae.core.wsgi import WSGIApplication
 
 from ehuigo import create_app
