@@ -39,3 +39,4 @@ class BAEConfig(Config):
     DB_PASSWORD = '2b2f8ac70616dbea89fc2ac2312de1a9'
     DB_PORT = 4050
 
+    DEBUG = True
