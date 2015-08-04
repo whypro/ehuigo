@@ -1,7 +1,10 @@
 #-*- coding:utf-8 -*-
 from bae.core.wsgi import WSGIApplication
 
-from ehuigo.wsgi import app
+from ehuigo import create_app
+from ehuigo import config
 
+
+app = create_app(config.Config)
 
 application = WSGIApplication(app)
