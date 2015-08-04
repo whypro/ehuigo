@@ -28,3 +28,14 @@ class Config(object):
 
     HOT_PRODUCT_NUM = 4
     HOT_MANUFACTURER_NUM = 6
+
+
+class BAEConfig(Config):
+
+    # 数据库配置
+    DB_HOST = 'sqld.duapp.com'
+    DB_DATABASE = 'kHeMtkVTtzsGvfbmEtLU'
+    DB_USERNAME = 'AF28c466e7dd74686195abc876d4849b'
+    DB_PASSWORD = '2b2f8ac70616dbea89fc2ac2312de1a9'
+    DB_PORT = 4050
+
