@@ -1,0 +1,85 @@
+{% extends '_base.html' %}
+{% block title %}品牌管理{% endblock %}
+{% block content %}
+            <div class="row">
+
+                {% set sider_active = 'manufacturers' %}
+                {% include 'admin/_sider.html' %}
+
+                <div class="col-md-9 col-sm-9">
+                    <div class="col-md-2 col-sm-3 col-xs-4">
+                        <a href="#" class="thumbnail">
+                            <img alt="logo" src="../../static/logo/mid-11.png" />
+                        </a>
+                    </div>
+                    <div class="col-md-2 col-sm-3 col-xs-4">
+                        <a href="#" class="thumbnail">
+                            <img alt="logo" src="../../static/logo/mid-12.png" />
+                        </a>
+                    </div>
+                    <div class="col-md-2 col-sm-3 col-xs-4">
+                        <a href="#" class="thumbnail">
+                            <img alt="logo" src="../../static/logo/mid-15.png" />
+                        </a>
+                    </div>
+                    <div class="col-md-2 col-sm-3 col-xs-4">
+                        <a href="#" class="thumbnail">
+                            <img alt="logo" src="../../static/logo/mid-20.png" />
+                        </a>
+                    </div>
+                    <div class="col-md-2 col-sm-3 col-xs-4">
+                        <a href="#" class="thumbnail">
+                            <img alt="logo" src="../../static/logo/mid-21.png" />
+                        </a>
+                    </div>
+                    <div class="col-md-2 col-sm-3 col-xs-4">
+                        <a href="#" class="thumbnail">
+                            <img alt="logo" src="../../static/logo/mid-24.png" />
+                        </a>
+                    </div>
+                    <div class="col-md-2 col-sm-3 col-xs-4">
+                        <a href="#" class="thumbnail" data-toggle="modal" data-target="#add-manufacturer">
+                            <img alt="logo" src="../../static/logo/add.png" />
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal -->
+            <div class="modal fade" id="add-manufacturer" tabindex="-1" role="dialog" aria-labelledby="add-manufacturer-label">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            <h4 class="modal-title" id="add-manufacturer-label">添加品牌</h4>
+                        </div>
+                        <div class="modal-body">
+                            <form class="form-horizontal">
+                                <div class="form-group">
+                                    <label for="manufacturer-name" class="col-sm-2 control-label">品牌名称</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" name="manufacturer-name" class="form-control" id="manufacturer-name">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="manufacturer-alias" class="col-sm-2 control-label">品牌别名</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" name="manufacturer-alias" class="form-control" id="manufacturer-alias">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="manufacturer-logo" class="col-sm-2 control-label">品牌图标</label>
+                                    <div class="col-sm-10">
+                                        <input type="file" name="manufacturer-logo" class="form-control" id="manufacturer-logo">
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-primary">保存</button>
+                            <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+{% endblock %}

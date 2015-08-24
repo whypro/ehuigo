@@ -17,7 +17,7 @@ def create_app(config=None):
     app.register_blueprint(views.home)
     # app.register_blueprint(views.post)
     # app.register_blueprint(views.member)
-    # app.register_blueprint(views.admin)
+    app.register_blueprint(views.admin)
 
     # database & migrate
     db.init_app(app)

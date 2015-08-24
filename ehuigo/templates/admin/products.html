@@ -1,0 +1,98 @@
+{% extends '_base.html' %}
+{% block title %}产品管理{% endblock %}
+{% block content %}
+            <div class="row">
+
+                {% set sider_active = 'products' %}
+                {% include 'admin/_sider.html' %}
+
+                <div class="col-md-9 col-sm-9">
+                    <div class="row">
+                        <div class="col-md-3 col-sm-4 col-xs-6">
+                            <div class="thumbnail">
+                                <img alt="Bootstrap Thumbnail First" src="../../static/iPhone6-white.jpg" />
+                                <div class="caption">
+                                    <h4>iPhone 6</h4>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-sm-4 col-xs-6">
+                            <div class="thumbnail">
+                                <img alt="Bootstrap Thumbnail Second" src="../../static/iPhone6p-white.jpg" />
+                                <div class="caption">
+                                    <h4>iPhone 6 Plus</h4>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-sm-4 col-xs-6">
+                            <div class="thumbnail">
+                                <img alt="Bootstrap Thumbnail Third" src="../../static/iPhone5s.jpg" />
+                                <div class="caption">
+                                    <h4>iPhone 5S</h4>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-sm-4 col-xs-6">
+                            <div class="thumbnail">
+                                <img alt="Bootstrap Thumbnail Third" src="../../static/iPhone-5c.jpg" />
+                                <div class="caption">
+                                    <h4>iPhone 5C</h4>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="text-center">
+                            <button class="btn btn-default" type="button" data-toggle="modal" data-target="#add-product">
+                                <span class="glyphicon glyphicon-plus" aria-label="add-answer-label"></span>
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Modal -->
+            <div class="modal fade" id="add-product" tabindex="-1" role="dialog" aria-labelledby="add-product-label">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            <h4 class="modal-title" id="add-product-label">添加产品</h4>
+                        </div>
+                        <div class="modal-body">
+                            <form class="form-horizontal">
+                                <div class="form-group">
+                                    <label for="product-manufacturer" class="col-sm-2 control-label">产品品牌</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" name="product-manufacturer" class="form-control" id="product-manufacturer">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="product-model" class="col-sm-2 control-label">产品型号</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" name="product-model" class="form-control" id="product-model">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="product-price" class="col-sm-2 control-label">基准价格</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" name="product-price" class="form-control" id="product-price">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="product-photo" class="col-sm-2 control-label">产品图片</label>
+                                    <div class="col-sm-10">
+                                        <input type="file" name="product-photo" class="form-control" id="product-photo">
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-primary">保存</button>
+                            <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+{% endblock %}
