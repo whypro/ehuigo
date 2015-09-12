@@ -57,11 +57,11 @@
                 {% for product in hot_products %}
                 <div class="col-md-3 col-sm-3 col-xs-6">
                     <div class="thumbnail">
-                        <img alt="{{ product.model }}" src="{{ url_for('static', filename='iPhone6-white.jpg') }}" />
+                        <img alt="{{ product.model }}" src="{{ product.photo }}" />
                         <div class="caption">
                             <h3>{{ product.model }}</h3>
                             <p>
-                                Cras justo odio, dapibus ac facilisis in, egestas eget quam. Donec id elit non mi porta gravida at eget metus. Nullam id dolor id nibh ultricies vehicula ut id elit.
+                                <!-- 描述 -->
                             </p>
                             <p>
                                 <a class="btn btn-success" href="{{ url_for('home.show_evaluation', product_id=product.id) }}">报价</a> <span class="label label-danger">￥{{ product.price }}</span>
@@ -70,63 +70,6 @@
                     </div>
                 </div>
                 {% endfor %}
-                
-                <div class="col-md-3 col-sm-3 col-xs-6">
-                    <div class="thumbnail">
-                        <img alt="Bootstrap Thumbnail First" src="{{ url_for('static', filename='iPhone6-white.jpg') }}" />
-                        <div class="caption">
-                            <h3>iPhone 6</h3>
-                            <p>
-                                Cras justo odio, dapibus ac facilisis in, egestas eget quam. Donec id elit non mi porta gravida at eget metus. Nullam id dolor id nibh ultricies vehicula ut id elit.
-                            </p>
-                            <p>
-                                <a class="btn btn-success" href="#">报价</a> <span class="label label-danger">￥2688</span>
-                            </p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-3 col-sm-3 col-xs-6">
-                    <div class="thumbnail">
-                        <img alt="Bootstrap Thumbnail Second" src="{{ url_for('static', filename='iPhone6p-white.jpg') }}" />
-                        <div class="caption">
-                            <h3>iPhone 6 Plus</h3>
-                            <p>
-                                Cras justo odio, dapibus ac facilisis in, egestas eget quam. Donec id elit non mi porta gravida at eget metus. Nullam id dolor id nibh ultricies vehicula ut id elit.
-                            </p>
-                            <p>
-                                <a class="btn btn-success" href="#">报价</a> <span class="label label-danger">￥3688</span>
-                            </p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-3 col-sm-3 col-xs-6">
-                    <div class="thumbnail">
-                        <img alt="Bootstrap Thumbnail Third" src="{{ url_for('static', filename='iPhone5s.jpg') }}" />
-                        <div class="caption">
-                            <h3>iPhone 5S</h3>
-                            <p>
-                                Cras justo odio, dapibus ac facilisis in, egestas eget quam. Donec id elit non mi porta gravida at eget metus. Nullam id dolor id nibh ultricies vehicula ut id elit.
-                            </p>
-                            <p>
-                                <a class="btn btn-success" href="#">报价</a> <span class="label label-danger">￥1688</span>
-                            </p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-3 col-sm-3 col-xs-6">
-                    <div class="thumbnail">
-                        <img alt="Bootstrap Thumbnail Third" src="{{ url_for('static', filename='iPhone-5c.jpg') }}" />
-                        <div class="caption">
-                            <h3>iPhone 5C</h3>
-                            <p>
-                                Cras justo odio, dapibus ac facilisis in, egestas eget quam. Donec id elit non mi porta gravida at eget metus. Nullam id dolor id nibh ultricies vehicula ut id elit.
-                            </p>
-                            <p>
-                                <a class="btn btn-success" href="#">报价</a> <span class="label label-danger">￥688</span>
-                            </p>
-                        </div>
-                    </div>
-                </div>
             </div>
             <div class="row">
                 <div class="col-md-12">
@@ -135,35 +78,12 @@
                     </div>
                 </div>
 
+                {% for manufacturer in manufacturers %}
                 <div class="col-md-2 col-sm-2 col-xs-4">
                     <a href="#" class="thumbnail">
-                        <img alt="logo" src="{{ url_for('static', filename='logo/mid-11.png') }}" />
+                        <img alt="logo" src="{{ manufacturer.logo }}" />
                     </a>
                 </div>
-                <div class="col-md-2 col-sm-2 col-xs-4">
-                    <a href="#" class="thumbnail">
-                        <img alt="logo" src="{{ url_for('static', filename='logo/mid-12.png') }}" />
-                    </a>
-                </div>
-                <div class="col-md-2 col-sm-2 col-xs-4">
-                    <a href="#" class="thumbnail">
-                        <img alt="logo" src="{{ url_for('static', filename='logo/mid-15.png') }}" />
-                    </a>
-                </div>
-                <div class="col-md-2 col-sm-2 col-xs-4">
-                    <a href="#" class="thumbnail">
-                        <img alt="logo" src="{{ url_for('static', filename='logo/mid-20.png') }}" />
-                    </a>
-                </div>
-                <div class="col-md-2 col-sm-2 col-xs-4">
-                    <a href="#" class="thumbnail">
-                        <img alt="logo" src="{{ url_for('static', filename='logo/mid-21.png') }}" />
-                    </a>
-                </div>
-                <div class="col-md-2 col-sm-2 col-xs-4">
-                    <a href="#" class="thumbnail">
-                        <img alt="logo" src="{{ url_for('static', filename='logo/mid-24.png') }}" />
-                    </a>
-                </div>
+                {% endfor %}
             </div>
 {% endblock %}

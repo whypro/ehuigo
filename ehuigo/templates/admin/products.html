@@ -8,38 +8,16 @@
 
                 <div class="col-md-9 col-sm-9">
                     <div class="row">
+                        {% for product in products %}
                         <div class="col-md-3 col-sm-4 col-xs-6">
                             <div class="thumbnail">
-                                <img alt="Bootstrap Thumbnail First" src="../../static/iPhone6-white.jpg" />
+                                <img alt="{{ product.model }}" src="{{ product.photo }}" />
                                 <div class="caption">
-                                    <h4>iPhone 6</h4>
+                                    <h4>{{ product.model }} {{ product.version }}</h4>
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-3 col-sm-4 col-xs-6">
-                            <div class="thumbnail">
-                                <img alt="Bootstrap Thumbnail Second" src="../../static/iPhone6p-white.jpg" />
-                                <div class="caption">
-                                    <h4>iPhone 6 Plus</h4>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-3 col-sm-4 col-xs-6">
-                            <div class="thumbnail">
-                                <img alt="Bootstrap Thumbnail Third" src="../../static/iPhone5s.jpg" />
-                                <div class="caption">
-                                    <h4>iPhone 5S</h4>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-3 col-sm-4 col-xs-6">
-                            <div class="thumbnail">
-                                <img alt="Bootstrap Thumbnail Third" src="../../static/iPhone-5c.jpg" />
-                                <div class="caption">
-                                    <h4>iPhone 5C</h4>
-                                </div>
-                            </div>
-                        </div>
+                        {% endfor %}
                     </div>
                     <div class="row">
                         <div class="text-center">

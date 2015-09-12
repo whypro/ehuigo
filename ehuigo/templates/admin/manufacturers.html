@@ -7,39 +7,16 @@
                 {% include 'admin/_sider.html' %}
 
                 <div class="col-md-9 col-sm-9">
+                    {% for manufacturer in manufacturers %}
                     <div class="col-md-2 col-sm-3 col-xs-4">
                         <a href="#" class="thumbnail">
-                            <img alt="logo" src="../../static/logo/mid-11.png" />
+                            <img alt="logo" src="{{ manufacturer.logo }}" />
                         </a>
                     </div>
-                    <div class="col-md-2 col-sm-3 col-xs-4">
-                        <a href="#" class="thumbnail">
-                            <img alt="logo" src="../../static/logo/mid-12.png" />
-                        </a>
-                    </div>
-                    <div class="col-md-2 col-sm-3 col-xs-4">
-                        <a href="#" class="thumbnail">
-                            <img alt="logo" src="../../static/logo/mid-15.png" />
-                        </a>
-                    </div>
-                    <div class="col-md-2 col-sm-3 col-xs-4">
-                        <a href="#" class="thumbnail">
-                            <img alt="logo" src="../../static/logo/mid-20.png" />
-                        </a>
-                    </div>
-                    <div class="col-md-2 col-sm-3 col-xs-4">
-                        <a href="#" class="thumbnail">
-                            <img alt="logo" src="../../static/logo/mid-21.png" />
-                        </a>
-                    </div>
-                    <div class="col-md-2 col-sm-3 col-xs-4">
-                        <a href="#" class="thumbnail">
-                            <img alt="logo" src="../../static/logo/mid-24.png" />
-                        </a>
-                    </div>
+                    {% endfor %}
                     <div class="col-md-2 col-sm-3 col-xs-4">
                         <a href="#" class="thumbnail" data-toggle="modal" data-target="#add-manufacturer">
-                            <img alt="logo" src="../../static/logo/add.png" />
+                            <img alt="logo" src="/static/logo/add.png" />
                         </a>
                     </div>
                 </div>

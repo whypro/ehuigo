@@ -9,7 +9,7 @@ from flask.ext.migrate import  MigrateCommand
 from ehuigo import create_app
 from ehuigo import config
 from ehuigo.extensions import db
-
+from ehuigo.scripts.init_data import init_manufacturers_and_products, init_questions_and_answers
 
 
 app = create_app(config.Config)
@@ -45,6 +45,8 @@ def init():
     db.drop_all()
     db.create_all()
     print '数据表创建成功'
+    init_manufacturers_and_products(db.session)
+    init_questions_and_answers(db.session)
     # init_home(db.session)
     # init_post(db.session)
     # init_member(db.session)

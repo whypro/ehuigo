@@ -3,7 +3,7 @@ from __future__ import unicode_literals
 from flask import Blueprint, render_template, request, jsonify, redirect, url_for, abort, current_app
 
 from ..extensions import db
-from ..models import Manufacturer, Product
+from ..models import Manufacturer, Product, Question
 
 admin = Blueprint('admin', __name__, url_prefix='/admin')
 
@@ -15,14 +15,17 @@ def index():
 
 @admin.route('/manufacturers/')
 def show_manufacturers():
-    return render_template('admin/manufacturers.html')
+    manufacturers = Manufacturer.query.all()
+    return render_template('admin/manufacturers.html', manufacturers=manufacturers)
 
 
 @admin.route('/products/')
 def show_products():
-    return render_template('admin/products.html')
+    products = Product.query.all()
+    return render_template('admin/products.html', products=products)
 
 
 @admin.route('/questions/')
 def show_questions():
-    return render_template('admin/questions.html')
+    questions = Question.query.all()
+    return render_template('admin/questions.html', questions=questions)

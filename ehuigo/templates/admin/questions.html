@@ -8,64 +8,26 @@
 
                 <div class="col-md-9 col-sm-9">
                     <div class="panel-group" id="questions" role="tablist" aria-multiselectable="true">
-
+                        {% for question in questions %}
                         <div class="panel panel-default">
-                            <div class="panel-heading" role="tab" id="question-1-heading">
+                            <div class="panel-heading" role="tab" id="question-{{ loop.index }}-heading">
                                 <h3 class="panel-title">
-                                    <a role="button" data-toggle="collapse" data-parent="#questions" href="#question-1-collapse" aria-expanded="true" aria-controls="question-1-collapse">
-                                        进液情况
+                                    <a class="collapsed" role="button" data-toggle="collapse" data-parent="#questions" href="#question-{{ loop.index }}-collapse" aria-expanded="{{ 'true' if loop.index == 1 else 'false'}}" aria-controls="question-{{ loop.index }}-collapse">
+                                        {{ question.content }}
                                     </a>
                                 </h3>
                             </div>
-                            <div id="question-1-collapse" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="question-1-heading">
+                            <div id="question-{{ loop.index }}-collapse" class="panel-collapse collapse{% if loop.index == 1 %} in{% endif %}" role="tabpanel" aria-labelledby="question-{{ loop.index }}-heading">
                                 <div class="panel-body">
                                     <div class="btn-group" role="group">
-                                        <button type="button" class="btn btn-default">无进水</button>
-                                        <button type="button" class="btn btn-default">有进水</button>
+                                        {% for answer in question.answers %}
+                                        <button type="button" class="btn btn-default">{{ answer.content }}</button>
+                                        {% endfor %}
                                     </div>
                                 </div>
                             </div>
                         </div>
-
-                        <div class="panel panel-default">
-                            <div class="panel-heading" role="tab" id="question-2-heading">
-                                <h3 class="panel-title">
-                                    <a class="collapsed" role="button" data-toggle="collapse" data-parent="#questions" href="#question-2-collapse" aria-expanded="false" aria-controls="question-2-collapse">
-                                        外观成色
-                                    </a>
-                                </h3>
-                            </div>
-                            <div id="question-2-collapse" class="panel-collapse collapse" role="tabpanel" aria-labelledby="question-2-heading">
-                                <div class="panel-body">
-                                    <div class="btn-group" data-toggle="buttons">
-                                        <button type="button" class="btn btn-default">全新未激活</button>
-                                        <button type="button" class="btn btn-default">无使用痕迹</button>
-                                        <button type="button" class="btn btn-default">轻微使用痕迹</button>
-                                        <button type="button" class="btn btn-default">明显使用痕迹</button>
-                                        <button type="button" class="btn btn-default">残裂或变形</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="panel panel-default">
-                            <div class="panel-heading" role="tab" id="question-3-heading">
-                                <h3 class="panel-title">
-                                    <a class="collapsed" role="button" data-toggle="collapse" data-parent="#questions" href="#question-3-collapse" aria-expanded="false" aria-controls="question-3-collapse">
-                                        显示屏情况
-                                    </a>
-                                </h3>
-                            </div>
-                            <div id="question-3-collapse" class="panel-collapse collapse" role="tabpanel" aria-labelledby="question-3-heading">
-                                <div class="panel-body">
-                                    <div class="btn-group" data-toggle="buttons">
-                                        <button type="button" class="btn btn-default">显示屏正常</button>
-                                        <button type="button" class="btn btn-default">有坏点</button>
-                                        <button type="button" class="btn btn-default">无法显示</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        {% endfor %}
 
                         <div class="panel panel-default">
                             <div class="panel-heading" role="tab" id="question-4-heading">
