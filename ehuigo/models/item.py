@@ -17,7 +17,7 @@ class Manufacturer(db.Model):
 class Product(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
-    manufacturer_id = db.Column(db.Integer, db.ForeignKey('manufacturer.id', ondelete='SET NULL'))  # 制造商 ID
+    manufacturer_id = db.Column(db.Integer, db.ForeignKey('manufacturer.id', ondelete='CASCADE'))  # 制造商 ID
     manufacturer = db.relationship('Manufacturer', backref=db.backref('products', passive_deletes=True))
     model = db.Column(db.Unicode(20))           # 型号
     version = db.Column(db.Unicode(20))         # 版本

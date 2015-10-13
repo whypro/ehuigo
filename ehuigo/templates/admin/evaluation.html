@@ -3,37 +3,57 @@
 {% block content %}
             <div class="row">
 
-                {% set sider_active = 'products' %}
+                {% set sider_active = 'manufacturers' %}
                 {% include 'admin/_sider.html' %}
 
                 <div class="col-md-9 col-sm-9">
+                    <div class="row">
+                        <ol class="breadcrumb">
+                            <li><a href="{{ url_for('admin.show_manufacturers') }}">所有品牌</a></li>
+                            <li><a href="{{ url_for('admin.show_products', manufacturer_id=product.manufacturer.id) }}">{{ product.manufacturer.name }}</a></li>
+                            <li class="active">{{ product.model }}</li>
+                        </ol>
+                        <hr />
+                    </div>
+
                     <div class="col-md-8">
-                        <table class="table">
-                            <thead>
-                                <tr>
-                                    <th class="col-sm-4">问题</th>
-                                    <th class="col-sm-4">选项</th>
-                                    <th class="col-sm-4">折价</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td rowspan="2">开关机情况</td>
-                                    <td>正常开机</td>
-                                    <td><input class="col-sm-12 form-control" type="text" value="0" /></td>
-                                </tr>
-                                <tr>
-                                    <td>无法开机</td>
-                                    <td><input class="col-sm-12 form-control" type="text" value="-20" /></td>
-                                </tr>
-                            </tbody>
-                        </table>
+                        <div class="panel-group" id="questions" role="tablist" aria-multiselectable="true">
+                            {% for question in product.questions %}
+                            <div class="panel panel-default" id="question-{{ question.id }}-panel">
+                                <div class="panel-heading" role="tab" id="question-{{ question.id }}-heading">
+                                    <h3 class="panel-title">
+                                        <a class="collapsed" role="button" data-toggle="collapse" data-parent="#questions" href="#question-{{ question.id }}-collapse" aria-expanded="false" aria-controls="question-{{ question.id }}-collapse">
+                                            {{ question.content }}
+                                        </a>
+                                    </h3>
+                                </div>
+                                <div id="question-{{ question.id }}-collapse" class="panel-collapse collapse" role="tabpanel" aria-labelledby="question-{{ question.id }}-heading">
+                                    <div class="panel-body">
+                                        <form class="form-horizontal">
+                                            {% for answer in question.answers %}
+                                            <div class="form-group">
+                                                <label for="answer-1-discount" class="col-sm-2 control-label">{{ answer.content }}</label>
+                                                <div class="col-sm-10">
+                                                    <input type="text" class="form-control" id="answer-1-discount">
+                                                </div>
+                                            </div>
+                                            {% endfor %}
+                                        </form>
+                                        <div class="pull-right">
+                                            <a href="{{ url_for('admin.delete_question', question_id=question.id) }}" class="btn btn-danger">删除</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
                     </div>
                     <div class="col-md-4">
                         <h4>候选问题</h4>
                         <hr />
                         <ul class="list-group">
                             {% for question in questions %}
+                            {% if question not in product.questions %}
                             <li class="list-group-item" question-id="{{ question.id }}" question-content="{{ question.content }}">
                                 {{ question.content }}<a class="btn btn-primary btn-xs pull-right" id="add-question-{{ question.id }}">添加</a>
                                 <ul class="hidden">
@@ -42,6 +62,7 @@
                                     {% endfor %}
                                 </ul>
                             </li>
+                            {% endif %}
                             {% endfor %}
                         </ul>
                     </div>
@@ -52,14 +73,45 @@
 {% block script %}
 <script>
     $(document).ready(function(){
-        $("[id^='add-question-']").click(function(){
+        $("[id^='add-question-']").click(function () {
             var question_id = $(this).parent().attr("question-id");
             var question_content = $(this).parent().attr("question-content");
-            alert(question_id);
-            alert(question_content);
-            $(this).parent().remove();
+            // alert(question_id);
+            // alert(question_content);
+            $("#questions").append(
+                '<div class="panel panel-default" id="question-'+question_id+'-panel">' +
+                '    <div class="panel-heading" role="tab" id="question-'+question_id+'-heading">' +
+                '        <h3 class="panel-title">' + 
+                '            <a class="collapsed" role="button" data-toggle="collapse" data-parent="#questions" href="#question-'+question_id+'-collapse" aria-expanded="false" aria-controls="question-'+question_id+'-collapse">' +
+                '                '+question_content +
+                '            </a>' +
+                '        </h3>' + 
+                '    </div>' +
+                '    <div id="question-'+question_id+'-collapse" class="panel-collapse collapse" role="tabpanel" aria-labelledby="question-'+question_id+'-heading">' +
+                '        <div class="panel-body">' +
+                '            <form class="form-horizontal">' +
+                '            </form>' +
+                '           <div class="pull-right">' +
+                '               <button class="btn btn-danger" id="remove-question-'+question_id+'">删除</button>' +
+                '           </div>' +
+                '        </div>' +
+                '    </div>' +
+                '</div>'
+            );
+            
+            $("#remove-question-"+question_id).on("click", function () {
+                // alert(question_id);
+                $("#add-question-"+question_id).parent().show();
+                $("#question-"+question_id+"-panel").remove();
+            });
+
+
+
+            $(this).parent().hide();
 
         });
+
+        
     });
 </script>
 {% endblock %}

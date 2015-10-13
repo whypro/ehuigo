@@ -3,20 +3,29 @@
 {% block content %}
             <div class="row">
 
-                {% set sider_active = 'products' %}
+                {% set sider_active = 'manufacturers' %}
                 {% include 'admin/_sider.html' %}
 
                 <div class="col-md-9 col-sm-9">
+                    <div class="row">
+                        <ol class="breadcrumb">
+                            <li><a href="{{ url_for('admin.show_manufacturers') }}">所有品牌</a></li>
+                            <li class="active">{{ manufacturer.name }}</li>
+                        </ol>
+                        <hr />
+                    </div>
                     <div class="row">
                         {% for product in products %}
                         <div class="col-md-3 col-sm-4 col-xs-6">
                             <div class="thumbnail">
                                 <a href="{{ url_for('admin.edit_evaluation', product_id=product.id) }}">
-                                    <img alt="{{ product.model }}" src="{{ product.photo }}" />
+                                    <img alt="{{ product.model }}" src="{{ url_for('home.send_upload_file', filename=product.photo) if product.photo and not product.photo.startswith('/') else product.photo|d('') }}" />
                                 </a>
                                 <div class="caption">
                                     <h4>{{ product.model }} {{ product.version }}</h4>
                                 </div>
+                                <a class="btn btn-xs btn-danger pull-right" href="{{ url_for('admin.delete_product', product_id=product.id) }}">删除</a>
+                                <div class="clearfix"></div>
                             </div>
                         </div>
                         {% endfor %}
@@ -41,11 +50,13 @@
                             <h4 class="modal-title" id="add-product-label">添加产品</h4>
                         </div>
                         <div class="modal-body">
-                            <form class="form-horizontal" method="post" action="{{ url_for('admin.add_product') }}" id="add-product-form">
+                            <form class="form-horizontal" method="post" action="{{ url_for('admin.add_product') }}" id="add-product-form" enctype="multipart/form-data">
                                 <div class="form-group">
                                     <label for="product-manufacturer" class="col-sm-2 control-label">产品品牌</label>
                                     <div class="col-sm-10">
-                                        <input type="text" name="product-manufacturer" class="form-control" id="product-manufacturer" value="{{ manufacturer.name }}" disabled>
+                                        <select class="form-control" name="product-manufacturer" id="product-manufacturer" onfocus="this.defaultIndex=this.selectedIndex;" onchange="this.selectedIndex=this.defaultIndex;">
+                                            <option value="{{ manufacturer.id }}" selected="selected">{{ manufacturer.name }}</option>
+                                        </select>
                                     </div>
                                 </div>
                                 <div class="form-group">
@@ -57,7 +68,11 @@
                                 <div class="form-group">
                                     <label for="product-price" class="col-sm-2 control-label">基准价格</label>
                                     <div class="col-sm-10">
-                                        <input type="text" name="product-price" class="form-control" id="product-price">
+                                        <div class="input-group">
+                                            <div class="input-group-addon">￥</div>
+                                            <input type="text" name="product-price" class="form-control" id="product-price">
+                                            <div class="input-group-addon">.00</div>
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="form-group">

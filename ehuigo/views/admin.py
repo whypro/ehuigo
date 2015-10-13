@@ -25,13 +25,12 @@ def show_manufacturers():
 def add_manufacturer():
     name = request.form.get('manufacturer-name')
     alias = request.form.get('manufacturer-alias')
-    logo = request.form.get('manufacturer-logo')
 
     if not name:
         abort(400)
 
-    if logo:
-        f = request.files['manufacturer-logo']
+    f = request.files.get('manufacturer-logo')
+    if f:
         filename = secure_filename(f.filename)
         path = os.path.join(current_app.config['UPLOAD_PATH'], filename)
         print path
@@ -50,8 +49,8 @@ def add_manufacturer():
 def delete_manufacturer(manufacturer_id):
     manufacturer = Manufacturer.query.get_or_404(manufacturer_id)
     # remove manufacturer.logo
-    path = os.path.join(current_app.config['UPLOAD_PATH'], manufacturer.logo)
-    print path
+    # path = os.path.join(current_app.config['UPLOAD_PATH'], manufacturer.logo)
+    # print path
     db.session.delete(manufacturer)
     db.session.commit()
     return redirect(url_for('admin.show_manufacturers'))
@@ -66,14 +65,42 @@ def show_products(manufacturer_id):
 
 @admin.route('/product/add/', methods=['POST'])
 def add_product():
-    manufacturer_name = request.form.get('product-manufacturer')
+    print request.form
+    manufacturer_id = request.form.get('product-manufacturer')
     model = request.form.get('product-model')
     price = request.form.get('product-price')
-    photo = request.form.get('product-photo')
 
-    print manufacturer_name, model, price, photo
+    if not manufacturer_id or not model:
+        abort(404)
 
-    return redirect(url_for('admin.show_products'))
+    # print manufacturer_id, model, price
+    f = request.files.get('product-photo')
+    if f:
+        filename = secure_filename(f.filename)
+        path = os.path.join(current_app.config['UPLOAD_PATH'], filename)
+        print path
+        f.save(path)
+    else:
+        filename = None
+
+    manufacturer_id = int(manufacturer_id)
+    price=int(price)
+    manufacturer = Manufacturer.query.get_or_404(manufacturer_id)
+    product = Product(manufacturer=manufacturer, model=model, version=None, price=price, photo=filename)
+    db.session.add(product)
+    db.session.commit()
+
+    return redirect(url_for('admin.show_products', manufacturer_id=manufacturer_id))
+
+
+@admin.route('/product/<int:product_id>/delete/')
+def delete_product(product_id):
+    product = Product.query.get_or_404(product_id)
+    manufacturer_id = product.manufacturer_id
+    db.session.delete(product)
+    db.session.commit()
+    return redirect(url_for('admin.show_products', manufacturer_id=manufacturer_id))
+
 
 @admin.route('/questions/')
 def show_questions():

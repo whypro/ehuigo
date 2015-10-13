@@ -12,12 +12,12 @@
                         <div class="panel panel-default">
                             <div class="panel-heading" role="tab" id="question-{{ question.id }}-heading">
                                 <h3 class="panel-title">
-                                    <a class="collapsed" role="button" data-toggle="collapse" data-parent="#questions" href="#question-{{ question.id }}-collapse" aria-expanded="{{ 'true' if loop.index == 1 else 'false'}}" aria-controls="question-{{ question.id }}-collapse">
+                                    <a class="collapsed" role="button" data-toggle="collapse" data-parent="#questions" href="#question-{{ question.id }}-collapse" aria-expanded="false" aria-controls="question-{{ question.id }}-collapse">
                                         {{ question.content }}
                                     </a>
                                 </h3>
                             </div>
-                            <div id="question-{{ question.id }}-collapse" class="panel-collapse collapse{% if loop.index == 1 %} in{% endif %}" role="tabpanel" aria-labelledby="question-{{ question.id }}-heading">
+                            <div id="question-{{ question.id }}-collapse" class="panel-collapse collapse" role="tabpanel" aria-labelledby="question-{{ question.id }}-heading">
                                 <div class="panel-body">
                                     <div class="btn-group" role="group">
                                         {% for answer in question.answers %}
