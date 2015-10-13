@@ -18,7 +18,7 @@ class Product(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     manufacturer_id = db.Column(db.Integer, db.ForeignKey('manufacturer.id', ondelete='SET NULL'))  # 制造商 ID
-    manufacturer = db.relationship('Manufacturer', backref='products')
+    manufacturer = db.relationship('Manufacturer', backref=db.backref('products', passive_deletes=True))
     model = db.Column(db.Unicode(20))           # 型号
     version = db.Column(db.Unicode(20))         # 版本
     price = db.Column(db.Numeric(10, 2))        # 基准价格
@@ -44,7 +44,7 @@ class Answer(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     question_id = db.Column(db.Integer, db.ForeignKey('question.id', ondelete='CASCADE'))        # 问题 ID
-    question = db.relationship('Question', backref='answers')
+    question = db.relationship('Question', backref=db.backref('answers', passive_deletes=True))
     content = db.Column(db.Unicode(60), nullable=False)            # 回答内容
     description = db.Column(db.Unicode(100))        # 描述
 

@@ -1,0 +1,65 @@
+{% extends '_base.html' %}
+{% block title %}产品估价管理{% endblock %}
+{% block content %}
+            <div class="row">
+
+                {% set sider_active = 'products' %}
+                {% include 'admin/_sider.html' %}
+
+                <div class="col-md-9 col-sm-9">
+                    <div class="col-md-8">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th class="col-sm-4">问题</th>
+                                    <th class="col-sm-4">选项</th>
+                                    <th class="col-sm-4">折价</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td rowspan="2">开关机情况</td>
+                                    <td>正常开机</td>
+                                    <td><input class="col-sm-12 form-control" type="text" value="0" /></td>
+                                </tr>
+                                <tr>
+                                    <td>无法开机</td>
+                                    <td><input class="col-sm-12 form-control" type="text" value="-20" /></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col-md-4">
+                        <h4>候选问题</h4>
+                        <hr />
+                        <ul class="list-group">
+                            {% for question in questions %}
+                            <li class="list-group-item" question-id="{{ question.id }}" question-content="{{ question.content }}">
+                                {{ question.content }}<a class="btn btn-primary btn-xs pull-right" id="add-question-{{ question.id }}">添加</a>
+                                <ul class="hidden">
+                                    {% for answer in question.answers %}
+                                    <li class="hidden" answer-id="{{ answer.id }}" answer-content="{{ answer.content }}"></li>
+                                    {% endfor %}
+                                </ul>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+
+                </div>
+            </div>
+{% endblock %}
+{% block script %}
+<script>
+    $(document).ready(function(){
+        $("[id^='add-question-']").click(function(){
+            var question_id = $(this).parent().attr("question-id");
+            var question_content = $(this).parent().attr("question-content");
+            alert(question_id);
+            alert(question_content);
+            $(this).parent().remove();
+
+        });
+    });
+</script>
+{% endblock %}

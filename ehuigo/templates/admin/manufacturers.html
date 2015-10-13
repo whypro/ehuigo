@@ -9,9 +9,15 @@
                 <div class="col-md-9 col-sm-9">
                     {% for manufacturer in manufacturers %}
                     <div class="col-md-2 col-sm-3 col-xs-4">
-                        <a href="#" class="thumbnail">
-                            <img alt="logo" src="{{ manufacturer.logo }}" />
-                        </a>
+                        <div class="thumbnail">
+                            <a href="{{ url_for('admin.show_products', manufacturer_id=manufacturer.id) }}" class="thumbnail">
+
+                                <img alt="logo" src="{{ url_for('home.send_upload_file', filename=manufacturer.logo) if manufacturer.logo and not manufacturer.logo.startswith('/') else manufacturer.logo|d('') }}" />
+                            </a>
+                            {#<a class="btn btn-xs btn-primary pull-left">修改</a>#}
+                            <a class="btn btn-xs btn-danger pull-right" href="{{ url_for('admin.delete_manufacturer', manufacturer_id=manufacturer.id) }}">删除</a>
+                            <div class="clearfix"></div>
+                        </div>
                     </div>
                     {% endfor %}
                     <div class="col-md-2 col-sm-3 col-xs-4">
@@ -31,7 +37,7 @@
                             <h4 class="modal-title" id="add-manufacturer-label">添加品牌</h4>
                         </div>
                         <div class="modal-body">
-                            <form class="form-horizontal">
+                            <form class="form-horizontal" id="add-manufacturer-form" method="post" action="{{ url_for('admin.add_manufacturer') }}" enctype="multipart/form-data">
                                 <div class="form-group">
                                     <label for="manufacturer-name" class="col-sm-2 control-label">品牌名称</label>
                                     <div class="col-sm-10">
@@ -53,10 +59,19 @@
                             </form>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-primary">保存</button>
+                            <button id="add-manufacturer-submit-btn" type="button" class="btn btn-primary">保存</button>
                             <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
                         </div>
                     </div>
                 </div>
             </div>
+{% endblock %}
+{% block script %}
+<script>
+    $(document).ready(function () {
+        $("#add-manufacturer-submit-btn").click(function () {
+            $("#add-manufacturer-form").submit();
+        });
+    });
+</script>
 {% endblock %}

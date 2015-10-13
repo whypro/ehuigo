@@ -30,6 +30,8 @@ class Config(object):
     HOT_PRODUCT_NUM = 4
     HOT_MANUFACTURER_NUM = 6
 
+    UPLOAD_PATH = os.path.join(os.path.realpath('.'), 'uploads')
+
 
 class BAEConfig(Config):
 

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
-from flask import Blueprint, render_template, request, jsonify, redirect, url_for, abort, current_app
+from flask import Blueprint, render_template, request, jsonify, redirect, url_for, abort, current_app, send_from_directory
 
 from ..extensions import db
 from ..models import Manufacturer, Product
@@ -30,3 +30,8 @@ def evaluate():
 def init():
     db.create_all()
     return redirect(url_for('home.index'))
+
+
+@home.route('/uploads/<filename>/')
+def send_upload_file(filename):
+    return send_from_directory(current_app.config['UPLOAD_PATH'], filename)
