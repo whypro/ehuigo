@@ -2,22 +2,16 @@
 {% block title %}报价{% endblock %}
 {% block content %}
             <div class="row">
-                <div class="col-md-3 col-sm-6 col-xs-12">
-                    <img class="img-responsive" alt="" src="{{ url_for('static', filename='iPhone-5c.jpg') }}" />
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="page-header">
-                        <h3>手机报价</h3>
-                    </div>
-                </div>
-                
+                <ol class="breadcrumb">
+                    <li><a href="{{ url_for('home.index') }}">手机报价</a></li>
+                    <li class="active">{{ product.model }}</li>
+                </ol>
+                <hr />
             </div>
 
             <div class="row">
-                <div class="col-md-12">
-                    <form class="form-horizontal" action="{{ url_for('home.evaluate') }}" method="post">
+                <div class="col-md-9 col-sm-8 col-xs-12">
+                    <form class="form-horizontal" action="{{ url_for('home.evaluate', product_id=product.id) }}" method="post">
                         {% for question in product.questions %}
                         <div class="form-group">
                             <label class="col-md-2 col-sm-2 col-xs-3 control-label">{{ question.content }}</label>
@@ -25,21 +19,70 @@
                                 <div class="btn-group" data-toggle="buttons">
                                     {% for answer in question.answers %}
                                     <label class="btn btn-default{% if not loop.index0 %} active{% endif %}">
-                                        <input type="radio" name="question-{{ question.id }}" id="answer-{{ answer.id }}" value="{{ answer.id }}" autocomplete="off"{% if not loop.index0 %} checked{% endif %}>{{ answer.content }}
+                                        <input class="answer-input" type="radio" name="question-{{ question.id }}" id="answer-{{ answer.id }}" value="{{ answer.id }}" autocomplete="off"{% if not loop.index0 %} checked{% endif %}>{{ answer.content }}
                                     </label>
                                     {% endfor %}
                                 </div>
                             </div>
                         </div>
                         {% endfor %}
-
+                        <hr />
                         <div class="form-group">
                             <div class="col-md-offset-2 col-sm-offset-2 col-xs-offset-3 col-md-10 col-sm-10 col-xs-9">
-                                <button type="submit" class="btn btn-success">报价</button>
+                                <button type="button" class="btn btn-success" id="evaluate-btn">报价</button>
                             </div>
                         </div>
-
                     </form>
                 </div>
+                <div class="col-md-3 col-sm-4 col-xs-12">
+                    <img class="img-responsive" alt="" src="{{ product.photo }}" />
+                </div>
+
+                <div id="show_evaluation_modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="evaluation_report">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                <h4 class="modal-title" id="evaluation_report">报价单</h4>
+                            </div>
+                            <div class="modal-body">
+                                <div class="container-fluid" id="evaluation_result">
+                                    <p></p>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-primary">下一步</button>
+                                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                            </div>
+                        </div><!-- /.modal-content -->
+                    </div><!-- /.modal-dialog -->
+                </div><!-- /.modal -->
             </div>
+{% endblock %}
+{% block script %}
+<script>
+    $(document).ready(function(){
+        $("#evaluate-btn").click(function () {
+            var answers = [];
+            $("input.answer-input:checked").each(function () {
+                answers.push($(this).val());
+            });
+            console.log(answers);
+
+            var data = JSON.stringify({'answers': answers});
+            $.ajax({
+                url: "{{ url_for('home.evaluate', product_id=product.id) }}",
+                type: "POST",
+                data: data,
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                success: function (data) {
+                    // alert("success");
+                    $("#evaluation_result p").text("报价结果："+data["price"]+"元");
+                    $('#show_evaluation_modal').modal();
+                }
+            });
+        });
+    });
+</script>
 {% endblock %}

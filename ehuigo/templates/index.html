@@ -55,7 +55,7 @@
                 </div>
 
                 {% for product in hot_products %}
-                <div class="col-md-3 col-sm-3 col-xs-6">
+                <div class="col-md-3 col-sm-3 col-xs-12">
                     <div class="thumbnail">
                         <img alt="{{ product.model }}" src="{{ product.photo }}" />
                         <div class="caption">
@@ -64,7 +64,7 @@
                                 <!-- 描述 -->
                             </p>
                             <p>
-                                <a class="btn btn-success" href="{{ url_for('home.show_evaluation', product_id=product.id) }}">报价</a> <span class="label label-danger">￥{{ product.price }}</span>
+                                <a class="btn btn-success" href="{{ url_for('home.evaluate', product_id=product.id) }}">报价</a> <span class="label label-danger">￥{{ product.price }}</span>
                             </p>
                         </div>
                     </div>

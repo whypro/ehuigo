@@ -25,7 +25,7 @@
                                         {% endfor %}
                                     </div>
                                     <div class="pull-right">
-                                        <a href="{{ url_for('admin.delete_question', question_id=question.id) }}" class="btn btn-danger">删除</a>
+                                        <a href="{{ url_for('admin.delete_question', question_id=question.id) }}" class="btn btn-danger" onclick="return confirm('删除将不可恢复。确定删除吗？');">删除</a>
                                     </div>
                                 </div>
                             </div>

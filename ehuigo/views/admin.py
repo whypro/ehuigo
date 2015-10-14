@@ -13,7 +13,8 @@ admin = Blueprint('admin', __name__, url_prefix='/admin')
 
 @admin.route('/')
 def index():
-    return render_template('admin/index.html')
+    # return render_template('admin/index.html')
+    return redirect(url_for('admin.show_manufacturers'))
 
 
 @admin.route('/manufacturers/')
@@ -156,10 +157,15 @@ def edit_evaluation(product_id):
             db.session.add(product_answer)
         db.session.commit()
 
-        return redirect(url_for('admin.edit_evaluation', product_id=product_id))
+        return jsonify()
         #product_question = ProductQuestion(product=product, question=question, order=order)
 
     product = Product.query.get_or_404(product_id)
     questions = Question.query.all()
-    return render_template('admin/evaluation.html', product=product, questions=questions)
+
+    discounts = dict()
+    for product_answer in ProductAnswer.query.filter_by(product_id=product_id).all():
+        discounts[product_answer.answer_id] = int(product_answer.discount)
+    # print discounts
+    return render_template('admin/evaluation.html', product=product, questions=questions, discounts=discounts)
 
