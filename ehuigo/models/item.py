@@ -56,7 +56,7 @@ class ProductQuestion(db.Model):
     product = db.relationship('Product', backref='product_questions')
     question_id = db.Column(db.Integer, db.ForeignKey('question.id', ondelete='CASCADE'))        # 问题 ID
     question = db.relationship('Question')
-    order = db.Column(db.Integer, autoincrement=True)              # 排序
+    order = db.Column(db.Integer)              # 排序
 
 
 class ProductAnswer(db.Model):

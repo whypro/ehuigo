@@ -6,7 +6,7 @@ from flask import Blueprint, render_template, request, jsonify, redirect, url_fo
 from werkzeug import secure_filename
 
 from ..extensions import db
-from ..models import Manufacturer, Product, Question, Answer
+from ..models import Manufacturer, Product, Question, Answer, ProductQuestion, ProductAnswer
 
 admin = Blueprint('admin', __name__, url_prefix='/admin')
 
@@ -133,8 +133,33 @@ def delete_question(question_id):
     return redirect(url_for('admin.show_questions'))
 
 
-@admin.route('/product/<int:product_id>/evaluation/edit/')
+@admin.route('/product/<int:product_id>/evaluation/edit/', methods=['GET', 'POST'])
 def edit_evaluation(product_id):
+    if request.method == 'POST':
+        data = request.get_json()
+        for order, question_id in enumerate(data['questions'], start=1):
+            question_id = int(question_id)
+            product_question = ProductQuestion.query.filter_by(product_id=product_id, question_id=question_id).first()
+            if not product_question:
+                product_question = ProductQuestion(product_id=product_id, question_id=question_id)
+            product_question.order = order
+            db.session.add(product_question)
+        db.session.commit()
+
+        for answer in data['answers']:
+            answer_id = int(answer[0])
+            discount = int(answer[1])
+            product_answer = ProductAnswer.query.filter_by(product_id=product_id, answer_id=answer_id).first()
+            if not product_answer:
+                product_answer = ProductAnswer(product_id=product_id, answer_id=answer_id)
+            product_answer.discount = discount
+            db.session.add(product_answer)
+        db.session.commit()
+
+        return redirect(url_for('admin.edit_evaluation', product_id=product_id))
+        #product_question = ProductQuestion(product=product, question=question, order=order)
+
     product = Product.query.get_or_404(product_id)
     questions = Question.query.all()
     return render_template('admin/evaluation.html', product=product, questions=questions)
+
