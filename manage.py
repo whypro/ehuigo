@@ -5,6 +5,7 @@ import subprocess
 import datetime
 import shutil
 import os
+from zipfile import ZipFile
 
 from flask.ext.script import Manager, Server
 from flask.ext.migrate import  MigrateCommand
