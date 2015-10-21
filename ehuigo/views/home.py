@@ -40,3 +40,21 @@ def init():
 @home.route('/uploads/<filename>/')
 def send_upload_file(filename):
     return send_from_directory(current_app.config['UPLOAD_PATH'], filename)
+
+
+@home.route('/products/')
+@home.route('/manufacturer/<int:manufacturer_id>/products/')
+def show_products(manufacturer_id=None):
+    if manufacturer_id:
+        manufacturer = Manufacturer.query.get_or_404(manufacturer_id)
+        products = Product.query.filter_by(manufacturer_id=manufacturer_id)
+    else:
+        manufacturer = None
+        products = Product.query.all()
+    return render_template('products.html', products=products, manufacturer=manufacturer)
+
+
+@home.route('/manufacturers/')
+def show_manufacturers():
+    manufacturers = Manufacturer.query.all()
+    return render_template('manufacturers.html', manufacturers=manufacturers)

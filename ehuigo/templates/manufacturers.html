@@ -1,0 +1,19 @@
+{% extends '_base.html' %}
+{% block title %}主页{% endblock %}
+{% block content %}
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="page-header">
+                        <h3>所有品牌</h3>
+                    </div>
+                </div>
+
+                {% for manufacturer in manufacturers %}
+                <div class="col-md-2 col-sm-2 col-xs-4">
+                    <a href="{{ url_for('home.show_products', manufacturer_id=manufacturer.id) }}" class="thumbnail">
+                        <img alt="logo" src="{{ manufacturer.logo }}" />
+                    </a>
+                </div>
+                {% endfor %}
+            </div>
+{% endblock %}
