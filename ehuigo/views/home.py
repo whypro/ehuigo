@@ -24,6 +24,7 @@ def evaluate(product_id):
         for answer_id in data['answers']:
             product_answer = ProductAnswer.query.filter_by(product_id=product_id, answer_id=answer_id).one()
             price += product_answer.discount    # 加负等于减正
+        if price < 0: price = 0     # TODO: 变量加入数据库
         print price
         return jsonify(price=int(price))
 

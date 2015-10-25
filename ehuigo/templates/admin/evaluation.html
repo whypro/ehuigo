@@ -40,7 +40,7 @@
                                             {% endfor %}
                                         </form>
                                         <div class="pull-right">
-                                            <a href="{{ url_for('admin.delete_question', question_id=question.id) }}" class="btn btn-xs btn-danger">删除</a>
+                                            <button class="btn btn-xs btn-danger remove-question-btn" question-id="{{ question.id }}" id="remove-question-{{ question.id }}">删除</button>
                                         </div>
                                     </div>
                                 </div>
@@ -54,10 +54,9 @@
                     <div class="col-md-4">
                         <h4>候选问题</h4>
                         <hr />
-                        <ul class="list-group">
+                        <ul class="list-group" id="rest-quesions">
                             {% for question in questions %}
-                            {% if question not in product.questions %}
-                            <li class="list-group-item" question-id="{{ question.id }}" question-content="{{ question.content }}">
+                            <li class="list-group-item" question-id="{{ question.id }}" question-content="{{ question.content }}"{% if question in product.questions %} style="display:none;"{% endif %}>
                                 {{ question.content }}<a class="btn btn-primary btn-xs pull-right" id="add-question-{{ question.id }}">添加</a>
                                 <ul class="hidden" id="question-{{ question.id }}-answers">
                                     {% for answer in question.answers %}
@@ -65,7 +64,6 @@
                                     {% endfor %}
                                 </ul>
                             </li>
-                            {% endif %}
                             {% endfor %}
                         </ul>
                     </div>
@@ -76,6 +74,13 @@
 {% block script %}
 <script>
     $(document).ready(function(){
+        $(".remove-question-btn").on("click", function () {
+            // alert(question_id);
+            var question_id = $(this).attr("question-id");
+            $("#add-question-"+question_id).parent().show();
+            $("#question-"+question_id+"-panel").remove();
+        });
+
         $("[id^='add-question-']").click(function () {
             var question_id = $(this).parent().attr("question-id");
             var question_content = $(this).parent().attr("question-content");
