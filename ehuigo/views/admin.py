@@ -4,6 +4,7 @@ import os
 
 from flask import Blueprint, render_template, request, jsonify, redirect, url_for, abort, current_app
 from werkzeug import secure_filename
+from flask.ext.login import login_required
 
 from ..extensions import db
 from ..models import Manufacturer, Product, Question, Answer, ProductQuestion, ProductAnswer
@@ -12,17 +13,20 @@ admin = Blueprint('admin', __name__, url_prefix='/admin')
 
 
 @admin.route('/')
+@login_required
 def index():
     # return render_template('admin/index.html')
     return redirect(url_for('admin.show_manufacturers'))
 
 
 @admin.route('/manufacturers/')
+@login_required
 def show_manufacturers():
     manufacturers = Manufacturer.query.all()
     return render_template('admin/manufacturers.html', manufacturers=manufacturers)
 
 @admin.route('/manufacturer/add/', methods=['POST'])
+@login_required
 def add_manufacturer():
     name = request.form.get('manufacturer-name')
     alias = request.form.get('manufacturer-alias')
@@ -47,6 +51,7 @@ def add_manufacturer():
 
 
 @admin.route('/manufacturer/<int:manufacturer_id>/delete/')
+@login_required
 def delete_manufacturer(manufacturer_id):
     manufacturer = Manufacturer.query.get_or_404(manufacturer_id)
     # remove manufacturer.logo
@@ -58,6 +63,7 @@ def delete_manufacturer(manufacturer_id):
 
 
 @admin.route('/manufacturer/<int:manufacturer_id>/products/')
+@login_required
 def show_products(manufacturer_id):
     manufacturer = Manufacturer.query.get_or_404(manufacturer_id)
     products = Product.query.filter_by(manufacturer_id=manufacturer_id)
@@ -65,6 +71,7 @@ def show_products(manufacturer_id):
 
 
 @admin.route('/product/add/', methods=['POST'])
+@login_required
 def add_product():
     print request.form
     manufacturer_id = request.form.get('product-manufacturer')
@@ -95,6 +102,7 @@ def add_product():
 
 
 @admin.route('/product/<int:product_id>/delete/')
+@login_required
 def delete_product(product_id):
     product = Product.query.get_or_404(product_id)
     manufacturer_id = product.manufacturer_id
@@ -104,12 +112,14 @@ def delete_product(product_id):
 
 
 @admin.route('/questions/')
+@login_required
 def show_questions():
     questions = Question.query.all()
     return render_template('admin/questions.html', questions=questions)
 
 
 @admin.route('/question/add/', methods=['POST'])
+@login_required
 def add_question():
     question_content = request.form.get('question-content')
     answer_contents = request.form.getlist('answer-content[]')
@@ -127,6 +137,7 @@ def add_question():
 
 
 @admin.route('/question/<question_id>/delete/')
+@login_required
 def delete_question(question_id):
     question = Question.query.get_or_404(question_id)
     db.session.delete(question)
@@ -135,6 +146,7 @@ def delete_question(question_id):
 
 
 @admin.route('/product/<int:product_id>/evaluation/edit/', methods=['GET', 'POST'])
+@login_required
 def edit_evaluation(product_id):
     if request.method == 'POST':
         data = request.get_json()

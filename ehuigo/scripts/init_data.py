@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-from ..models import Manufacturer, Question, Answer, Product
+from ..models import Manufacturer, Question, Answer, Product, User
 
 
 def init_manufacturers_and_products(session):
@@ -91,3 +91,5 @@ def init_questions_and_answers(session):
     session.commit()
 
 
+def init_users(session):
+    pass

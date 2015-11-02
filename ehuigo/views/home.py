@@ -1,9 +1,13 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
-from flask import Blueprint, render_template, request, jsonify, redirect, url_for, abort, current_app, send_from_directory
+import hashlib
+
+from flask import Blueprint, render_template, request, jsonify, redirect, url_for, abort, current_app, send_from_directory, g
+from flask.ext.login import login_user, logout_user, login_required
 
 from ..extensions import db
 from ..models import Manufacturer, Product, ProductAnswer
+from ..models import User
 
 home = Blueprint('home', __name__)
 
@@ -32,13 +36,8 @@ def evaluate(product_id):
     return render_template('evaluate.html', product=product)
 
 
-@home.route('/init/')
-def init():
-    db.create_all()
-    return redirect(url_for('home.index'))
-
-
 @home.route('/uploads/<filename>/')
+@login_required
 def send_upload_file(filename):
     return send_from_directory(current_app.config['UPLOAD_PATH'], filename)
 
@@ -59,3 +58,28 @@ def show_products(manufacturer_id=None):
 def show_manufacturers():
     manufacturers = Manufacturer.query.all()
     return render_template('manufacturers.html', manufacturers=manufacturers)
+
+
+@home.route('/login/', methods=['GET', 'POST'])
+def login():
+    # 已登录用户则返回首页
+    if g.user.is_authenticated:
+        return redirect(url_for('home.index'))
+
+    if request.method == 'POST':
+        username = request.form.get('username')
+        password = request.form.get('password')
+        user = User.query.filter_by(email=username, password=hashlib.sha1(password).hexdigest()).first()
+        print user
+        if user:
+            login_user(user)
+            return redirect(url_for('home.index'))
+    
+    return render_template('account/login.html')
+
+
+@home.route('/logout/')
+@login_required
+def logout():
+    logout_user()
+    return redirect(url_for('home.index'))

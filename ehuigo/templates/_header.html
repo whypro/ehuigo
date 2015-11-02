@@ -14,10 +14,9 @@
                     <!-- Collect the nav links, forms, and other content for toggling -->
                     <div class="collapse navbar-collapse" id="ehuigo-menu">
                         <ul class="nav navbar-nav">
-                            <li><a href="{{ url_for('home.index') }}">首页 <span class="sr-only">(current)</span></a></li>
-                            <li><a href="#">旧机回收</a></li>
-                            <li><a href="#">诚聘英才</a></li>
-                            <li><a href="#">关于我们</a></li>
+                            <li><a href="{{ url_for('home.index') }}">旧机回收</a></li>
+                            <li><a href="{{ url_for('home.index') }}">诚聘英才</a></li>
+                            <li><a href="{{ url_for('home.index') }}">关于我们</a></li>
 
                             <li class="dropdown hidden">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Dropdown <span class="caret"></span></a>
@@ -33,15 +32,18 @@
                             </li>
                         </ul>
                         <ul class="nav navbar-nav navbar-right">
+                            {% if g.user.is_authenticated -%}
                             <li class="dropdown">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">管理 <span class="caret"></span></a>
                                 <ul class="dropdown-menu">
                                     <li><a href="{{ url_for('admin.index') }}">管理中心</a></li>
-                                    <li><a href="#">修改资料</a></li>
                                     <li role="separator" class="divider"></li>
-                                    <li><a href="#">注销</a></li>
+                                    <li><a href="{{ url_for('home.logout') }}">注销</a></li>
                                 </ul>
                             </li>
+                            {% else %}
+                            <li><a href="{{ url_for('home.login') }}">登录</a></li>
+                            {% endif %}
                         </ul>
                         <form class="navbar-form navbar-right hidden-sm" role="search">
                             <div class="form-group">
