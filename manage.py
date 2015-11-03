@@ -13,7 +13,7 @@ from flask.ext.migrate import  MigrateCommand
 from ehuigo import create_app
 from ehuigo import config
 from ehuigo.extensions import db
-from ehuigo.scripts.init_data import init_manufacturers_and_products, init_questions_and_answers
+from ehuigo.scripts.init_data import init_manufacturers_and_products, init_questions_and_answers, init_user
 
 
 app = create_app(config.Config)
@@ -55,6 +55,14 @@ def init():
     # init_post(db.session)
     # init_member(db.session)
     # print '数据初始化成功'
+    print '请输入管理员邮箱：'
+    email = raw_input()
+    print '请输入管理员密码：'
+    password = raw_input()
+    print '请输入管理员昵称：'
+    nickname = raw_input()
+    init_user(db.session, email, password, nickname)
+    print '管理员账户初始化成功'
 
 
 @manager.command
