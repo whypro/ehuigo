@@ -1,0 +1,31 @@
+{% extends '_base.html' %}
+{% block title %}产品{% endblock %}
+{% block content %}
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="page-header">
+                        <h3>{{ manufacturer.name|d('所有产品') }}</h3>
+                    </div>
+                </div>
+
+                {% for product in products %}
+                <div class="col-md-3 col-sm-3 col-xs-12">
+                    <div class="thumbnail">
+                        <a href="">
+                            <img alt="{{ product.model }}" src="{{ product.photo }}" />
+                        </a>
+                        <div class="caption">
+                            <h3>{{ product.model }}</h3>
+                            <p>
+                                <!-- 描述 -->
+                            </p>
+                            <p class="text-right">
+                                <span class="label label-danger">会员价：{{ product.price|int }} 元！</span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+{% endblock %}
