@@ -73,7 +73,7 @@ def login():
         print user
         if user:
             login_user(user)
-            return redirect(url_for('home.index'))
+            return redirect(url_for('admin.index'))
     
     return render_template('account/login.html')
 
