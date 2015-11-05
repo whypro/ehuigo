@@ -24,6 +24,9 @@ class Product(db.Model):
     price = db.Column(db.Numeric(10, 2))        # 基准价格
     photo = db.Column(db.Unicode(200))          # 图片路径
 
+    for_recycle = db.Column(db.Boolean, default=False)
+    for_exchange = db.Column(db.Boolean, default=False)
+
     questions = association_proxy('product_questions', 'question')
 
 

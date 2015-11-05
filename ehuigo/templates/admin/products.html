@@ -23,9 +23,22 @@
                                 </a>
                                 <div class="caption">
                                     <h4>{{ product.model }} {{ product.version }}</h4>
+
+                                    <div class="checkbox">
+                                        <label>
+                                            <input class="for-recycle-checkbox" product-id={{ product.id }} type="checkbox"{%if product.for_recycle %} checked="checked"{% endif %} />旧机回收
+                                        </label>
+                                    </div>
+
+                                    <div class="checkbox">
+                                        <label>
+                                            <input class="for-exchange-checkbox" product-id={{ product.id }} type="checkbox"{%if product.for_exchange %} checked="checked"{% endif %} />以旧换新
+                                        </label>
+                                    </div>
+
+                                    <a class="btn btn-xs btn-danger pull-right" href="{{ url_for('admin.delete_product', product_id=product.id) }}" onclick="return confirm('删除将不可恢复。确定删除吗？');">删除</a>
+                                    <div class="clearfix"></div>
                                 </div>
-                                <a class="btn btn-xs btn-danger pull-right" href="{{ url_for('admin.delete_product', product_id=product.id) }}" onclick="return confirm('删除将不可恢复。确定删除吗？');">删除</a>
-                                <div class="clearfix"></div>
                             </div>
                         </div>
                         {% endfor %}
@@ -37,7 +50,6 @@
                             </button>
                         </div>
                     </div>
-
                 </div>
             </div>
 
@@ -66,7 +78,7 @@
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label for="product-price" class="col-sm-2 control-label">基准价格</label>
+                                    <label for="product-price" class="col-sm-2 control-label">最高价格</label>
                                     <div class="col-sm-10">
                                         <div class="input-group">
                                             <div class="input-group-addon">￥</div>
@@ -96,6 +108,23 @@
     $(document).ready(function () {
         $("#add-product-submit-btn").click(function () {
             $("#add-product-form").submit();
+        });
+
+        $(".for-recycle-checkbox").change(function (){
+            var product_id = $(this).attr("product-id");
+            var action = $(this).prop("checked") ? "set": "unset";
+            // alert(action);
+            $.get("/admin/product/"+product_id+"/recycle/"+action+"/", function (){
+                // alert("success");
+            });
+        });
+        $(".for-exchange-checkbox").change(function (){
+            var product_id = $(this).attr("product-id");
+            var action = $(this).prop("checked") ? "set": "unset";
+            // alert(action);
+            $.get("/admin/product/"+product_id+"/exchange/"+action+"/", function (){
+                // alert("success");
+            });
         });
     });
 </script>

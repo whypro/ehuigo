@@ -181,3 +181,30 @@ def edit_evaluation(product_id):
     # print discounts
     return render_template('admin/evaluation.html', product=product, questions=questions, discounts=discounts)
 
+
+@admin.route('/product/<int:product_id>/recycle/<action>/')
+@login_required
+def set_recycle_product(product_id, action):
+    if action not in ('set', 'unset'):
+        abort(400)
+
+    p = Product.query.get_or_404(product_id)
+    p.for_recycle = True if action == 'set' else False
+    db.session.add(p)
+    db.session.commit()
+
+    return jsonify(status=200)
+
+
+@admin.route('/product/<int:product_id>/exchange/<action>/')
+@login_required
+def set_exchange_product(product_id, action):
+    if action not in ('set', 'unset'):
+        abort(400)
+
+    p = Product.query.get_or_404(product_id)
+    p.for_exchange = True if action == 'set' else False
+    db.session.add(p)
+    db.session.commit()
+
+    return jsonify(status=200)

@@ -15,7 +15,7 @@ home = Blueprint('home', __name__)
 @home.route('/')
 def index():
     manufacturers = Manufacturer.query.limit(current_app.config['HOT_MANUFACTURER_NUM']).all()
-    hot_products = Product.query.order_by(Product.price.desc()).limit(current_app.config['HOT_PRODUCT_NUM']).all()
+    hot_products = Product.query.filter_by(for_recycle=True).order_by(Product.price.desc()).limit(current_app.config['HOT_PRODUCT_NUM']).all()
     return render_template('index.html', manufacturers=manufacturers, hot_products=hot_products)
 
 
@@ -47,11 +47,23 @@ def send_upload_file(filename):
 def show_products(manufacturer_id=None):
     if manufacturer_id:
         manufacturer = Manufacturer.query.get_or_404(manufacturer_id)
-        products = Product.query.filter_by(manufacturer_id=manufacturer_id)
+        products = Product.query.filter_by(manufacturer_id=manufacturer_id, for_recycle=True).all()
     else:
         manufacturer = None
-        products = Product.query.all()
+        products = Product.query.filter_by(for_recycle=True).all()
     return render_template('products.html', products=products, manufacturer=manufacturer)
+
+
+@home.route('/products/exchange/')
+@home.route('/manufacturer/<int:manufacturer_id>/products/exchange/')
+def show_exchange_products(manufacturer_id=None):
+    if manufacturer_id:
+        manufacturer = Manufacturer.query.get_or_404(manufacturer_id)
+        products = Product.query.filter_by(manufacturer_id=manufacturer_id, for_exchange=True).all()
+    else:
+        manufacturer = None
+        products = Product.query.filter_by(for_exchange=True).all()
+    return render_template('products_exchange.html', products=products, manufacturer=manufacturer)
 
 
 @home.route('/manufacturers/')
