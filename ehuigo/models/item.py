@@ -21,13 +21,22 @@ class Product(db.Model):
     manufacturer = db.relationship('Manufacturer', backref=db.backref('products', passive_deletes=True))
     model = db.Column(db.Unicode(20))           # 型号
     version = db.Column(db.Unicode(20))         # 版本
-    price = db.Column(db.Numeric(10, 2))        # 基准价格
     photo = db.Column(db.Unicode(200))          # 图片路径
 
     for_recycle = db.Column(db.Boolean, default=False)
     for_exchange = db.Column(db.Boolean, default=False)
 
     questions = association_proxy('product_questions', 'question')
+
+
+class Price(db.Model):
+
+    id = db.Column(db.Integer, primary_key=True)
+    product_id = db.Column(db.Integer, db.ForeignKey('product.id', ondelete='CASCADE'))            # 物品 ID
+    product = db.relationship('Product', backref=db.backref('price', uselist=False))
+    recycle_max_price = db.Column(db.Numeric(10, 2), default=0)
+    recycle_min_price = db.Column(db.Numeric(10, 2), default=0)
+    exchange_price = db.Column(db.Numeric(10, 2), default=0)
 
 
 class Album(object):

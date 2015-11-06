@@ -1,2 +1,2 @@
-from .item import Manufacturer, Product, Question, Answer, ProductQuestion, ProductAnswer
+from .item import Manufacturer, Product, Question, Answer, ProductQuestion, ProductAnswer, Price
 from .account import User

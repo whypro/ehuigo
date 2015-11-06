@@ -15,7 +15,7 @@ home = Blueprint('home', __name__)
 @home.route('/')
 def index():
     manufacturers = Manufacturer.query.limit(current_app.config['HOT_MANUFACTURER_NUM']).all()
-    hot_products = Product.query.filter_by(for_recycle=True).order_by(Product.price.desc()).limit(current_app.config['HOT_PRODUCT_NUM']).all()
+    hot_products = Product.query.filter_by(for_recycle=True).limit(current_app.config['HOT_PRODUCT_NUM']).all()
     return render_template('index.html', manufacturers=manufacturers, hot_products=hot_products)
 
 
@@ -23,12 +23,13 @@ def index():
 def evaluate(product_id):
     if request.method == 'POST':
         product = Product.query.get_or_404(product_id)
-        price = product.price
+        price = product.prices.recycle_max_price
+        min_price = product.prices.recycle_min_price
         data = request.get_json()
         for answer_id in data['answers']:
             product_answer = ProductAnswer.query.filter_by(product_id=product_id, answer_id=answer_id).one()
             price += product_answer.discount    # 加负等于减正
-        if price < 0: price = 0     # TODO: 变量加入数据库
+        if price < min_price: price = min_price
         print price
         return jsonify(price=int(price))
 

@@ -2,34 +2,34 @@
 from __future__ import unicode_literals
 import hashlib
 
-from ..models import Manufacturer, Question, Answer, Product, User
+from ..models import Manufacturer, Question, Answer, Product, User, Price
 
 
 def init_manufacturers_and_products(session):
-    m = Manufacturer(name='苹果', alias='APPLE', logo='/static/logo/apple.png')
+    m = Manufacturer(name='苹果', alias='APPLE', logo='/static/images/manufacturers/apple.png')
     session.add(m)
-    p = Product(manufacturer=m, model='iPhone 6', version='', price=3000, photo='/static/iPhone6-white.jpg')
+    p = Product(manufacturer=m, model='iPhone 6', version='', photo='/static/images/iPhone6-white.jpg')
     session.add(p)
-    p = Product(manufacturer=m, model='iPhone 6 Plus', version='', price=3000, photo='/static/iPhone6p-white.jpg')
+    p = Product(manufacturer=m, model='iPhone 6 Plus', version='', photo='/static/images/iPhone6p-white.jpg')
     session.add(p)
-    p = Product(manufacturer=m, model='iPhone 5s', version='', price=3000, photo='/static/iPhone5s.jpg')
+    p = Product(manufacturer=m, model='iPhone 5s', version='', photo='/static/images/iPhone5s.jpg')
     session.add(p)
-    p = Product(manufacturer=m, model='iPhone 5c', version='', price=3000, photo='/static/iPhone-5c.jpg')
+    p = Product(manufacturer=m, model='iPhone 5c', version='', photo='/static/images/iPhone-5c.jpg')
     session.add(p)
 
-    m = Manufacturer(name='HTC', alias=None, logo='/static/logo/htc.png')
+    m = Manufacturer(name='HTC', alias=None, logo='/static/images/manufacturers/htc.png')
     session.add(m)
-    m = Manufacturer(name='华为', alias='HUAWEI', logo='/static/logo/huawei.png')
+    m = Manufacturer(name='华为', alias='HUAWEI', logo='/static/images/manufacturers/huawei.png')
     session.add(m)
-    m = Manufacturer(name='诺基亚', alias='NOKIA', logo='/static/logo/nokia.png')
+    m = Manufacturer(name='诺基亚', alias='NOKIA', logo='/static/images/manufacturers/nokia.png')
     session.add(m)
-    m = Manufacturer(name='三星', alias='SAMSUNG', logo='/static/logo/samsung.png')
+    m = Manufacturer(name='三星', alias='SAMSUNG', logo='/static/images/manufacturers/samsung.png')
     session.add(m)
-    m = Manufacturer(name='小米', alias=None, logo='/static/logo/xiaomi.png')
+    m = Manufacturer(name='小米', alias=None, logo='/static/images/manufacturers/xiaomi.png')
     session.add(m)
-    m = Manufacturer(name='魅族', alias='MEIZU', logo='/static/logo/xiaomi.png')
+    m = Manufacturer(name='魅族', alias='MEIZU', logo='/static/images/manufacturers/xiaomi.png')
     session.add(m)
-    m = Manufacturer(name='联想', alias='LENOVE', logo='/static/logo/lenovo.png')
+    m = Manufacturer(name='联想', alias='LENOVE', logo='/static/images/manufacturers/lenovo.png')
     session.add(m)
 
     session.commit()

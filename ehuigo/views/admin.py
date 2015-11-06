@@ -7,7 +7,7 @@ from werkzeug import secure_filename
 from flask.ext.login import login_required
 
 from ..extensions import db
-from ..models import Manufacturer, Product, Question, Answer, ProductQuestion, ProductAnswer
+from ..models import Manufacturer, Product, Question, Answer, ProductQuestion, ProductAnswer, Price
 
 admin = Blueprint('admin', __name__, url_prefix='/admin')
 
@@ -182,6 +182,13 @@ def edit_evaluation(product_id):
     return render_template('admin/evaluation.html', product=product, questions=questions, discounts=discounts)
 
 
+@admin.route('/product/<int:product_id>/exchange/edit/', methods=['GET', 'POST'])
+@login_required
+def edit_exchange(product_id):
+    product = Product.query.get_or_404(product_id)
+    return render_template('admin/exchange.html', product=product)
+
+
 @admin.route('/product/<int:product_id>/recycle/<action>/')
 @login_required
 def set_recycle_product(product_id, action):
@@ -191,6 +198,10 @@ def set_recycle_product(product_id, action):
     p = Product.query.get_or_404(product_id)
     p.for_recycle = True if action == 'set' else False
     db.session.add(p)
+    price = Price.query.filter_by(product_id=product_id).first()
+    if action == 'set' and not price:
+        price = Price(product_id=product_id)
+        db.session.add(price)
     db.session.commit()
 
     return jsonify(status=200)
@@ -205,6 +216,10 @@ def set_exchange_product(product_id, action):
     p = Product.query.get_or_404(product_id)
     p.for_exchange = True if action == 'set' else False
     db.session.add(p)
+    price = Price.query.filter_by(product_id=product_id).first()
+    if action == 'set' and not price:
+        price = Price(product_id=product_id)
+        db.session.add(price)
     db.session.commit()
 
     return jsonify(status=200)

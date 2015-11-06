@@ -28,12 +28,13 @@
                                         <label>
                                             <input class="for-recycle-checkbox" product-id={{ product.id }} type="checkbox"{%if product.for_recycle %} checked="checked"{% endif %} />旧机回收
                                         </label>
+                                        <a class="btn btn-xs btn-success pull-right" href="{{ url_for('admin.edit_evaluation', product_id=product.id) }}">设置</a>
                                     </div>
-
                                     <div class="checkbox">
                                         <label>
                                             <input class="for-exchange-checkbox" product-id={{ product.id }} type="checkbox"{%if product.for_exchange %} checked="checked"{% endif %} />以旧换新
                                         </label>
+                                        <a class="btn btn-xs btn-success pull-right" href="{{ url_for('admin.edit_exchange', product_id=product.id) }}">设置</a>
                                     </div>
 
                                     <a class="btn btn-xs btn-danger pull-right" href="{{ url_for('admin.delete_product', product_id=product.id) }}" onclick="return confirm('删除将不可恢复。确定删除吗？');">删除</a>

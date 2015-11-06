@@ -14,19 +14,19 @@
                         <!-- Wrapper for slides -->
                         <div class="carousel-inner" role="listbox">
                             <div class="item active">
-                                <img src="{{ url_for('static', filename='banner.png') }}" alt="...">
+                                <img src="{{ url_for('static', filename='images/banner.png') }}" alt="...">
                                 <div class="carousel-caption">
                                 ...
                                 </div>
                             </div>
                             <div class="item">
-                                <img src="{{ url_for('static', filename='banner.png') }}" alt="...">
+                                <img src="{{ url_for('static', filename='images/banner.png') }}" alt="...">
                                 <div class="carousel-caption">
                                 ...
                                 </div>
                             </div>
                             <div class="item">
-                                <img src="{{ url_for('static', filename='banner.png') }}" alt="...">
+                                <img src="{{ url_for('static', filename='images/banner.png') }}" alt="...">
                                 <div class="carousel-caption">
                                 ...
                                 </div>
@@ -66,7 +66,7 @@
                                 <!-- 描述 -->
                             </p>
                             <p>
-                                <span class="label label-danger">最高回收价：{{ product.price|int }} 元！</span>
+                                <span class="label label-danger">最高回收价：{{ product.price.recycle_max_price|int }} 元！</span>
                             </p>
                         </div>
                     </div>
