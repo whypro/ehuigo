@@ -38,9 +38,12 @@
                                         <input type="file" name="product-photo" class="form-control" id="product-photo">
                                     </div>
                                 </div>
-                                <button type="button" class="btn btn-success pull-left" id="add-product-submit-btn">保存</button>
+                                <button type="button" class="btn btn-success pull-left" id="edit-product-submit-btn">保存</button>
                                 <a href="{{ url_for('admin.show_products', manufacturer_id=product.manufacturer.id) }}" class="btn btn-default pull-right">取消</a>
                             </form>
+                        </div>
+                        <div class="col-md-4">
+                            <img class="img-responsive" alt="{{ product.model }}" src="{{ product.photo_url }}" />
                         </div>
                     </div>
                 </div>
@@ -50,25 +53,8 @@
 {% block script %}
 <script>
     $(document).ready(function () {
-        $("#add-product-submit-btn").click(function () {
-            $("#add-product-form").submit();
-        });
-
-        $(".for-recycle-checkbox").change(function (){
-            var product_id = $(this).attr("product-id");
-            var action = $(this).prop("checked") ? "set": "unset";
-            // alert(action);
-            $.get("/admin/product/"+product_id+"/recycle/"+action+"/", function (){
-                // alert("success");
-            });
-        });
-        $(".for-exchange-checkbox").change(function (){
-            var product_id = $(this).attr("product-id");
-            var action = $(this).prop("checked") ? "set": "unset";
-            // alert(action);
-            $.get("/admin/product/"+product_id+"/exchange/"+action+"/", function (){
-                // alert("success");
-            });
+        $("#edit-product-submit-btn").click(function () {
+            $("#edit-product-form").submit();
         });
     });
 </script>

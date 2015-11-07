@@ -97,10 +97,25 @@ def add_product():
     return redirect(url_for('admin.show_products', manufacturer_id=manufacturer_id))
 
 
-@admin.route('/product/<int:product_id>/edit/')
+@admin.route('/product/<int:product_id>/edit/', methods=['GET', 'POST'])
 @login_required
 def edit_product(product_id):
     product = Product.query.get_or_404(product_id)
+    if request.method == 'POST':
+        model = request.form.get('product-model')
+        product.model = model
+
+        fs = request.files.get('product-photo')
+        if fs:
+            uploader = create_uploader()
+            filename = uploader.save(fs)
+            product.photo = filename
+
+        db.session.add(product)
+        db.session.commit()
+
+        return redirect(url_for('admin.edit_product', product_id=product_id))
+
     return render_template('admin/product_detail.html', product=product)
 
 
