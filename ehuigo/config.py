@@ -31,6 +31,9 @@ class Config(object):
     HOT_MANUFACTURER_NUM = 6
 
     UPLOAD_PATH = os.path.join(os.path.realpath('.'), 'uploads')
+    UPLOAD_PREFIX = 'uploads'
+    UPLOAD_ALLOWED_EXT = ['jpg', 'png', 'bmp', 'gif']
+    UPLOAD_MAX_SIZE = 4 * 1024 * 1024    # 4M
 
 
 class BAEConfig(Config):

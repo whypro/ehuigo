@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
+
 from sqlalchemy.ext.associationproxy import association_proxy
+from flask import current_app
 
 from ..extensions import db
 
@@ -12,6 +14,15 @@ class Manufacturer(db.Model):
     alias = db.Column(db.Unicode(20))   # 品牌别名
     logo = db.Column(db.Unicode(200))   # 品牌 LOGO
 
+    @property
+    def logo_url(self):
+        url = '/static/images/manufacturers/default.png'
+        if self.logo:
+            if self.logo.startswith('/') or self.logo.startswith('http'):
+                url = self.logo
+            else:
+                url = '/' + current_app.config['UPLOAD_PREFIX'] + '/' + self.logo
+        return url
 
 
 class Product(db.Model):
@@ -27,6 +38,16 @@ class Product(db.Model):
     for_exchange = db.Column(db.Boolean, default=False)
 
     questions = association_proxy('product_questions', 'question')
+
+    @property
+    def photo_url(self):
+        url = '/static/images/products/default.png'
+        if self.photo:
+            if self.photo.startswith('/') or self.photo.startswith('http'):
+                url = self.photo
+            else:
+                url = '/' + current_app.config['UPLOAD_PREFIX'] + '/' + self.photo
+        return url
 
 
 class Price(db.Model):

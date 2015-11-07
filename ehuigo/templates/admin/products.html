@@ -18,8 +18,8 @@
                         {% for product in products %}
                         <div class="col-md-3 col-sm-4 col-xs-6">
                             <div class="thumbnail">
-                                <a href="{{ url_for('admin.edit_evaluation', product_id=product.id) }}">
-                                    <img alt="{{ product.model }}" src="{{ url_for('home.send_upload_file', filename=product.photo) if product.photo and not product.photo.startswith('/') else product.photo|d('') }}" />
+                                <a href="{{ url_for('admin.edit_product', product_id=product.id) }}">
+                                    <img alt="{{ product.model }}" src="{{ product.photo_url }}" />
                                 </a>
                                 <div class="caption">
                                     <h4>{{ product.model }} {{ product.version }}</h4>
@@ -76,16 +76,6 @@
                                     <label for="product-model" class="col-sm-2 control-label">产品型号</label>
                                     <div class="col-sm-10">
                                         <input type="text" name="product-model" class="form-control" id="product-model">
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label for="product-price" class="col-sm-2 control-label">最高价格</label>
-                                    <div class="col-sm-10">
-                                        <div class="input-group">
-                                            <div class="input-group-addon">￥</div>
-                                            <input type="text" name="product-price" class="form-control" id="product-price">
-                                            <div class="input-group-addon">.00</div>
-                                        </div>
                                     </div>
                                 </div>
                                 <div class="form-group">

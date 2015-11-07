@@ -8,6 +8,7 @@ from flask.ext.login import login_required
 
 from ..extensions import db
 from ..models import Manufacturer, Product, Question, Answer, ProductQuestion, ProductAnswer, Price
+from ..helpers import create_uploader
 
 admin = Blueprint('admin', __name__, url_prefix='/admin')
 
@@ -76,29 +77,31 @@ def add_product():
     print request.form
     manufacturer_id = request.form.get('product-manufacturer')
     model = request.form.get('product-model')
-    price = request.form.get('product-price')
 
     if not manufacturer_id or not model:
         abort(404)
 
-    # print manufacturer_id, model, price
-    f = request.files.get('product-photo')
-    if f:
-        filename = secure_filename(f.filename)
-        path = os.path.join(current_app.config['UPLOAD_PATH'], filename)
-        print path
-        f.save(path)
-    else:
-        filename = None
+    # print manufacturer_id, model
+    filename = None
+    fs = request.files.get('product-photo')
+    if fs:
+        uploader = create_uploader()
+        filename = uploader.save(fs)
 
     manufacturer_id = int(manufacturer_id)
-    price=int(price)
     manufacturer = Manufacturer.query.get_or_404(manufacturer_id)
-    product = Product(manufacturer=manufacturer, model=model, version=None, price=price, photo=filename)
+    product = Product(manufacturer=manufacturer, model=model, version=None, photo=filename)
     db.session.add(product)
     db.session.commit()
 
     return redirect(url_for('admin.show_products', manufacturer_id=manufacturer_id))
+
+
+@admin.route('/product/<int:product_id>/edit/')
+@login_required
+def edit_product(product_id):
+    product = Product.query.get_or_404(product_id)
+    return render_template('admin/product_detail.html', product=product)
 
 
 @admin.route('/product/<int:product_id>/delete/')
