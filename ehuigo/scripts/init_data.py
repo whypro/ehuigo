@@ -8,13 +8,13 @@ from ..models import Manufacturer, Question, Answer, Product, User, Price
 def init_manufacturers_and_products(session):
     m = Manufacturer(name='苹果', alias='APPLE', logo='/static/images/manufacturers/apple.png')
     session.add(m)
-    p = Product(manufacturer=m, model='iPhone 6', version='', photo='/static/images/products/iPhone6-white.jpg')
+    p = Product(manufacturer=m, model='iPhone 6', version='', photo='/static/images/products/iPhone6.jpg')
     session.add(p)
-    p = Product(manufacturer=m, model='iPhone 6 Plus', version='', photo='/static/images/products/iPhone6p-white.jpg')
+    p = Product(manufacturer=m, model='iPhone 6 Plus', version='', photo='/static/images/products/iPhone6p.jpg')
     session.add(p)
     p = Product(manufacturer=m, model='iPhone 5s', version='', photo='/static/images/products/iPhone5s.jpg')
     session.add(p)
-    p = Product(manufacturer=m, model='iPhone 5c', version='', photo='/static/images/products/iPhone-5c.jpg')
+    p = Product(manufacturer=m, model='iPhone 5c', version='', photo='/static/images/products/iPhone5c.jpg')
     session.add(p)
 
     m = Manufacturer(name='HTC', alias=None, logo='/static/images/manufacturers/htc.png')
