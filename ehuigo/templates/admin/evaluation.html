@@ -170,7 +170,15 @@
                 // console.log($(this).val());
             });
 
-            var data = JSON.stringify({'questions': questions, 'answers': answers});
+            var recycle_max_price = $("#recycle-max-price").val();
+            var recycle_min_price = $("#recycle-min-price").val();
+
+            var data = JSON.stringify({
+                'questions': questions, 
+                'answers': answers, 
+                'recycle_max_price': recycle_max_price, 
+                'recycle_min_price': recycle_min_price
+            });
             $.ajax({
                 url: "{{ url_for('admin.edit_evaluation', product_id=product.id) }}",
                 type: "POST",

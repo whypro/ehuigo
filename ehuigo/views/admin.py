@@ -167,6 +167,15 @@ def edit_evaluation(product_id):
                 product_answer = ProductAnswer(product_id=product_id, answer_id=answer_id)
             product_answer.discount = discount
             db.session.add(product_answer)
+
+        price = Price.query.filter_by(product_id=product_id).first()
+        if not price:
+            price = Price(product_id=product_id)
+
+        price.recycle_max_price = data['recycle_max_price']
+        price.recycle_min_price = data['recycle_min_price']
+        db.session.add(price)
+
         db.session.commit()
 
         return jsonify()
@@ -186,6 +195,15 @@ def edit_evaluation(product_id):
 @login_required
 def edit_exchange(product_id):
     product = Product.query.get_or_404(product_id)
+
+    if request.method == 'POST':
+        exchange_price = request.form.get('exchange-price', '0')
+        exchange_price = int(exchange_price)
+        product.price.exchange_price = exchange_price
+        db.session.add(product)
+        db.session.commit()
+        return redirect(url_for('admin.edit_exchange', product_id=product_id))
+
     return render_template('admin/exchange.html', product=product)
 
 
