@@ -23,8 +23,8 @@ def index():
 def evaluate(product_id):
     if request.method == 'POST':
         product = Product.query.get_or_404(product_id)
-        price = product.prices.recycle_max_price
-        min_price = product.prices.recycle_min_price
+        price = product.price.recycle_max_price
+        min_price = product.price.recycle_min_price
         data = request.get_json()
         for answer_id in data['answers']:
             product_answer = ProductAnswer.query.filter_by(product_id=product_id, answer_id=answer_id).one()
