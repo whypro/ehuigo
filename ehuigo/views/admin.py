@@ -168,6 +168,13 @@ def delete_question(question_id):
 def edit_evaluation(product_id):
     if request.method == 'POST':
         data = request.get_json()
+
+        # 删除
+        original_questions = ProductQuestion.query.filter_by(product_id=product_id).all()
+        for question in original_questions:
+            if question.id not in data['questions']:
+                db.session.delete(question)
+
         for order, question_id in enumerate(data['questions'], start=1):
             question_id = int(question_id)
             product_question = ProductQuestion.query.filter_by(product_id=product_id, question_id=question_id).first()
@@ -175,6 +182,7 @@ def edit_evaluation(product_id):
                 product_question = ProductQuestion(product_id=product_id, question_id=question_id)
             product_question.order = order
             db.session.add(product_question)
+
         db.session.commit()
 
         for answer in data['answers']:
@@ -204,7 +212,7 @@ def edit_evaluation(product_id):
 
     discounts = dict()
     for product_answer in ProductAnswer.query.filter_by(product_id=product_id).all():
-        discounts[product_answer.answer_id] = int(product_answer.discount)
+        discounts[product_answer.answer_id] = product_answer.discount
     # print discounts
     return render_template('admin/evaluation.html', product=product, questions=questions, discounts=discounts)
 
@@ -216,7 +224,7 @@ def edit_exchange(product_id):
 
     if request.method == 'POST':
         exchange_price = request.form.get('exchange-price', '0')
-        exchange_price = int(exchange_price)
+        exchange_price = float(exchange_price)
         product.price.exchange_price = exchange_price
         db.session.add(product)
         db.session.commit()

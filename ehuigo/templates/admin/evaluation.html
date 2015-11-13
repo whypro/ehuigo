@@ -23,7 +23,7 @@
                                 <div class="col-sm-10">
                                     <div class="input-group">
                                         <div class="input-group-addon">￥</div>
-                                        <input type="text" name="recycle-max-price" class="form-control" id="recycle-max-price" value="{{ product.price.recycle_max_price }}">
+                                        <input type="text" name="recycle-max-price" class="form-control" id="recycle-max-price" value="{{ product.price.recycle_max_price|int }}">
                                     </div>
                                 </div>
                             </div>
@@ -32,7 +32,7 @@
                                 <div class="col-sm-10">
                                     <div class="input-group">
                                         <div class="input-group-addon">￥</div>
-                                        <input type="text" name="recycle-min-price" class="form-control" id="recycle-min-price" value="{{ product.price.recycle_min_price }}">
+                                        <input type="text" name="recycle-min-price" class="form-control" id="recycle-min-price" value="{{ product.price.recycle_min_price|int }}">
                                     </div>
                                 </div>
                             </div>
@@ -58,7 +58,7 @@
                                             <div class="form-group">
                                                 <label for="answer-{{ answer.id }}-discount" class="col-sm-2 control-label">{{ answer.content }}</label>
                                                 <div class="col-sm-10">
-                                                    <input type="text" class="form-control answer-discount" id="answer-{{ answer.id }}-discount" answer-id="{{ answer.id }}" value="{{ discounts[answer.id] }}">
+                                                    <input type="text" class="form-control answer-discount" id="answer-{{ answer.id }}-discount" answer-id="{{ answer.id }}" value="{{ discounts[answer.id]|int }}">
                                                 </div>
                                             </div>
                                             {% endfor %}

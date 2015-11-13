@@ -16,9 +16,9 @@
                         <div class="form-group">
                             <label class="col-md-2 col-sm-2 col-xs-3 control-label">{{ question.content }}</label>
                             <div class="col-md-10 col-sm-10 col-xs-9">
-                                <div class="btn-group" data-toggle="buttons">
+                                <div data-toggle="buttons">
                                     {% for answer in question.answers %}
-                                    <label class="btn btn-default{% if not loop.index0 %} active{% endif %}">
+                                    <label class="btn{% if not loop.index0 %} btn-success active{% else %} btn-default{% endif %}">
                                         <input class="answer-input" type="radio" name="question-{{ question.id }}" id="answer-{{ answer.id }}" value="{{ answer.id }}" autocomplete="off"{% if not loop.index0 %} checked{% endif %}>{{ answer.content }}
                                     </label>
                                     {% endfor %}
@@ -29,7 +29,7 @@
                         <hr />
                         <div class="form-group">
                             <div class="col-md-offset-2 col-sm-offset-2 col-xs-offset-3 col-md-10 col-sm-10 col-xs-9">
-                                <button type="button" class="btn btn-success" id="evaluate-btn">估价</button>
+                                <button type="button" class="btn btn-primary" id="evaluate-btn">估价</button>
                             </div>
                         </div>
                     </form>
@@ -82,6 +82,20 @@
                     $('#show_evaluation_modal').modal();
                 }
             });
+        });
+
+        $(".answer-input").change(function () {
+            var labels = $(this).parent().parent().children("label");
+            labels.removeClass("btn-success");
+            labels.addClass("btn-default");
+
+            if ($(this).prop("checked")) {
+                $(this).parent().removeClass("btn-default");
+                $(this).parent().addClass("btn-success");
+            }
+            console.log($(this));
+
+            
         });
     });
 </script>
