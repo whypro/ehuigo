@@ -45,6 +45,7 @@
                                         <a class="collapsed" role="button" data-toggle="collapse" data-parent="#questions" href="#question-{{ question.id }}-collapse" aria-expanded="false" aria-controls="question-{{ question.id }}-collapse">
                                             {{ question.content }}
                                         </a>
+                                        {% if question.remark %}<small>{{ question.remark }}</small>{% endif %}
                                         <div class="pull-right">
                                             <button class="btn btn-xs btn-danger remove-question-btn" question-id="{{ question.id }}" id="remove-question-{{ question.id }}">删除</button>
                                         </div>
@@ -80,12 +81,15 @@
                         <ul class="list-group" id="rest-quesions">
                             {% for question in questions %}
                             <li class="list-group-item" question-id="{{ question.id }}" question-content="{{ question.content }}"{% if question in product.questions %} style="display:none;"{% endif %}>
-                                {{ question.content }}<a class="btn btn-primary btn-xs pull-right" id="add-question-{{ question.id }}">添加</a>
+                                {{ question.content }}
+                                {% if question.remark %}<small>{{ question.remark }}</small>{% endif %}
+                                <a class="btn btn-primary btn-xs pull-right" id="add-question-{{ question.id }}">添加</a>
                                 <ul class="hidden" id="question-{{ question.id }}-answers">
                                     {% for answer in question.answers %}
                                     <li class="hidden" answer-id="{{ answer.id }}" answer-content="{{ answer.content }}"></li>
                                     {% endfor %}
                                 </ul>
+                                <div class="clearfix"></div>
                             </li>
                             {% endfor %}
                         </ul>
@@ -106,7 +110,11 @@
         $("[id^='add-question-']").click(function () {
             var question_id = $(this).parent().attr("question-id");
             var question_content = $(this).parent().attr("question-content");
-
+            var question_remark = $(this).prev("small").text();
+            var new_question_remark = ''
+            if (question_remark != "") {
+                new_question_remark += '<small>'+question_remark+'</small>';
+            }
             var form_html = "";
             $("#question-"+question_id+"-answers li").each(function () {
                 var answer_id = $(this).attr('answer-id');
@@ -129,6 +137,7 @@
                 '            <a class="collapsed" role="button" data-toggle="collapse" data-parent="#questions" href="#question-'+question_id+'-collapse" aria-expanded="false" aria-controls="question-'+question_id+'-collapse">' +
                 '                '+question_content +
                 '            </a>' +
+                '            '+new_question_remark+
                 '           <div class="pull-right">' +
                 '               <button class="btn btn-xs btn-danger" id="remove-question-'+question_id+'">删除</button>' +
                 '           </div>' +

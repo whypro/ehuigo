@@ -140,14 +140,16 @@ def show_questions():
 @login_required
 def add_question():
     question_content = request.form.get('question-content')
+    question_remark = request.form.get('question-remark')
     answer_contents = request.form.getlist('answer-content[]')
+    answer_remarks = request.form.getlist('answer-remark[]')
     if not question_content or not answer_contents:
         abort(400)
 
-    question = Question(content=question_content)
+    question = Question(content=question_content, remark=question_remark)
     db.session.add(question)
-    for content in answer_contents:
-        answer = Answer(question=question, content=content)
+    for i, content in enumerate(answer_contents):
+        answer = Answer(question=question, content=content, remark=answer_remarks[i])
         db.session.add(answer)
     db.session.commit()
 

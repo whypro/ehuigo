@@ -71,6 +71,7 @@ class Question(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     content = db.Column(db.Unicode(60), nullable=False)            # 问题，如“成色”，“是否进水”
+    remark = db.Column(db.Unicode(120))     # 备注
 
 
 class Answer(db.Model):
@@ -79,7 +80,7 @@ class Answer(db.Model):
     question_id = db.Column(db.Integer, db.ForeignKey('question.id', ondelete='CASCADE'))        # 问题 ID
     question = db.relationship('Question', backref=db.backref('answers', passive_deletes=True))
     content = db.Column(db.Unicode(60), nullable=False)            # 回答内容
-    description = db.Column(db.Unicode(100))        # 描述
+    remark = db.Column(db.Unicode(120))        # 备注
 
 
 class ProductQuestion(db.Model):
