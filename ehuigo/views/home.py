@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 import hashlib
+import os
 
-from flask import Blueprint, render_template, request, jsonify, redirect, url_for, abort, current_app, send_from_directory, g
+from flask import Blueprint, render_template, request, jsonify, redirect, url_for, abort, current_app, send_from_directory, g, send_file
 from flask.ext.login import login_user, logout_user, login_required
 
 from ..extensions import db
@@ -40,7 +41,7 @@ def evaluate(product_id):
 @home.route('/uploads/<filename>/')
 @login_required
 def send_upload_file(filename):
-    return send_from_directory(current_app.config['UPLOAD_PATH'], filename)
+    return send_file(os.path.join(current_app.config['UPLOAD_PATH'], filename))
 
 
 @home.route('/products/')
@@ -76,7 +77,7 @@ def show_manufacturers():
 @home.route('/login/', methods=['GET', 'POST'])
 def login():
     # 已登录用户则返回首页
-    if g.user.is_authenticated:
+    if g.user.is_authenticated():
         return redirect(url_for('home.index'))
 
     if request.method == 'POST':
