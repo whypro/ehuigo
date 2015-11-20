@@ -2,13 +2,13 @@
 from __future__ import unicode_literals
 import hashlib
 
-from flask import Blueprint, render_template, request, jsonify, redirect, url_for, abort, current_app, send_from_directory, g, send_file
+from flask import Blueprint, render_template, request, jsonify, redirect, url_for, abort, current_app, send_from_directory, g
 from flask.ext.login import login_user, logout_user, login_required
 
 from ..extensions import db
 from ..models import Manufacturer, Product, ProductAnswer
 from ..models import User
-from ..helpers import get_object_fullname
+
 
 home = Blueprint('home', __name__)
 
@@ -41,7 +41,11 @@ def evaluate(product_id):
 @home.route('/uploads/<filename>/')
 @login_required
 def send_upload_file(filename):
-    return send_file(get_object_fullname(filename))
+    if 'OSS_ENDPOINT' in current_app.config:
+        url = 'http://' + current_app.config['OSS_ENDPOINT'] + filename
+        return redirect(url)
+    else:
+        return send_from_directory(current_app.config['UPLOAD_PATH'], filename)
 
 
 @home.route('/products/')

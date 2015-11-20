@@ -12,11 +12,3 @@ def create_uploader():
     else:
         uploader = LocalUploader()
     return uploader
-
-
-def get_object_fullname(filename):
-    if 'OSS_ENDPOINT' in current_app.config:
-        prefix = 'http://' + current_app.config['OSS_ENDPOINT']
-    else:
-        prefix = current_app.config['UPLOAD_PATH']
-    return prefix + '/' + filename
