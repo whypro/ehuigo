@@ -56,3 +56,29 @@ class BAEConfig(Config):
 
     DEBUG = True
 
+
+class ACEConfig(Config):
+
+    # 数据库配置
+    DB_HOST = 'rds7z20k1nqpnmd558xy.mysql.rds.aliyuncs.com'
+    DB_DATABASE = 'rjpa045c4i94u4nz'
+    DB_USERNAME = 'rjpa045c4i94u4nz'
+    DB_PASSWORD = '20151105'
+    DB_PORT = 3306
+
+    # FLASK-SQLALCHEMY
+    SQLALCHEMY_DATABASE_URI = 'mysql://{username}:{password}@{host}:{port}/{database}?charset=utf8'.format(
+        username=DB_USERNAME,
+        password=DB_PASSWORD,
+        host=DB_HOST,
+        port=DB_PORT,
+        database=DB_DATABASE
+    )
+
+    DEBUG = True
+
+    OSS_ENDPOINT = 'static.ehuigo.cn'
+    KEY_ID = 'xi0qjghwneAdNtkQ'
+    KEY_SECRET = '8z1MUO3NQt6oJVdQD0qAxNaXBnWH9D'
+    OSS_BUCKET_NAME = 'ehuigo'
+

@@ -71,14 +71,14 @@ class LocalUploader(Uploader):
 
 
 class OSSUploader(Uploader):
-    endpoint = 'static.ehuigo.cn'
-    key_id = 'xi0qjghwneAdNtkQ'
-    key_secret = '8z1MUO3NQt6oJVdQD0qAxNaXBnWH9D'
-    bucket_name = 'ehuigo'
 
     def __init__(self):
         self.dirname = ''
-        self.oss = OssAPI(self.endpoint, self.key_id, self.key_secret)
+        endpoint = current_app.config['OSS_ENDPOINT']
+        key_id = current_app.config['KEY_ID']
+        key_secret = current_app.config['KEY_SECRET']
+        self.bucket_name = current_app.config['OSS_BUCKET_NAME']
+        self.oss = OssAPI(endpoint, key_id, key_secret)
     
     def _store(self, fullname, data):
         self.oss.put_object_from_string(self.bucket_name, fullname, data)
