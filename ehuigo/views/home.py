@@ -42,7 +42,7 @@ def evaluate(product_id):
 @login_required
 def send_upload_file(filename):
     if 'OSS_ENDPOINT' in current_app.config:
-        url = 'http://' + current_app.config['OSS_ENDPOINT'] + filename
+        url = 'http://' + current_app.config['OSS_ENDPOINT'] + '/' + filename
         return redirect(url)
     else:
         return send_from_directory(current_app.config['UPLOAD_PATH'], filename)
