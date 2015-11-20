@@ -4,6 +4,7 @@ import os
 import hashlib
 
 from flask import current_app
+from oss.oss_api import OssAPI
 
 
 class Uploader(object):
@@ -70,13 +71,28 @@ class LocalUploader(Uploader):
 
 
 class OSSUploader(Uploader):
-    pass
+    endpoint = 'static.ehuigo.cn'
+    key_id = 'xi0qjghwneAdNtkQ'
+    key_secret = '8z1MUO3NQt6oJVdQD0qAxNaXBnWH9D'
+    bucket_name = 'ehuigo'
+
+    def __init__(self):
+        self.dirname = ''
+        self.oss = OssAPI(self.endpoint, self.key_id, self.key_secret)
+    
+    def _store(self, fullname, data):
+        self.oss.put_object_from_string(self.bucket_name, fullname, data)
+
+    def remove(self, filename):
+        fullname = os.path.join(self.dirname, filename)
+        self.oss.delete_object(self.bucket_name, fullname)
+
 
 
 if __name__ == '__main__':
     from werkzeug.datastructures import FileStorage
     fs = FileStorage(stream='test', filename='test.txt')
     # current_app.config = dict(UPLOAD_PATH='./uploads_test', IMAGE_EXT='txt', MAX_CONTENT_LENGTH=4*1024*1024)
-    uploader = LocalUploader()
+    uploader = OSSUploader()
     uploader.save(fs)
 
