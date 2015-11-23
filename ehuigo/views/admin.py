@@ -210,8 +210,11 @@ def edit_evaluation(product_id):
         #product_question = ProductQuestion(product=product, question=question, order=order)
 
     product = Product.query.get_or_404(product_id)
-    questions = Question.query.all()
+    if not product.for_recycle:
+        # 未设置 for_recycle
+        return redirect(url_for('admin.show_products', manufacturer_id=product.manufacturer_id))
 
+    questions = Question.query.all()
     discounts = dict()
     for product_answer in ProductAnswer.query.filter_by(product_id=product_id).all():
         discounts[product_answer.answer_id] = product_answer.discount
@@ -231,6 +234,10 @@ def edit_exchange(product_id):
         db.session.add(product)
         db.session.commit()
         return redirect(url_for('admin.edit_exchange', product_id=product_id))
+
+    if not product.for_exchange:
+        # 未设置 for_exchange
+        return redirect(url_for('admin.show_products', manufacturer_id=product.manufacturer_id))
 
     return render_template('admin/exchange.html', product=product)
 
