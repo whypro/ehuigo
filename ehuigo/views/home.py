@@ -39,7 +39,6 @@ def evaluate(product_id):
 
 
 @home.route('/uploads/<filename>/')
-@login_required
 def send_upload_file(filename):
     if 'OSS_ENDPOINT' in current_app.config:
         url = 'http://' + current_app.config['OSS_ENDPOINT'] + '/' + filename
