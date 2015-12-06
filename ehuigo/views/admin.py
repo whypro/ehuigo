@@ -35,14 +35,12 @@ def add_manufacturer():
     if not name:
         abort(400)
 
-    f = request.files.get('manufacturer-logo')
-    if f:
-        filename = secure_filename(f.filename)
-        path = os.path.join(current_app.config['UPLOAD_PATH'], filename)
-        print path
-        f.save(path)
-    else:
-        filename = None
+    # print name, alias
+    filename = None
+    fs = request.files.get('manufacturer-logo')
+    if fs:
+        uploader = create_uploader()
+        filename = uploader.save(fs)
 
     manufacturer = Manufacturer(name=name, alias=alias, logo=filename)
     db.session.add(manufacturer)
@@ -219,7 +217,17 @@ def edit_evaluation(product_id):
     for product_answer in ProductAnswer.query.filter_by(product_id=product_id).all():
         discounts[product_answer.answer_id] = product_answer.discount
     # print discounts
+    # [{'choices': [], 'price': int}]
+
     return render_template('admin/evaluation.html', product=product, questions=questions, discounts=discounts)
+
+
+def test_answers(questions, discounts):
+    pass
+
+def __travel(questions):
+    """深度优先遍历"""
+    pass
 
 
 @admin.route('/product/<int:product_id>/exchange/edit/', methods=['GET', 'POST'])

@@ -20,7 +20,7 @@ def index():
     return render_template('index.html', manufacturers=manufacturers, hot_products=hot_products)
 
 
-@home.route('/eval/<int:product_id>/', methods=['GET', 'POST'])
+@home.route('/recycle/product/<int:product_id>/evaluate/', methods=['GET', 'POST'])
 def evaluate(product_id):
     if request.method == 'POST':
         product = Product.query.get_or_404(product_id)
@@ -47,9 +47,9 @@ def send_upload_file(filename):
         return send_from_directory(current_app.config['UPLOAD_PATH'], filename)
 
 
-@home.route('/products/')
-@home.route('/manufacturer/<int:manufacturer_id>/products/')
-def show_products(manufacturer_id=None):
+@home.route('/recycle/')
+@home.route('/recycle/manufacturer/<int:manufacturer_id>/')
+def show_recycle_products(manufacturer_id=None):
     if manufacturer_id:
         manufacturer = Manufacturer.query.get_or_404(manufacturer_id)
         products = Product.query.filter_by(manufacturer_id=manufacturer_id, for_recycle=True).all()
@@ -59,8 +59,8 @@ def show_products(manufacturer_id=None):
     return render_template('products.html', products=products, manufacturer=manufacturer)
 
 
-@home.route('/products/exchange/')
-@home.route('/manufacturer/<int:manufacturer_id>/products/exchange/')
+@home.route('/exchange/')
+@home.route('/exchange/manufacturer/<int:manufacturer_id>/')
 def show_exchange_products(manufacturer_id=None):
     if manufacturer_id:
         manufacturer = Manufacturer.query.get_or_404(manufacturer_id)
@@ -71,10 +71,16 @@ def show_exchange_products(manufacturer_id=None):
     return render_template('products_exchange.html', products=products, manufacturer=manufacturer)
 
 
-@home.route('/manufacturers/')
-def show_manufacturers():
+@home.route('/recycle/manufacturers/')
+def show_recycle_manufacturers():
     manufacturers = Manufacturer.query.all()
     return render_template('manufacturers.html', manufacturers=manufacturers)
+
+
+@home.route('/exchange/manufacturers/')
+def show_exchange_manufacturers():
+    manufacturers = Manufacturer.query.all()
+    return render_template('manufacturers_exchange.html', manufacturers=manufacturers)
 
 
 @home.route('/login/', methods=['GET', 'POST'])

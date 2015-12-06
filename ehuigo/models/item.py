@@ -30,8 +30,8 @@ class Product(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     manufacturer_id = db.Column(db.Integer, db.ForeignKey('manufacturer.id', ondelete='CASCADE'))  # 制造商 ID
     manufacturer = db.relationship('Manufacturer', backref=db.backref('products', passive_deletes=True))
-    model = db.Column(db.Unicode(20))           # 型号
-    version = db.Column(db.Unicode(20))         # 版本
+    model = db.Column(db.Unicode(60))           # 型号
+    version = db.Column(db.Unicode(30))         # 版本
     photo = db.Column(db.Unicode(200))          # 图片路径
 
     for_recycle = db.Column(db.Boolean, default=False)
