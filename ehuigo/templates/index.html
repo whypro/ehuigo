@@ -83,7 +83,7 @@
                 {% for manufacturer in manufacturers %}
                 <div class="col-md-2 col-sm-2 col-xs-4">
                     <a href="{{ url_for('home.show_recycle_products', manufacturer_id=manufacturer.id) }}" class="thumbnail">
-                        <img alt="logo" src="{{ manufacturer.logo }}" />
+                        <img alt="logo" src="{{ manufacturer.logo_url }}" />
                     </a>
                 </div>
                 {% endfor %}
