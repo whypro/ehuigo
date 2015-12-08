@@ -35,7 +35,7 @@ def evaluate(product_id):
         return jsonify(price=int(price))
 
     product = Product.query.get_or_404(product_id)
-    return render_template('evaluate.html', product=product)
+    return render_template('home/recycle/product_detail.html', product=product)
 
 
 @home.route('/uploads/<filename>/')
@@ -56,7 +56,7 @@ def show_recycle_products(manufacturer_id=None):
     else:
         manufacturer = None
         products = Product.query.filter_by(for_recycle=True).all()
-    return render_template('products.html', products=products, manufacturer=manufacturer)
+    return render_template('home/recycle/products.html', products=products, manufacturer=manufacturer)
 
 
 @home.route('/exchange/')
@@ -68,19 +68,19 @@ def show_exchange_products(manufacturer_id=None):
     else:
         manufacturer = None
         products = Product.query.filter_by(for_exchange=True).all()
-    return render_template('products_exchange.html', products=products, manufacturer=manufacturer)
+    return render_template('home/exchange/products.html', products=products, manufacturer=manufacturer)
 
 
 @home.route('/recycle/manufacturers/')
 def show_recycle_manufacturers():
     manufacturers = Manufacturer.query.all()
-    return render_template('manufacturers.html', manufacturers=manufacturers)
+    return render_template('home/recycle/manufacturers.html', manufacturers=manufacturers)
 
 
 @home.route('/exchange/manufacturers/')
 def show_exchange_manufacturers():
     manufacturers = Manufacturer.query.all()
-    return render_template('manufacturers_exchange.html', manufacturers=manufacturers)
+    return render_template('home/exchange/manufacturers.html', manufacturers=manufacturers)
 
 
 @home.route('/login/', methods=['GET', 'POST'])
