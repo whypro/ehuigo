@@ -154,6 +154,46 @@ def add_question():
     return redirect(url_for('admin.show_questions'))
 
 
+@admin.route('/question/<int:question_id>/')
+@login_required
+def get_question(question_id):
+    question = Question.query.get_or_404(question_id)
+    question_dict = dict(id=question_id, content=question.content, remark=question.remark, answers=[])
+    for answer in question.answers:
+        question_dict['answers'].append(dict(id=answer.id, content=answer.content, remark=answer.remark))
+
+    return jsonify(question_dict)
+
+
+@admin.route('/question/<int:question_id>/edit/', methods=['POST'])
+@login_required
+def edit_question(question_id):
+    question_content = request.form.get('question-content')
+    question_remark = request.form.get('question-remark')
+    answer_ids = request.form.getlist('answer-id[]')
+    answer_contents = request.form.getlist('answer-content[]')
+    answer_remarks = request.form.getlist('answer-remark[]')
+    if not question_content or not answer_contents:
+        abort(400)
+
+    question = Question.query.get_or_404(question_id)
+    question.content = question_content
+    question.remark = question_remark
+    db.session.add(question)
+    for i, content in enumerate(answer_contents):
+        answer = Answer.query.get(answer_ids[i])
+        if not answer:
+            answer = Answer(question=question, content=content, remark=answer_remarks[i])
+        else:
+            answer.content = content
+            answer.remark = answer_remarks[i]
+        db.session.add(answer)
+        
+    db.session.commit()
+
+    return redirect(url_for('admin.show_questions'))
+
+
 @admin.route('/question/<question_id>/delete/')
 @login_required
 def delete_question(question_id):
@@ -163,7 +203,7 @@ def delete_question(question_id):
     return redirect(url_for('admin.show_questions'))
 
 
-@admin.route('/product/<int:product_id>/evaluation/edit/', methods=['GET', 'POST'])
+@admin.route('/product/<int:product_id>/recycle/edit/', methods=['GET', 'POST'])
 @login_required
 def edit_evaluation(product_id):
     if request.method == 'POST':

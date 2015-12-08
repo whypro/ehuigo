@@ -1,0 +1,106 @@
+{% extends '_base.html' %}
+{% block title %}估价{% endblock %}
+{% block content %}
+            <div class="row">
+                <ol class="breadcrumb">
+                    <li><a href="{{ url_for('home.index') }}">手机估价</a></li>
+                    <li class="active">{{ product.model }}</li>
+                </ol>
+                <hr />
+            </div>
+
+            <div class="row">
+                <div class="col-md-9 col-sm-8 col-xs-12">
+                    <form class="form-horizontal" action="{{ url_for('home.evaluate', product_id=product.id) }}" method="post">
+                        {% for question in product.questions %}
+                        <div class="form-group">
+                            <label class="col-md-2 col-sm-2 col-xs-3 control-label">{{ question.content }}</label>
+                            <div class="col-md-10 col-sm-10 col-xs-9">
+                                <div data-toggle="buttons">
+                                    {% for answer in question.answers %}
+                                    <label class="btn{% if not loop.index0 %} btn-success active{% else %} btn-default{% endif %}">
+                                        <input class="answer-input" type="radio" name="question-{{ question.id }}" id="answer-{{ answer.id }}" value="{{ answer.id }}" autocomplete="off"{% if not loop.index0 %} checked{% endif %}>{{ answer.content }}{% if answer.remark %}<small>（{{ answer.remark }}）</small>{% endif %}
+                                    </label>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                        <hr />
+                        <div class="form-group">
+                            <div class="col-md-offset-2 col-sm-offset-2 col-xs-offset-3 col-md-10 col-sm-10 col-xs-9">
+                                <button type="button" class="btn btn-primary pull-left" id="evaluate-btn">估价</button>
+                                {% if g.user.is_authenticated() %}
+                                <a href="{{ url_for('admin.edit_evaluation', product_id=product.id) }}" class="btn btn-warning pull-right">回收设置</a>
+                                {% endif %}
+                                <div class="clearfix"></div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="col-md-3 col-sm-4 col-xs-12">
+                    <img class="img-responsive" alt="" src="{{ product.photo_url }}" />
+                </div>
+
+                <div id="show_evaluation_modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="evaluation_report">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                <h4 class="modal-title" id="evaluation_report">估价单</h4>
+                            </div>
+                            <div class="modal-body">
+                                <div class="container-fluid" id="evaluation_result">
+                                    <p></p>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-primary">下一步</button>
+                                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                            </div>
+                        </div><!-- /.modal-content -->
+                    </div><!-- /.modal-dialog -->
+                </div><!-- /.modal -->
+            </div>
+{% endblock %}
+{% block script %}
+<script>
+    $(document).ready(function(){
+        $("#evaluate-btn").click(function () {
+            var answers = [];
+            $("input.answer-input:checked").each(function () {
+                answers.push($(this).val());
+            });
+            console.log(answers);
+
+            var data = JSON.stringify({'answers': answers});
+            $.ajax({
+                url: "{{ url_for('home.evaluate', product_id=product.id) }}",
+                type: "POST",
+                data: data,
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                success: function (data) {
+                    // alert("success");
+                    $("#evaluation_result p").text("估价结果："+data["price"]+"元");
+                    $('#show_evaluation_modal').modal();
+                }
+            });
+        });
+
+        $(".answer-input").change(function () {
+            var labels = $(this).parent().parent().children("label");
+            labels.removeClass("btn-success");
+            labels.addClass("btn-default");
+
+            if ($(this).prop("checked")) {
+                $(this).parent().removeClass("btn-default");
+                $(this).parent().addClass("btn-success");
+            }
+            console.log($(this));
+
+            
+        });
+    });
+</script>
+{% endblock %}

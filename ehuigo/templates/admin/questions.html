@@ -29,7 +29,7 @@
                                         {% endfor %}
                                     </div>
                                     <div class="pull-right">
-                                        <a id="update-question-{{ question.id }}-btn" class="btn btn-success">修改</a>
+                                        <a id="edit-question-{{ question.id }}-btn" class="btn btn-success">修改</a>
                                         &emsp;
                                         <a href="{{ url_for('admin.delete_question', question_id=question.id) }}" class="btn btn-danger" onclick="return confirm('删除将不可恢复。确定删除吗？');">删除</a>
                                     </div>
@@ -131,71 +131,96 @@
             $("#add-question-form").submit();
         });
 
-        $("[id^='update-question-']").click(function () {
+        $("[id^='edit-question-']").click(function () {
             var question_id = $(this).parent().parent().parent().parent().attr("question-id");
-            if (!$('#update-question-'+question_id).length) {
-                var modal = 
-                '<div class="modal fade" id="update-question-'+question_id+'" tabindex="-1" role="dialog" aria-labelledby="update-question-label">'+
-                '   <div class="modal-dialog" role="document">'+
-                '       <div class="modal-content">'+
-                '           <div class="modal-header">'+
-                '               <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>'+
-                '               <h4 class="modal-title" id="update-question-label">更新问题</h4>'+
-                '           </div>'+
-                '           <div class="modal-body">'+
-                '               <form class="form-horizontal" method="post" action="" id="update-answer-form">'+
-                '                   <div class="form-group">'+
-                '                       <label for="question-content" class="col-sm-2 control-label">问题</label>'+
-                '                       <div class="col-sm-10">'+
-                '                           <input type="text" name="question-content" class="form-control" id="question-content">'+
-                '                       </div>'+
-                '                   </div>'+
-                '                   <div class="form-group">'+
-                '                       <label for="question-remark" class="col-sm-2 control-label">问题备注</label>'+
-                '                       <div class="col-sm-10">'+
-                '                           <input type="text" name="question-remark" class="form-control" id="question-remark">'+
-                '                       </div>'+
-                '                   </div>'+
-                '                   <div class="form-group">'+
-                '                       <label for="answer-content" class="col-sm-2 control-label">选项</label>'+
-                '                       <div class="col-sm-4">'+
-                '                           <input type="text" name="answer-content[]" class="form-control">'+
-                '                       </div>'+
-                '                       <label for="answer-remark" class="col-sm-2 control-label">选项备注</label>'+
-                '                       <div class="col-sm-4">'+
-                '                            <input type="text" name="answer-remark[]" class="form-control">'+
-                '                       </div>'+
-                '                   </div>'+
-                '                   <div class="form-group text-center">'+
-                '                       <button id="question-'+question_id+'-add-answer-btn" class="btn btn-default" type="button"><span class="glyphicon glyphicon-plus" aria-label="add-answer-label"></span></button>'+
-                '                   </div>'+
-                '               </form>'+
-                '           </div>'+
-                '           <div class="modal-footer">'+
-                '               <button id="add-question-submit-btn" type="button" class="btn btn-primary">保存</button>'+
-                '               <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>'+
-                '           </div>'+
-                '       </div>'+
-                '   </div>'+
-                '</div>';
-                $("#questions").append(modal);
-            }
 
-            $("#question-"+question_id+"-add-answer-btn").on("click", function () {
-                $(this).parent().before(
-                    '<div class="form-group dynamic-added">' +
-                    '   <label for="answer-content" class="col-sm-2 control-label">选项</label>' +
-                    '   <div class="col-sm-4">' +
-                    '       <input type="text" name="answer-content[]" class="form-control">' +
-                    '   </div>' +
-                    '   <label for="answer-remark" class="col-sm-2 control-label">选项备注</label>' +
-                    '   <div class="col-sm-4">' +
-                    '       <input type="text" name="answer-remark[]" class="form-control">' +
-                    '   </div>' +
-                    '</div>'
-                );
-            });
-            $('#update-question-'+question_id).modal();
+            if (!$('#edit-question-'+question_id).length) {
+                $.get("/admin/question/"+question_id+"/", function(data) {
+                    var question_content = data["content"];
+                    var question_remark = data["remark"] == null ? "" : data["remark"];
+                    var answers = data["answers"];
+
+                    var answers_html = '';
+                    for (i in answers) {
+                        var answer_id = data["answers"][i]["id"];
+                        var answer_content = data["answers"][i]["content"];
+                        var answer_remark = data["answers"][i]["remark"] == null ? "" : data["answers"][i]["remark"];
+                        answers_html += (
+                            '                   <div class="form-group">'+
+                            '                       <input type="hidden" name="answer-id[]" value="'+answer_id+'">'+
+                            '                       <label for="answer-content" class="col-sm-2 control-label">选项</label>'+
+                            '                       <div class="col-sm-4">'+
+                            '                           <input type="text" name="answer-content[]" class="form-control" value="'+answer_content+'">'+
+                            '                       </div>'+
+                            '                       <label for="answer-remark" class="col-sm-2 control-label">选项备注</label>'+
+                            '                       <div class="col-sm-4">'+
+                            '                            <input type="text" name="answer-remark[]" class="form-control" value="'+answer_remark+'">'+
+                            '                       </div>'+
+                            '                   </div>'
+                        );
+                    }
+
+                    var modal = 
+                    '<div class="modal fade" id="edit-question-'+question_id+'" tabindex="-1" role="dialog" aria-labelledby="edit-question-label">'+
+                    '   <div class="modal-dialog" role="document">'+
+                    '       <div class="modal-content">'+
+                    '           <div class="modal-header">'+
+                    '               <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>'+
+                    '               <h4 class="modal-title" id="edit-question-label">更新问题</h4>'+
+                    '           </div>'+
+                    '           <div class="modal-body">'+
+                    '               <form class="form-horizontal" method="post" action="/admin/question/'+question_id+'/edit/" id="edit-question-form">'+
+                    '                   <div class="form-group">'+
+                    '                       <label for="question-content" class="col-sm-2 control-label">问题</label>'+
+                    '                       <div class="col-sm-10">'+
+                    '                           <input type="text" name="question-content" class="form-control" id="question-content" value="'+question_content+'">'+
+                    '                       </div>'+
+                    '                   </div>'+
+                    '                   <div class="form-group">'+
+                    '                       <label for="question-remark" class="col-sm-2 control-label">问题备注</label>'+
+                    '                       <div class="col-sm-10">'+
+                    '                           <input type="text" name="question-remark" class="form-control" id="question-remark" value="'+question_remark+'">'+
+                    '                       </div>'+
+                    '                   </div>'+
+                    answers_html+
+                    '                   <div class="form-group text-center">'+
+                    '                       <button id="question-'+question_id+'-add-answer-btn" class="btn btn-default" type="button"><span class="glyphicon glyphicon-plus" aria-label="add-answer-label"></span></button>'+
+                    '                   </div>'+
+                    '               </form>'+
+                    '           </div>'+
+                    '           <div class="modal-footer">'+
+                    '               <button id="edit-question-submit-btn" type="button" class="btn btn-primary">保存</button>'+
+                    '               <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>'+
+                    '           </div>'+
+                    '       </div>'+
+                    '   </div>'+
+                    '</div>';
+                    $("#questions").append(modal);
+                    $("#question-"+question_id+"-add-answer-btn").on("click", function () {
+                        $(this).parent().before(
+                            '<div class="form-group dynamic-added">' +
+                            '   <input type="hidden" name="answer-id[]" value="">'+
+                            '   <label for="answer-content" class="col-sm-2 control-label">选项</label>' +
+                            '   <div class="col-sm-4">' +
+                            '       <input type="text" name="answer-content[]" class="form-control">' +
+                            '   </div>' +
+                            '   <label for="answer-remark" class="col-sm-2 control-label">选项备注</label>' +
+                            '   <div class="col-sm-4">' +
+                            '       <input type="text" name="answer-remark[]" class="form-control">' +
+                            '   </div>' +
+                            '</div>'
+                        );
+                    });
+
+                    $("#edit-question-submit-btn").click(function () {
+                        $("#edit-question-form").submit();
+                    });
+
+                    $('#edit-question-'+question_id).modal();
+                });
+            } else {
+                $('#edit-question-'+question_id).modal();
+            }
         });
     });
 </script>
