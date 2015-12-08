@@ -23,7 +23,6 @@
                             <li><a href="{{ url_for('home.index') }}">关于我们</a></li>
                             <li><a role="button" data-toggle="modal" data-target=".modal-go-mobile">手机逛逛</a></li>
 
-
                             <div class="modal fade modal-go-mobile" tabindex="-1" role="dialog" aria-labelledby="modal-go-mobile-label">
                                 <div class="modal-dialog modal-sm">
                                     <div class="modal-content">
@@ -33,7 +32,7 @@
 
                                         </div>
                                         <div class="modal-body">
-                                            ...
+                                            <a href=""><img class="img-responsive" src="{{ url_for('static', filename='images/qr.png') }}"></a>
                                         </div>
                                         <div class="modal-footer">
                                             <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
@@ -41,10 +40,6 @@
                                     </div>
                                 </div>
                             </div>
-
-
-
-
 
                             <li class="dropdown hidden">
                                 <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Dropdown <span class="caret"></span></a>
