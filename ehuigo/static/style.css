@@ -1,6 +1,8 @@
 body { 
     font-family: "Microsoft YaHei", Arial; 
+    overflow-y: scroll;
 }
+
 
 .brand-logo img {
     height: 60px;
@@ -14,6 +16,10 @@ body {
 }
 
 .navbar-brand {
+    margin-top: 22px;
+}
+
+.toggle-button {
     margin-top: 22px;
 }
 

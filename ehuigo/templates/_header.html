@@ -2,14 +2,14 @@
                 <div class="container-fluid">
                     <!-- Brand and toggle get grouped for better mobile display -->
                     <div class="navbar-header">
-                        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#ehuigo-menu" aria-expanded="false">
-                            <span class="sr-only">Toggle navigation</span>
+                        <button type="button" class="navbar-toggle collapsed toggle-button" data-toggle="collapse" data-target="#ehuigo-menu" aria-expanded="false">
+                            <span class="sr-only">移动设备菜单</span>
                             <span class="icon-bar"></span>
                             <span class="icon-bar"></span>
                             <span class="icon-bar"></span>
                         </button>
                         <a class="navbar-left brand-logo" href="{{ url_for('home.index') }}"><img src="{{ url_for('static', filename='images/logo.png') }}" /></a>
-                        <a class="navbar-brand" href="{{ url_for('home.index') }}">易回购</a>
+                        <a class="navbar-brand collapse" href="{{ url_for('home.index') }}">易回购</a>
                         
                         
                     </div>
@@ -21,9 +21,33 @@
                             <li><a href="{{ url_for('home.show_exchange_manufacturers') }}">以旧换新</a></li>
                             <li><a href="{{ url_for('home.index') }}">诚聘英才</a></li>
                             <li><a href="{{ url_for('home.index') }}">关于我们</a></li>
+                            <li><a role="button" data-toggle="modal" data-target=".modal-go-mobile">手机逛逛</a></li>
+
+
+                            <div class="modal fade modal-go-mobile" tabindex="-1" role="dialog" aria-labelledby="modal-go-mobile-label">
+                                <div class="modal-dialog modal-sm">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                                            <h4 class="modal-title" id="modal-go-mobile-labe">手机逛逛</h4>
+
+                                        </div>
+                                        <div class="modal-body">
+                                            ...
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+
+
 
                             <li class="dropdown hidden">
-                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Dropdown <span class="caret"></span></a>
+                                <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Dropdown <span class="caret"></span></a>
                                 <ul class="dropdown-menu">
                                     <li><a href="#">Action</a></li>
                                     <li><a href="#">Another action</a></li>
