@@ -4,6 +4,7 @@ import hashlib
 
 from flask import Blueprint, render_template, request, jsonify, redirect, url_for, abort, current_app, send_from_directory, g
 from flask.ext.login import login_user, logout_user, login_required
+from sqlalchemy.sql import func
 
 from ..extensions import db
 from ..models import Manufacturer, Product, ProductAnswer
@@ -73,13 +74,17 @@ def show_exchange_products(manufacturer_id=None):
 
 @home.route('/recycle/manufacturers/')
 def show_recycle_manufacturers():
-    manufacturers = Manufacturer.query.all()
+    subqry = Product.query.group_by(Product.manufacturer_id).having(func.bit_or(Product.for_recycle)!=False).subquery()
+    # print subqry
+    manufacturers = Manufacturer.query.join(subqry, Manufacturer.id==subqry.c.manufacturer_id).all()
     return render_template('home/recycle/manufacturers.html', manufacturers=manufacturers)
 
 
 @home.route('/exchange/manufacturers/')
 def show_exchange_manufacturers():
-    manufacturers = Manufacturer.query.all()
+    subqry = Product.query.group_by(Product.manufacturer_id).having(func.bit_or(Product.for_exchange)!=False).subquery()
+    # print subqry
+    manufacturers = Manufacturer.query.join(subqry, Manufacturer.id==subqry.c.manufacturer_id).all()
     return render_template('home/exchange/manufacturers.html', manufacturers=manufacturers)
 
 
