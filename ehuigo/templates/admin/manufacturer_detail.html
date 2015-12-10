@@ -1,0 +1,59 @@
+{% extends '_base.html' %}
+{% block title %}品牌修改{% endblock %}
+{% block content %}
+            <div class="row">
+
+                {% set sider_active = 'manufacturers' %}
+                {% include 'admin/_sider.html' %}
+
+                <div class="col-md-9 col-sm-9">
+                    <div class="row">
+                        <ol class="breadcrumb">
+                            <li><a href="{{ url_for('admin.show_manufacturers') }}">所有品牌</a></li>
+                            <li><a href="{{ url_for('admin.show_products', manufacturer_id=manufacturer.id) }}">{{ manufacturer.name }}</a></li>
+                        </ol>
+                        <hr />
+                    </div>
+                    <div class="row">
+                        <div class="col-md-8">
+                            <form class="form-horizontal" id="edit-manufacturer-form" method="post" action="{{ url_for('admin.edit_manufacturer', manufacturer_id=manufacturer.id) }}" enctype="multipart/form-data">
+                                <div class="form-group">
+                                    <label for="manufacturer-name" class="col-sm-2 control-label">品牌名称</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" name="manufacturer-name" class="form-control" id="manufacturer-name" value="{{ manufacturer.name }}">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="manufacturer-alias" class="col-sm-2 control-label">品牌别名</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" name="manufacturer-alias" class="form-control" id="manufacturer-alias" value="{{ manufacturer.alias }}">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="manufacturer-logo" class="col-sm-2 control-label">品牌图标</label>
+                                    <div class="col-sm-10">
+                                        <input type="file" name="manufacturer-logo" class="form-control" id="manufacturer-logo">
+                                        <p style="color: #f00;"><small>注：上传图片前请保证图片的宽高比为 16:9 （例如：128 * 72）。</small></p>
+                                    </div>
+                                </div>
+                                <button type="button" class="btn btn-success pull-left" id="edit-manufacturer-submit-btn">保存</button>
+                                <a href="{{ url_for('admin.show_manufacturers') }}" class="btn btn-default pull-right">取消</a>
+                            </form>
+                        </div>
+                        <div class="col-md-4">
+                            <img class="img-responsive" alt="{{ manufacturer.name }}" src="{{ manufacturer.logo_url }}" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+{% endblock %}
+{% block script %}
+<script>
+    $(document).ready(function () {
+        $("#edit-manufacturer-submit-btn").click(function () {
+            $("#edit-manufacturer-form").submit();
+        });
+    });
+</script>
+{% endblock %}

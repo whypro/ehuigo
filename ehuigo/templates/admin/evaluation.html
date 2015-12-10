@@ -59,7 +59,7 @@
                                             <div class="form-group">
                                                 <label for="answer-{{ answer.id }}-discount" class="col-sm-2 control-label">{{ answer.content }}</label>
                                                 <div class="col-sm-10">
-                                                    <input type="text" class="form-control answer-discount" id="answer-{{ answer.id }}-discount" answer-id="{{ answer.id }}" value="{{ discounts[answer.id]|int }}">
+                                                    <input type="text" class="form-control answer-discount" id="answer-{{ answer.id }}-discount" answer-id="{{ answer.id }}" value="{{ discounts[answer.id]|d('0')|int }}">
                                                 </div>
                                             </div>
                                             {% endfor %}
@@ -74,6 +74,10 @@
                         <button class="btn btn-success pull-left" id="save-questions">保存</button>
                         <a class="btn btn-default pull-right" href="{{ url_for('admin.show_products', manufacturer_id=product.manufacturer.id) }}">取消</a>
                         <div class="clearfix"></div>
+
+                        <div class="row">
+
+                        </div>
                     </div>
                     <div class="col-md-4">
                         <h4>候选问题</h4>

@@ -20,8 +20,10 @@
                                 <a href="{{ url_for('admin.show_products', manufacturer_id=manufacturer.id) }}" class="thumbnail">
                                     <img alt="{{ manufacturer.name }}" src="{{ manufacturer.logo_url }}" />
                                 </a>
-                                {#<a class="btn btn-xs btn-primary pull-left">修改</a>#}
-                                <a class="btn btn-xs btn-danger pull-right" href="{{ url_for('admin.delete_manufacturer', manufacturer_id=manufacturer.id) }}" onclick="return confirm('删除将不可恢复。确定删除吗？');">删除</a>
+                                <div class="pull-right">
+                                    <a class="btn btn-xs btn-success" href="{{ url_for('admin.edit_manufacturer', manufacturer_id=manufacturer.id) }}">修改</a>
+                                    <a class="btn btn-xs btn-danger" href="{{ url_for('admin.delete_manufacturer', manufacturer_id=manufacturer.id) }}" onclick="return confirm('删除将不可恢复。确定删除吗？');">删除</a>
+                                </div>
                                 <div class="clearfix"></div>
                             </div>
                         </div>

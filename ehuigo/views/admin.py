@@ -49,6 +49,36 @@ def add_manufacturer():
     return redirect(url_for('admin.show_manufacturers'))
 
 
+@admin.route('/manufacturer/<int:manufacturer_id>/edit/', methods=['GET', 'POST'])
+@login_required
+def edit_manufacturer(manufacturer_id):
+    manufacturer = Manufacturer.query.get_or_404(manufacturer_id)
+    if request.method == 'POST':
+        name = request.form.get('manufacturer-name')
+        alias = request.form.get('manufacturer-alias')
+
+        if not name:
+            abort(400)
+
+        # print name, alias
+        filename = None
+        fs = request.files.get('manufacturer-logo')
+        if fs:
+            uploader = create_uploader()
+            filename = uploader.save(fs)
+
+        manufacturer.name = name
+        manufacturer.alias = alias
+        manufacturer.logo = filename
+
+        db.session.add(manufacturer)
+        db.session.commit()
+
+        return redirect(url_for('admin.edit_manufacturer', manufacturer_id=manufacturer_id))
+
+    return render_template('admin/manufacturer_detail.html', manufacturer=manufacturer)
+
+
 @admin.route('/manufacturer/<int:manufacturer_id>/delete/')
 @login_required
 def delete_manufacturer(manufacturer_id):
