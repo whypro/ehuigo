@@ -1,15 +1,18 @@
 {% extends '_base.html' %}
-{% block title %}估价{% endblock %}
+{% block title %}{{ product.model }} | 旧机回收{% endblock %}
 {% block content %}
             <div class="row">
-                <ol class="breadcrumb">
-                    <li><a href="{{ url_for('home.index') }}">手机估价</a></li>
-                    <li class="active">{{ product.model }}</li>
-                </ol>
-                <hr />
-            </div>
+                <div class="col-md-12">
+                    <div class="row">
+                        <ol class="breadcrumb">
+                            <li><a href="{{ url_for('home.show_recycle_manufacturers') }}">旧机回收</a></li>
+                            <li><a href="{{ url_for('home.show_recycle_products', manufacturer_id=product.manufacturer.id) }}">{{ product.manufacturer.name }}</a></li>
+                            <li class="active">{{ product.model }}</li>
+                        </ol>
+                        <hr />
+                    </div>
+                </div>
 
-            <div class="row">
                 <div class="col-md-9 col-sm-8 col-xs-12">
                     <form class="form-horizontal" action="{{ url_for('home.evaluate', product_id=product.id) }}" method="post">
                         {% for question in product.questions %}

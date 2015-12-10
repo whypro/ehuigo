@@ -10,7 +10,7 @@
                     <div class="row">
                         <ol class="breadcrumb">
                             <li><a href="{{ url_for('admin.show_manufacturers') }}">所有品牌</a></li>
-                            <li><a href="{{ url_for('admin.show_products', manufacturer_id=manufacturer.id) }}">{{ manufacturer.name }}</a></li>
+                            <li class="active">{{ manufacturer.name }}</li>
                         </ol>
                         <hr />
                     </div>

@@ -1,10 +1,14 @@
 {% extends '_base.html' %}
-{% block title %}产品{% endblock %}
+{% block title %}{{ manufacturer.name|d('所有产品') }} | 旧机回收{% endblock %}
 {% block content %}
             <div class="row">
                 <div class="col-md-12">
-                    <div class="page-header">
-                        <h3>{{ manufacturer.name|d('所有产品') }}</h3>
+                    <div class="row">
+                        <ol class="breadcrumb">
+                            <li><a href="{{ url_for('home.show_recycle_manufacturers') }}">旧机回收</a></li>
+                            <li class="active">{{ manufacturer.name|d('所有产品') }}</li>
+                        </ol>
+                        <hr />
                     </div>
                 </div>
 
