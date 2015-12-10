@@ -5,6 +5,7 @@ import hashlib
 from flask import Blueprint, render_template, request, jsonify, redirect, url_for, abort, current_app, send_from_directory, g
 from flask.ext.login import login_user, logout_user, login_required
 from sqlalchemy.sql import func
+from sqlalchemy import or_
 
 from ..extensions import db
 from ..models import Manufacturer, Product, ProductAnswer
@@ -66,7 +67,11 @@ def search_products():
     if not key:
         abort(400)
     search_string = '%{key}%'.format(key=key)
-    products = Product.query.filter(Product.model.like(search_string)).all()
+    products_1 = Product.query.filter(Product.model.like(search_string))
+    subqry = Manufacturer.query.filter(or_(Manufacturer.name.like(search_string), Manufacturer.alias.like(search_string))).subquery()
+    products_2 = Product.query.filter(Product.manufacturer_id==subqry.c.id)
+    products = products_1.union(products_2).all()
+    
     return render_template('home/recycle/products_search.html', products=products, key=key)
 
 
