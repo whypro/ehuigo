@@ -60,6 +60,16 @@ def show_recycle_products(manufacturer_id=None):
     return render_template('home/recycle/products.html', products=products, manufacturer=manufacturer)
 
 
+@home.route('/recycle/search/', methods=['POST'])
+def search_products():
+    key = request.form.get('key')
+    if not key:
+        abort(400)
+    search_string = '%{key}%'.format(key=key)
+    products = Product.query.filter(Product.model.like(search_string)).all()
+    return render_template('home/recycle/products_search.html', products=products, key=key)
+
+
 @home.route('/exchange/')
 @home.route('/exchange/manufacturer/<int:manufacturer_id>/')
 def show_exchange_products(manufacturer_id=None):

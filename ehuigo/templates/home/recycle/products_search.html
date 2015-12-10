@@ -1,0 +1,35 @@
+{% extends '_base.html' %}
+{% block title %}搜索结果 | 旧机回收{% endblock %}
+{% block content %}
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="row">
+                        <ol class="breadcrumb">
+                            <li><a href="{{ url_for('home.show_recycle_manufacturers') }}">旧机回收</a></li>
+                            <li class="active">搜索结果</li>
+                        </ol>
+                        <hr />
+                    </div>
+                </div>
+
+                {% for product in products %}
+                <div class="col-md-3 col-sm-3 col-xs-6">
+                    <div class="thumbnail">
+                        <a href="{{ url_for('home.evaluate', product_id=product.id) }}">
+                            <img alt="{{ product.model }}" src="{{ product.photo_url }}" />
+                        </a>
+                        <div class="caption">
+                            <h4>{{ product.model }}</h4>
+                            <p>
+                                <!-- 描述 -->
+                            </p>
+                            <p>
+                                <span class="label label-danger">最高价：{{ product.price.recycle_max_price|int }} 元！</span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+{% endblock %}
