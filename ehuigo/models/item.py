@@ -54,7 +54,7 @@ class Price(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     product_id = db.Column(db.Integer, db.ForeignKey('product.id', ondelete='CASCADE'))            # 物品 ID
-    product = db.relationship('Product', backref=db.backref('price', uselist=False))
+    product = db.relationship('Product', backref=db.backref('price', uselist=False, passive_deletes=True))
     recycle_max_price = db.Column(db.Numeric(10, 2), default=0)
     recycle_min_price = db.Column(db.Numeric(10, 2), default=0)
     exchange_price = db.Column(db.Numeric(10, 2), default=0)
@@ -87,7 +87,7 @@ class ProductQuestion(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     product_id = db.Column(db.Integer, db.ForeignKey('product.id', ondelete='CASCADE'))            # 物品 ID
-    product = db.relationship('Product', backref='product_questions')
+    product = db.relationship('Product', backref=db.backref('product_questions', passive_deletes=True))
     question_id = db.Column(db.Integer, db.ForeignKey('question.id', ondelete='CASCADE'))        # 问题 ID
     question = db.relationship('Question')
     order = db.Column(db.Integer)              # 排序
@@ -97,7 +97,7 @@ class ProductAnswer(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     product_id = db.Column(db.Integer, db.ForeignKey('product.id', ondelete='CASCADE'))     # 物品 ID
-    product = db.relationship('Product', backref='product_answers')
+    product = db.relationship('Product', backref=db.backref('product_answers', passive_deletes=True))
     answer_id = db.Column(db.Integer, db.ForeignKey('answer.id', ondelete='CASCADE'))          # 回答 ID
     answer = db.relationship('Answer')
     discount = db.Column(db.Numeric(10, 2))           # 相应折扣
