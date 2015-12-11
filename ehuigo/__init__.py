@@ -2,7 +2,7 @@
 from __future__ import unicode_literals
 import logging
 
-from flask import Flask, flash, redirect, url_for, g
+from flask import Flask, flash, redirect, url_for, g, render_template
 from flask.ext.login import LoginManager, current_user
 
 from . import views
@@ -29,8 +29,9 @@ def create_app(config=None):
     # logger
     init_app_logger(app)
 
-    configure_flasklogin(app)
+    config_flask_login(app)
     config_before_request(app)
+    config_error_handlers(app)
 
 
     return app
@@ -51,7 +52,7 @@ def init_app_logger(app):
     app.logger.addHandler(file_handler)
 
 
-def configure_flasklogin(app):
+def config_flask_login(app):
     login_manager = LoginManager()
     login_manager.init_app(app)
 
@@ -70,3 +71,17 @@ def config_before_request(app):
     @app.before_request
     def before_request():
         g.user = current_user
+
+
+def config_error_handlers(app):
+    @app.errorhandler(400)
+    def bad_request(e):
+        return render_template('error/400.html'), 400
+
+    @app.errorhandler(404)
+    def page_not_found(e):
+        return render_template('error/404.html'), 404
+
+    @app.errorhandler(500)
+    def internal_server_error(e):
+        return render_template('error/500.html'), 500

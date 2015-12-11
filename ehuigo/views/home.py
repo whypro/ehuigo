@@ -40,7 +40,7 @@ def evaluate(product_id):
     return render_template('home/recycle/product_detail.html', product=product)
 
 
-@home.route('/uploads/<filename>/')
+@home.route('/uploads/<filename>')
 def send_upload_file(filename):
     if 'OSS_ENDPOINT' in current_app.config:
         url = 'http://' + current_app.config['OSS_ENDPOINT'] + '/' + filename
@@ -126,3 +126,18 @@ def login():
 def logout():
     logout_user()
     return redirect(url_for('home.index'))
+
+
+@home.route('/400/')
+def test_error_400():
+    abort(400)
+
+
+@home.route('/404/')
+def test_error_404():
+    abort(404)
+
+
+@home.route('/500/')
+def test_error_500():
+    abort(500)
