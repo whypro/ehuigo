@@ -243,7 +243,7 @@ def delete_question(question_id):
 
 @admin.route('/product/<int:product_id>/recycle/edit/', methods=['GET', 'POST'])
 @login_required
-def edit_evaluation(product_id):
+def edit_recycle(product_id):
     if request.method == 'POST':
         data = request.get_json()
 
@@ -281,14 +281,14 @@ def edit_evaluation(product_id):
         db.session.add(price)
 
         db.session.commit()
-
-        return jsonify()
+        flash('保存成功', 'success')
+        return jsonify(status=200)
         #product_question = ProductQuestion(product=product, question=question, order=order)
 
     product = Product.query.get_or_404(product_id)
     if not product.for_recycle:
         # 未设置 for_recycle
-        flash('请先选中旧机回收', 'warning')
+        flash('请先选中旧机回收选项', 'warning')
         return redirect(url_for('admin.show_products', manufacturer_id=product.manufacturer_id))
 
     questions = Question.query.all()
@@ -298,7 +298,7 @@ def edit_evaluation(product_id):
     # print discounts
     # [{'choices': [], 'price': int}]
 
-    return render_template('admin/evaluation.html', product=product, questions=questions, discounts=discounts)
+    return render_template('admin/recycle.html', product=product, questions=questions, discounts=discounts)
 
 
 def test_answers(questions, discounts):
@@ -325,7 +325,7 @@ def edit_exchange(product_id):
 
     if not product.for_exchange:
         # 未设置 for_exchange
-        flash('请先选中以旧换新', 'warning')
+        flash('请先选中以旧换新选项', 'warning')
         return redirect(url_for('admin.show_products', manufacturer_id=product.manufacturer_id))
 
     return render_template('admin/exchange.html', product=product)
