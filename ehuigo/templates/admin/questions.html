@@ -15,6 +15,7 @@
                         <hr />
                     </div>
                     <div class="row">
+                        {% include '_flash.html' %}
                         <div class="panel-group" id="questions" role="tablist" aria-multiselectable="true">
                             {% for question in questions %}
                             <div class="panel panel-default" question-id="{{ question.id }}">

@@ -17,6 +17,7 @@
                     </div>
                     <div class="row">
                         <div class="col-md-8">
+                            {% include '_flash.html' %}
                             <form class="form-horizontal" method="post" action="{{ url_for('admin.edit_product', product_id=product.id) }}" id="edit-product-form" enctype="multipart/form-data">
                                 <div class="form-group">
                                     <label for="product-manufacturer" class="col-sm-2 control-label">产品品牌</label>

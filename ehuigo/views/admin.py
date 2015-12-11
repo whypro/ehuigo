@@ -2,7 +2,7 @@
 from __future__ import unicode_literals
 import os
 
-from flask import Blueprint, render_template, request, jsonify, redirect, url_for, abort, current_app
+from flask import Blueprint, render_template, request, jsonify, redirect, url_for, abort, current_app, flash
 from werkzeug import secure_filename
 from flask.ext.login import login_required
 
@@ -46,6 +46,7 @@ def add_manufacturer():
     db.session.add(manufacturer)
     db.session.commit()
 
+    flash('添加成功', 'success')
     return redirect(url_for('admin.show_manufacturers'))
 
 
@@ -66,14 +67,15 @@ def edit_manufacturer(manufacturer_id):
         if fs:
             uploader = create_uploader()
             filename = uploader.save(fs)
+            manufacturer.logo = filename
 
         manufacturer.name = name
         manufacturer.alias = alias
-        manufacturer.logo = filename
 
         db.session.add(manufacturer)
         db.session.commit()
 
+        flash('保存成功', 'success')
         return redirect(url_for('admin.edit_manufacturer', manufacturer_id=manufacturer_id))
 
     return render_template('admin/manufacturer_detail.html', manufacturer=manufacturer)
@@ -88,6 +90,7 @@ def delete_manufacturer(manufacturer_id):
     # print path
     db.session.delete(manufacturer)
     db.session.commit()
+    flash('删除成功', 'success')
     return redirect(url_for('admin.show_manufacturers'))
 
 
@@ -121,7 +124,7 @@ def add_product():
     product = Product(manufacturer=manufacturer, model=model, version=None, photo=filename)
     db.session.add(product)
     db.session.commit()
-
+    flash('添加成功', 'success')
     return redirect(url_for('admin.show_products', manufacturer_id=manufacturer_id))
 
 
@@ -142,6 +145,7 @@ def edit_product(product_id):
         db.session.add(product)
         db.session.commit()
 
+        flash('保存成功', 'success')
         return redirect(url_for('admin.edit_product', product_id=product_id))
 
     return render_template('admin/product_detail.html', product=product)
@@ -154,6 +158,7 @@ def delete_product(product_id):
     manufacturer_id = product.manufacturer_id
     db.session.delete(product)
     db.session.commit()
+    flash('删除成功', 'success')
     return redirect(url_for('admin.show_products', manufacturer_id=manufacturer_id))
 
 
@@ -181,6 +186,7 @@ def add_question():
         db.session.add(answer)
     db.session.commit()
 
+    flash('添加成功', 'success')
     return redirect(url_for('admin.show_questions'))
 
 
@@ -221,6 +227,7 @@ def edit_question(question_id):
         
     db.session.commit()
 
+    flash('保存成功', 'success')
     return redirect(url_for('admin.show_questions'))
 
 
@@ -230,6 +237,7 @@ def delete_question(question_id):
     question = Question.query.get_or_404(question_id)
     db.session.delete(question)
     db.session.commit()
+    flash('删除成功', 'success')
     return redirect(url_for('admin.show_questions'))
 
 
@@ -280,6 +288,7 @@ def edit_evaluation(product_id):
     product = Product.query.get_or_404(product_id)
     if not product.for_recycle:
         # 未设置 for_recycle
+        flash('请先选中旧机回收', 'warning')
         return redirect(url_for('admin.show_products', manufacturer_id=product.manufacturer_id))
 
     questions = Question.query.all()
@@ -311,10 +320,12 @@ def edit_exchange(product_id):
         product.price.exchange_price = exchange_price
         db.session.add(product)
         db.session.commit()
+        flash('保存成功', 'success')
         return redirect(url_for('admin.edit_exchange', product_id=product_id))
 
     if not product.for_exchange:
         # 未设置 for_exchange
+        flash('请先选中以旧换新', 'warning')
         return redirect(url_for('admin.show_products', manufacturer_id=product.manufacturer_id))
 
     return render_template('admin/exchange.html', product=product)
