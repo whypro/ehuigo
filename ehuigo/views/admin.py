@@ -2,13 +2,13 @@
 from __future__ import unicode_literals
 import os
 
-from flask import Blueprint, render_template, request, jsonify, redirect, url_for, abort, current_app, flash
+from flask import Blueprint, render_template, request, jsonify, redirect, url_for, abort, current_app, flash, g
 from werkzeug import secure_filename
 from flask.ext.login import login_required
 
 from ..extensions import db
 from ..models import Manufacturer, Product, Question, Answer, ProductQuestion, ProductAnswer, Price
-from ..helpers import create_uploader
+from ..helpers import create_uploader, send_email
 
 admin = Blueprint('admin', __name__, url_prefix='/admin')
 
@@ -365,3 +365,10 @@ def set_exchange_product(product_id, action):
     db.session.commit()
 
     return jsonify(status=200)
+
+
+@admin.route('/send_test_mail/')
+def send_test_mail():
+    if g.user.email:
+        send_email(g.user.email, '测试邮件', 'mail/test.html')
+    return redirect(url_for('admin.index'))
