@@ -132,6 +132,14 @@ def restore():
     print '文件已还原'
 
 
+@manager.command
+def test():
+    """Run the unit tests."""
+    import unittest
+    tests = unittest.TestLoader().discover('tests')
+    unittest.TextTestRunner(verbosity=2).run(tests)
+
+
 if __name__ == '__main__':
     # app.run(host='0.0.0.0', port=8080, processes=10, debug=True)
     # app.run(host='0.0.0.0', port=8080, debug=True)

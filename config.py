@@ -30,6 +30,10 @@ class Config(object):
 
     EHUIGO_MAIL_SENDER = '易回购 <whypro@126.com>'
 
+    @staticmethod
+    def init_app(app):
+        pass
+
 
 class DevelopmentConfig(Config):
     # 数据库配置
@@ -49,6 +53,7 @@ class DevelopmentConfig(Config):
     )
 
     DEBUG = True
+    SQLALCHEMY_TRACK_MODIFICATIONS = True
 
 
 class BAEConfig(Config):
@@ -69,7 +74,8 @@ class BAEConfig(Config):
         database=DB_DATABASE
     )
 
-    DEBUG = True
+    DEBUG = False
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 
 class ACEConfig(Config):
@@ -91,6 +97,7 @@ class ACEConfig(Config):
     )
 
     DEBUG = True
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
 
     OSS_ENDPOINT = 'static.ehuigo.cn'
     KEY_ID = 'xi0qjghwneAdNtkQ'
@@ -98,9 +105,21 @@ class ACEConfig(Config):
     OSS_BUCKET_NAME = 'ehuigo'
 
 
+class TestConfig(Config):
+    # 数据库配置
+    # FLASK-SQLALCHEMY
+    SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir, 'ehuigo.sqlite')
+
+    DEBUG = True
+    SQLALCHEMY_TRACK_MODIFICATIONS = True
+
+    TESTING = True
+
+
 config = {
     'development': DevelopmentConfig,
     'bae': BAEConfig,
     'ace': ACEConfig,
+    'testing': TestConfig,
     'default': DevelopmentConfig,
 }
