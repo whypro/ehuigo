@@ -7,7 +7,7 @@ import shutil
 import os
 from zipfile import ZipFile
 
-from flask.ext.script import Manager, Server
+from flask.ext.script import Manager, Server, Shell
 from flask.ext.migrate import  MigrateCommand
 
 from ehuigo import create_app
@@ -18,9 +18,16 @@ from ehuigo.scripts.init_data import init_manufacturers_and_products, init_quest
 
 app = create_app(config.Config)
 
+
+def _make_shell_context():
+    return dict(app=app, db=db)
+
+
 manager = Manager(app)
 manager.add_command('db', MigrateCommand)
+manager.add_command('shell', Shell(make_context=_make_shell_context))
 # manager.add_command('debug', Server(host='127.0.0.1', port=8080, debug=True))
+
 
 @manager.command
 def debug():

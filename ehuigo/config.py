@@ -35,6 +35,12 @@ class Config(object):
     UPLOAD_ALLOWED_EXT = ['jpg', 'png', 'bmp', 'gif']
     UPLOAD_MAX_SIZE = 4 * 1024 * 1024    # 4M
 
+    MAIL_SERVER = 'smtp.126.com'
+    MAIL_PORT = 994
+    MAIL_USE_SSL = True
+    MAIL_USERNAME = ''
+    MAIL_PASSWORD = ''
+
 
 class BAEConfig(Config):
 

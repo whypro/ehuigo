@@ -6,7 +6,7 @@ from flask import Flask, flash, redirect, url_for, g, render_template
 from flask.ext.login import LoginManager, current_user
 
 from . import views
-from .extensions import db, migrate
+from .extensions import db, migrate, mail
 from .models import User
 
 
@@ -25,6 +25,9 @@ def create_app(config=None):
     # database & migrate
     db.init_app(app)
     migrate.init_app(app, db)
+
+    # mail
+    mail.init_app(app)
 
     # logger
     init_app_logger(app)
