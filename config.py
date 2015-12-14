@@ -3,11 +3,35 @@ from __future__ import unicode_literals
 import os
 
 
+basedir = os.path.abspath(os.path.dirname(__file__))
+
+
 class Config(object):
-    SECRET_KEY = 'e-huigo'
+    SECRET_KEY = 'ehuigo'
     # JSON_SORT_KEY = False
     # JSONIFY_PRETTYPRINT_REGULAR = False
 
+    # Flask-SQLAlchemy Debugging Option
+    # SQLALCHEMY_ECHO = True
+
+    HOT_PRODUCT_NUM = 4
+    HOT_MANUFACTURER_NUM = 6
+
+    UPLOAD_PATH = os.path.join(basedir, 'uploads')
+    UPLOAD_PREFIX = 'uploads'
+    UPLOAD_ALLOWED_EXT = ['jpg', 'png', 'bmp', 'gif']
+    UPLOAD_MAX_SIZE = 4 * 1024 * 1024    # 4M
+
+    MAIL_SERVER = 'smtp.126.com'
+    MAIL_PORT = 994
+    MAIL_USE_SSL = True
+    MAIL_USERNAME = 'whypro'
+    MAIL_PASSWORD = '753951WHy'
+
+    EHUIGO_MAIL_SENDER = '易回购 <whypro@126.com>'
+
+
+class DevelopmentConfig(Config):
     # 数据库配置
     DB_HOST = 'localhost'
     DB_DATABASE = 'ehuigo'
@@ -24,22 +48,7 @@ class Config(object):
         database=DB_DATABASE
     )
 
-    # Flask-SQLAlchemy Debugging Option
-    # SQLALCHEMY_ECHO = True
-
-    HOT_PRODUCT_NUM = 4
-    HOT_MANUFACTURER_NUM = 6
-
-    UPLOAD_PATH = os.path.join(os.path.realpath('.'), 'uploads')
-    UPLOAD_PREFIX = 'uploads'
-    UPLOAD_ALLOWED_EXT = ['jpg', 'png', 'bmp', 'gif']
-    UPLOAD_MAX_SIZE = 4 * 1024 * 1024    # 4M
-
-    MAIL_SERVER = 'smtp.126.com'
-    MAIL_PORT = 994
-    MAIL_USE_SSL = True
-    MAIL_USERNAME = ''
-    MAIL_PASSWORD = ''
+    DEBUG = True
 
 
 class BAEConfig(Config):
@@ -88,3 +97,10 @@ class ACEConfig(Config):
     KEY_SECRET = '8z1MUO3NQt6oJVdQD0qAxNaXBnWH9D'
     OSS_BUCKET_NAME = 'ehuigo'
 
+
+config = {
+    'development': DevelopmentConfig,
+    'bae': BAEConfig,
+    'ace': ACEConfig,
+    'default': DevelopmentConfig,
+}

@@ -11,12 +11,15 @@ from flask.ext.script import Manager, Server, Shell
 from flask.ext.migrate import  MigrateCommand
 
 from ehuigo import create_app
-from ehuigo import config
 from ehuigo.extensions import db
 from ehuigo.scripts.init_data import init_manufacturers_and_products, init_questions_and_answers, init_user
 
+from config import config
 
-app = create_app(config.Config)
+
+config_name = 'development'
+
+app = create_app(config_name)
 
 
 def _make_shell_context():
@@ -32,18 +35,18 @@ manager.add_command('shell', Shell(make_context=_make_shell_context))
 @manager.command
 def debug():
     """Start Server in debug mode"""
-    app.run(host='0.0.0.0', port=5000, debug=True, processes=3)
+    app.run(host='0.0.0.0', port=5000, debug=True, threaded=True, processes=1)
 
 
 @manager.command
 def init():
     # 创建数据库
-    create_db_sql = 'CREATE DATABASE IF NOT EXISTS {0} DEFAULT CHARACTER SET utf8'.format(config.Config.DB_DATABASE)
+    create_db_sql = 'CREATE DATABASE IF NOT EXISTS {0} DEFAULT CHARACTER SET utf8'.format(config[config_name].DB_DATABASE)
     # print create_db_sql
     ret = subprocess.call(
         [
-            'mysql', '-u', config.Config.DB_USERNAME,
-            '-p{0}'.format(config.Config.DB_PASSWORD),
+            'mysql', '-u', config[config_name].DB_USERNAME,
+            '-p{0}'.format(config[config_name].DB_PASSWORD),
             '-e', create_db_sql,
         ]
     )
@@ -85,9 +88,9 @@ def backup():
     f = open(sql_file, 'w')
     ret = subprocess.call(
         [
-            'mysqldump', '-u', config.Config.DB_USERNAME,
-            '-p{0}'.format(config.Config.DB_PASSWORD),
-            config.Config.DB_DATABASE,
+            'mysqldump', '-u', config[config_name].DB_USERNAME,
+            '-p{0}'.format(config[config_name].DB_PASSWORD),
+            config[config_name].DB_DATABASE,
         ],
         stdout=f
     )
@@ -111,9 +114,9 @@ def restore():
     f = open('backup/ehuigo-{date}.sql'.format(date=date_str), 'r')
     ret = subprocess.call(
         [
-            'mysql', '-u', config.Config.DB_USERNAME,
-            '-p{0}'.format(config.Config.DB_PASSWORD),
-            config.Config.DB_DATABASE,
+            'mysql', '-u', config[config_name].DB_USERNAME,
+            '-p{0}'.format(config[config_name].DB_PASSWORD),
+            config[config_name].DB_DATABASE,
         ],
         stdin=f
     )

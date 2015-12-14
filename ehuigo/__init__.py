@@ -9,12 +9,14 @@ from . import views
 from .extensions import db, migrate, mail
 from .models import User
 
+from config import config
 
-def create_app(config=None):
+
+def create_app(config_name):
     app = Flask(__name__)
 
     # config
-    app.config.from_object(config)
+    app.config.from_object(config[config_name])
 
     # blueprint
     app.register_blueprint(views.home)
