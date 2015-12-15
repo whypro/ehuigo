@@ -5,14 +5,15 @@ from sqlalchemy.ext.associationproxy import association_proxy
 from flask import current_app
 
 from ..extensions import db
+from ..constants import MAX_LENGTH
 
 
 class Manufacturer(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.Unicode(20), nullable=False)    # 品牌名称
-    alias = db.Column(db.Unicode(20))   # 品牌别名
-    logo = db.Column(db.Unicode(200))   # 品牌 LOGO
+    name = db.Column(db.Unicode(MAX_LENGTH['manufacturer_name']), nullable=False)    # 品牌名称
+    alias = db.Column(db.Unicode(MAX_LENGTH['manufacturer_name']))   # 品牌别名
+    logo = db.Column(db.Unicode(MAX_LENGTH['path']))   # 品牌 LOGO
 
     @property
     def logo_url(self):
@@ -30,9 +31,9 @@ class Product(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     manufacturer_id = db.Column(db.Integer, db.ForeignKey('manufacturer.id', ondelete='CASCADE'))  # 制造商 ID
     manufacturer = db.relationship('Manufacturer', backref=db.backref('products', passive_deletes=True))
-    model = db.Column(db.Unicode(60))           # 型号
-    version = db.Column(db.Unicode(30))         # 版本
-    photo = db.Column(db.Unicode(200))          # 图片路径
+    model = db.Column(db.Unicode(MAX_LENGTH['product_model']))           # 型号
+    version = db.Column(db.Unicode(MAX_LENGTH['product_version']))         # 版本
+    photo = db.Column(db.Unicode(MAX_LENGTH['path']))          # 图片路径
 
     for_recycle = db.Column(db.Boolean, default=False)
     for_exchange = db.Column(db.Boolean, default=False)
@@ -70,8 +71,8 @@ class Album(object):
 class Question(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
-    content = db.Column(db.Unicode(60), nullable=False)            # 问题，如“成色”，“是否进水”
-    remark = db.Column(db.Unicode(120))     # 备注
+    content = db.Column(db.Unicode(MAX_LENGTH['question_content']), nullable=False)            # 问题，如“成色”，“是否进水”
+    remark = db.Column(db.Unicode(MAX_LENGTH['question_remark']))     # 备注
 
 
 class Answer(db.Model):
@@ -79,8 +80,8 @@ class Answer(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     question_id = db.Column(db.Integer, db.ForeignKey('question.id', ondelete='CASCADE'))        # 问题 ID
     question = db.relationship('Question', backref=db.backref('answers', passive_deletes=True))
-    content = db.Column(db.Unicode(60), nullable=False)            # 回答内容
-    remark = db.Column(db.Unicode(120))        # 备注
+    content = db.Column(db.Unicode(MAX_LENGTH['answer_content']), nullable=False)            # 回答内容
+    remark = db.Column(db.Unicode(MAX_LENGTH['answer_remark']))        # 备注
 
 
 class ProductQuestion(db.Model):

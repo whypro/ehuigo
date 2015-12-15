@@ -6,19 +6,20 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from flask.ext.login import UserMixin
 
 from ..extensions import db, login_manager
+from ..constants import MAX_LENGTH
 
 
 class User(UserMixin, db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
-    email = db.Column(db.String(80), unique=True, nullable=False)
-    _password = db.Column('password', db.String(128), nullable=False)
-    nickname = db.Column(db.String(20), unique=True)
-    mobile = db.Column(db.String(20))
+    email = db.Column(db.String(MAX_LENGTH['email']), unique=True, nullable=False)
+    _password = db.Column('password', db.String(MAX_LENGTH['password']), nullable=False)
+    username = db.Column(db.String(MAX_LENGTH['username']), unique=True)
+    mobile = db.Column(db.String(MAX_LENGTH['mobile']))
     reg_time = db.Column(db.DateTime, default=datetime.datetime.now)
-    reg_ip = db.Column(db.String(20))
-    status = db.Column(db.String(10), default='active')
-    avatar = db.Column(db.String(255))
+    reg_ip = db.Column(db.String(MAX_LENGTH['ip']))
+    status = db.Column(db.String(MAX_LENGTH['status']), default='active')
+    avatar = db.Column(db.String(MAX_LENGTH['path']))
 
     @property
     def password(self):

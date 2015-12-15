@@ -5,6 +5,7 @@ from flask import Blueprint, redirect, request, url_for, render_template, g, fla
 from flask.ext.login import login_user, logout_user, login_required
 
 from ..models import User
+from ..forms import RegisterForm
 
 
 account = Blueprint('account', __name__, url_prefix='/account')
@@ -36,3 +37,11 @@ def login():
 def logout():
     logout_user()
     return redirect(url_for('home.index'))
+
+
+@account.route('/register/', methods=['GET', 'POST'])
+def register():
+    form = RegisterForm()
+    if form.validate_on_submit():
+        return redirect('account.login')
+    return render_template('account/register.html', form=form)
