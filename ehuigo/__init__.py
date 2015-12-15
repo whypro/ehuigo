@@ -6,7 +6,7 @@ from flask import Flask, redirect, url_for, g, render_template
 from flask.ext.login import LoginManager, current_user
 
 from . import views
-from .extensions import db, migrate, mail
+from .extensions import db, migrate, mail, login_manager
 from .models import User
 
 from config import config
@@ -31,10 +31,11 @@ def create_app(config_name):
     # mail
     mail.init_app(app)
 
+    login_manager.init_app(app)
+
     # logger
     init_app_logger(app)
 
-    config_flask_login(app)
     config_before_request(app)
     config_error_handlers(app)
 
@@ -54,21 +55,6 @@ def init_app_logger(app):
     file_handler.setFormatter(formatter)
     file_handler.setLevel(logging.ERROR)
     app.logger.addHandler(file_handler)
-
-
-def config_flask_login(app):
-    login_manager = LoginManager()
-    login_manager.init_app(app)
-
-    @login_manager.user_loader
-    def load_user(uid):
-        user = User.query.get(uid)
-        return user
-
-    @login_manager.unauthorized_handler
-    def unauthorized():
-        # flash('请先登录', 'warning')
-        return redirect(url_for('account.login'))
 
 
 def config_before_request(app):

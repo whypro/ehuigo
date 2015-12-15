@@ -3,11 +3,12 @@ from __future__ import unicode_literals
 import datetime
 
 from werkzeug.security import generate_password_hash, check_password_hash
+from flask.ext.login import UserMixin
 
-from ..extensions import db
+from ..extensions import db, login_manager
 
 
-class User(db.Model):
+class User(UserMixin, db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(80), unique=True, nullable=False)
@@ -19,20 +20,6 @@ class User(db.Model):
     status = db.Column(db.String(10), default='active')
     avatar = db.Column(db.String(255))
 
-    # flask.ext.login
-    def is_authenticated(self):
-        return True
-
-    def is_active(self):
-        return True
-
-    def is_anonymous(self):
-        return False
-
-    def get_id(self):
-        return unicode(self.id)
-    # flask.ext.login end
-
     @property
     def password(self):
         raise AttributeError('raw_password is not a readable attribute')
@@ -43,3 +30,8 @@ class User(db.Model):
 
     def verify_password(self, password):
         return check_password_hash(self._password, password)
+
+
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(int(user_id))

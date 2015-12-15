@@ -23,7 +23,7 @@ def login():
         # print user
         if user and user.verify_password(password):
             login_user(user)
-            return redirect(url_for('admin.index'))
+            return redirect(request.args.get('next')) or redirect(url_for('admin.index'))
         else:
             flash('用户名或密码错误', 'danger')
             return redirect(url_for('account.login'))
