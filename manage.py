@@ -23,7 +23,8 @@ app = create_app(config_name)
 
 
 def _make_shell_context():
-    return dict(app=app, db=db)
+    from ehuigo.models import User
+    return dict(app=app, db=db, User=User)
 
 
 manager = Manager(app)
