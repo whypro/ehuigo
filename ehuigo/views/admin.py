@@ -2,8 +2,7 @@
 from __future__ import unicode_literals
 import os
 
-from flask import Blueprint, render_template, request, jsonify, redirect, url_for, abort, current_app, flash, g
-from werkzeug import secure_filename
+from flask import Blueprint, render_template, request, jsonify, redirect, url_for, abort, flash, g
 from flask.ext.login import login_required
 
 from ..extensions import db
@@ -25,6 +24,7 @@ def index():
 def show_manufacturers():
     manufacturers = Manufacturer.query.all()
     return render_template('admin/manufacturers.html', manufacturers=manufacturers)
+
 
 @admin.route('/manufacturer/add/', methods=['POST'])
 @login_required
@@ -283,7 +283,7 @@ def edit_recycle(product_id):
         db.session.commit()
         flash('保存成功', 'success')
         return jsonify(status=200)
-        #product_question = ProductQuestion(product=product, question=question, order=order)
+        # product_question = ProductQuestion(product=product, question=question, order=order)
 
     product = Product.query.get_or_404(product_id)
     if not product.for_recycle:
@@ -303,6 +303,7 @@ def edit_recycle(product_id):
 
 def test_answers(questions, discounts):
     pass
+
 
 def __travel(questions):
     """深度优先遍历"""

@@ -2,7 +2,7 @@
 from __future__ import unicode_literals
 import logging
 
-from flask import Flask, flash, redirect, url_for, g, render_template
+from flask import Flask, redirect, url_for, g, render_template
 from flask.ext.login import LoginManager, current_user
 
 from . import views
@@ -20,7 +20,7 @@ def create_app(config_name):
 
     # blueprint
     app.register_blueprint(views.home)
-    # app.register_blueprint(views.post)
+    app.register_blueprint(views.account)
     # app.register_blueprint(views.member)
     app.register_blueprint(views.admin)
 
@@ -37,7 +37,6 @@ def create_app(config_name):
     config_flask_login(app)
     config_before_request(app)
     config_error_handlers(app)
-
 
     return app
 
@@ -69,7 +68,7 @@ def config_flask_login(app):
     @login_manager.unauthorized_handler
     def unauthorized():
         # flash('请先登录', 'warning')
-        return redirect(url_for('home.login'))
+        return redirect(url_for('account.login'))
 
 
 def config_before_request(app):

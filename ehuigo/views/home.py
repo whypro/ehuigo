@@ -1,15 +1,11 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
-import hashlib
 
-from flask import Blueprint, render_template, request, jsonify, redirect, url_for, abort, current_app, send_from_directory, g
-from flask.ext.login import login_user, logout_user, login_required
+from flask import Blueprint, render_template, request, jsonify, redirect, abort, current_app, send_from_directory
 from sqlalchemy.sql import func
 from sqlalchemy import or_
 
-from ..extensions import db
 from ..models import Manufacturer, Product, ProductAnswer
-from ..models import User
 
 
 home = Blueprint('home', __name__)
@@ -101,31 +97,6 @@ def show_exchange_manufacturers():
     # print subqry
     manufacturers = Manufacturer.query.join(subqry, Manufacturer.id==subqry.c.manufacturer_id).all()
     return render_template('home/exchange/manufacturers.html', manufacturers=manufacturers)
-
-
-@home.route('/login/', methods=['GET', 'POST'])
-def login():
-    # 已登录用户则返回首页
-    if g.user.is_authenticated():
-        return redirect(url_for('home.index'))
-
-    if request.method == 'POST':
-        username = request.form.get('username')
-        password = request.form.get('password')
-        user = User.query.filter_by(email=username, password=hashlib.sha1(password).hexdigest()).first()
-        print user
-        if user:
-            login_user(user)
-            return redirect(url_for('admin.index'))
-    
-    return render_template('account/login.html')
-
-
-@home.route('/logout/')
-@login_required
-def logout():
-    logout_user()
-    return redirect(url_for('home.index'))
 
 
 @home.route('/400/')

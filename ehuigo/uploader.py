@@ -88,7 +88,6 @@ class OSSUploader(Uploader):
         self.oss.delete_object(self.bucket_name, fullname)
 
 
-
 if __name__ == '__main__':
     from werkzeug.datastructures import FileStorage
     fs = FileStorage(stream='test', filename='test.txt')
