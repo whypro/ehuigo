@@ -4,6 +4,7 @@ import logging
 
 from flask import Flask, redirect, url_for, g, render_template
 from flask.ext.login import LoginManager, current_user
+from flask.ext.bootstrap import Bootstrap
 
 from . import views
 from .extensions import db, migrate, mail, login_manager
@@ -32,6 +33,9 @@ def create_app(config_name):
     mail.init_app(app)
 
     login_manager.init_app(app)
+
+    Bootstrap(app)
+    print app.extensions['bootstrap']['cdns']
 
     # logger
     init_app_logger(app)

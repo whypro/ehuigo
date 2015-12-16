@@ -43,5 +43,5 @@ def logout():
 def register():
     form = RegisterForm()
     if form.validate_on_submit():
-        return redirect('account.login')
+        return redirect(url_for('account.login'))
     return render_template('account/register.html', form=form)

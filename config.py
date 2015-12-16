@@ -30,6 +30,11 @@ class Config(object):
 
     EHUIGO_MAIL_SENDER = '易回购 <whypro@126.com>'
 
+    BOOTSTRAP_USE_MINIFIED = True
+    BOOTSTRAP_SERVE_LOCAL = True
+    BOOTSTRAP_CDN_FORCE_SSL = True
+    BOOTSTRAP_QUERYSTRING_REVVING = True
+
     @staticmethod
     def init_app(app):
         pass

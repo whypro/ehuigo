@@ -1,46 +1,37 @@
-<!DOCTYPE html>
-<html lang="zh-CN">
-    <head>
-        <!-- Meta, title, CSS, favicons, etc. -->
-        <meta charset="utf-8">
-        <meta https-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="renderer" content="webkit">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="description" content="易回购">
-        <meta name="keywords" content="易回购">
-        <meta name="author" content="whypro">
-
-        <title>{% block title %}{% endblock %} | 易回购</title>
-
-        <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/bootstrap.min.css') }}">
-        <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/bootstrap-theme.min.css') }}">
-
-        <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-
-        <link rel="apple-touch-icon" href="{{ url_for('static', filename='images/apple-touch-icon.png') }}">
-        <link rel="icon" href="{{ url_for('static', filename='images/favicon.ico') }}">
-    </head>
-    <body>
-        <div class="container-fluid">
-            {% include '_header.html' %}
-        </div>
-
-        <div class="container-fluid">
-            {% block slider %}{% endblock %}
-        </div>
-
-        <div class="container">
-            {% block content %}{% endblock %}
-        </div>
-
-        <div class="container">
-            {% include '_footer.html' %}
-        </div>
-
-        <script src="{{ url_for('static', filename='jquery/jquery-1.11.3.min.js') }}"></script>
-        <script src="{{ url_for('static', filename='bootstrap/bootstrap.min.js') }}"></script>
-
-        {% block script %}{% endblock %}
-        
-    </body>
-</html>
+{% extends 'bootstrap/base.html' %}
+{% block html_attribs %} lang="zh-CN"{% endblock %}
+{% block metas %}
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="renderer" content="webkit">
+    <meta name="description" content="易回购">
+    <meta name="keywords" content="易回购">
+    <meta name="author" content="whypro">
+{% endblock %}
+{% block title %}{% block subtitle %}{% endblock %} | 易回购{% endblock %}
+{% block styles %}
+    {{ super() }}
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="apple-touch-icon" href="{{ url_for('static', filename='images/apple-touch-icon.png') }}">
+    <link rel="icon" href="{{ url_for('static', filename='images/favicon.ico') }}">
+{% endblock %}
+{% block navbar %}
+    <div class="container-fluid">
+         {% include '_header.html' %}
+    </div>
+{% endblock navbar %}
+{% block content %}
+    <div class="container-fluid">
+        {% block slider %}{% endblock %}
+    </div>
+    <div class="container">
+        {% block page_content %}{% endblock %}
+    </div>
+    <div class="container">
+        {% include '_footer.html' %}
+    </div>
+{% endblock content %}
+{% block scripts %}
+    {{ super() }}
+{% endblock %}
