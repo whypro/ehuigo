@@ -26,7 +26,7 @@ class Config(object):
     MAIL_PORT = 994
     MAIL_USE_SSL = True
     MAIL_USERNAME = 'whypro'
-    MAIL_PASSWORD = '753951WHy'
+    MAIL_PASSWORD = ''
 
     EHUIGO_MAIL_SENDER = '易回购 <whypro@126.com>'
 
