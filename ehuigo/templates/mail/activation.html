@@ -1,8 +1,8 @@
 <p>尊敬的 {{ user.username }}：</p>
-<p>感谢您注册易回购，请点击<a href="{{ url_for('account.active', token=token, _external=True) }}">这里</a>完成激活。</p>
+<p>感谢您注册易回购，请点击<a href="{{ url_for('account.activate', token=token, _external=True) }}">这里</a>完成激活。</p>
 <p>
     如果链接无法点击，请将以下地址复制并粘贴到浏览器的地址栏中访问：<br />
-    <pre>{{ url_for('account.active', token=token, _external=True) }}</pre>
+    <pre>{{ url_for('account.activate', token=token, _external=True) }}</pre>
 </pre>
 <p>如果你最近没有进行账户激活操作，请忽略此邮件。</p>
 <p>

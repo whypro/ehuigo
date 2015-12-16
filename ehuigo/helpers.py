@@ -2,7 +2,7 @@
 from __future__ import unicode_literals
 from threading import Thread
 
-from flask import current_app, render_template
+from flask import current_app, render_template, request
 from flask.ext.mail import Message
 
 from .uploader import LocalUploader, OSSUploader
@@ -29,3 +29,12 @@ def send_email(to, subject, template, **kwargs):
     # thread.start()
     # return thread
     mail.send(msg)
+
+
+def get_client_ip():
+    # 获取 ip 地址
+    if 'x-forwarded-for' in request.headers:
+        ip = request.headers['x-forwarded-for'].split(', ')[0]
+    else:
+        ip = request.remote_addr
+    return ip

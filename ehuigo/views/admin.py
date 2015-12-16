@@ -3,7 +3,7 @@ from __future__ import unicode_literals
 import os
 
 from flask import Blueprint, render_template, request, jsonify, redirect, url_for, abort, flash, g
-from flask.ext.login import login_required
+from flask.ext.login import login_required, current_user
 
 from ..extensions import db
 from ..models import Manufacturer, Product, Question, Answer, ProductQuestion, ProductAnswer, Price
@@ -369,7 +369,17 @@ def set_exchange_product(product_id, action):
 
 
 @admin.route('/send_test_mail/')
+@login_required
 def send_test_mail():
-    if g.user.email:
-        send_email(g.user.email, '测试邮件', 'mail/test.html')
+    if current_user.email:
+        send_email(current_user.email, '测试邮件', 'mail/test.html')
     return redirect(url_for('admin.index'))
+
+
+# TODO: 加入角色系统之前的临时方法
+@admin.before_request
+@login_required
+def before_request():
+    if current_user.status != 3:
+        flash('权限不足', 'warning')
+        return redirect(url_for('home.index'))

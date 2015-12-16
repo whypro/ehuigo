@@ -7,7 +7,7 @@ from flask.ext.login import login_user, logout_user, login_required, current_use
 from ..models import User
 from ..forms import RegisterForm
 from ..extensions import db
-from ..helpers import send_email
+from ..helpers import send_email, get_client_ip
 from ..constants import USER_STATUS
 
 
@@ -51,7 +51,13 @@ def register():
 
     form = RegisterForm()
     if form.validate_on_submit():
-        user = User(email=form.email.data, username=form.username.data, password=form.password.data)
+        user = User(
+            email=form.email.data,
+            username=form.username.data,
+            password=form.password.data,
+            mobile=form.mobile.data,
+            reg_ip=get_client_ip(),
+        )
         db.session.add(user)
         db.session.commit()
         token = user.generate_activation_token()
@@ -70,8 +76,8 @@ def resend_activation():
     return redirect(url_for('home.index'))
 
 
-@account.route('/active/')
-def active():
+@account.route('/activate/')
+def activate():
     token = request.args.get('token')
     data = User.load_activation_token(token)
     print data
