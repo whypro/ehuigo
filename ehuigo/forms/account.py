@@ -3,7 +3,7 @@ from __future__ import unicode_literals
 
 from flask.ext.wtf import Form
 from wtforms import StringField, PasswordField, SubmitField
-from wtforms.validators import InputRequired, Length, Email, EqualTo
+from wtforms.validators import InputRequired, Length, Email, EqualTo, Optional
 from wtforms import ValidationError
 
 from ..models import User
@@ -11,10 +11,11 @@ from ..constants import MAX_LENGTH
 
 
 class RegisterForm(Form):
-    email = StringField('Email', validators=[InputRequired(), Length(1, MAX_LENGTH['email']), Email()])
     username = StringField('用户名', validators=[InputRequired(), Length(1, MAX_LENGTH['username'])])
+    email = StringField('电子邮箱', validators=[InputRequired(), Length(1, MAX_LENGTH['email']), Email('无效的邮箱格式')])
     password = PasswordField('密码', validators=[InputRequired(), Length(1, MAX_LENGTH['password']), EqualTo('password_confirm', message='密码不一致')])
     password_confirm = PasswordField('密码确认', validators=[InputRequired()])
+    mobile = StringField('手机', validators=[InputRequired(), Length(1, MAX_LENGTH['mobile']), Optional()])
     submit = SubmitField('注册')
 
     def validate_email(self, field):

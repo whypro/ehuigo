@@ -3,10 +3,12 @@ from __future__ import unicode_literals
 import datetime
 
 from werkzeug.security import generate_password_hash, check_password_hash
+from flask import current_app
 from flask.ext.login import UserMixin
+from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 
 from ..extensions import db, login_manager
-from ..constants import MAX_LENGTH
+from ..constants import MAX_LENGTH, USER_STATUS
 
 
 class User(UserMixin, db.Model):
@@ -18,7 +20,7 @@ class User(UserMixin, db.Model):
     mobile = db.Column(db.String(MAX_LENGTH['mobile']))
     reg_time = db.Column(db.DateTime, default=datetime.datetime.now)
     reg_ip = db.Column(db.String(MAX_LENGTH['ip']))
-    status = db.Column(db.String(MAX_LENGTH['status']), default='active')
+    status = db.Column(db.Integer, default=USER_STATUS['new'])
     avatar = db.Column(db.String(MAX_LENGTH['path']))
 
     @property
@@ -31,6 +33,28 @@ class User(UserMixin, db.Model):
 
     def verify_password(self, password):
         return check_password_hash(self._password, password)
+
+    def generate_activation_token(self, expiration=3600):
+        """生成用户激活 token 串"""
+        s = Serializer(current_app.config['SECRET_KEY'], expiration)
+        return s.dumps({'activate': self.id})
+
+    def activate(self, token):
+        """根据 token 激活用户"""
+        s = Serializer(current_app.config['SECRET_KEY'])
+        try:
+            data = s.loads(token)
+        except Exception as e:
+            print e
+            return False
+
+        if data.get('activate') != self.id:
+            return False
+
+        self.status = USER_STATUS['active']
+        db.session.add(self)
+        db.session.commit()
+        return True
 
 
 @login_manager.user_loader

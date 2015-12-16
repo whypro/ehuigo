@@ -16,5 +16,4 @@ mail = Mail()
 login_manager = LoginManager()
 login_manager.login_view = 'account.login'
 login_manager.login_message = '请先登录'
-login_manager.login_message_category = "info"
-
+login_manager.login_message_category = "warning"

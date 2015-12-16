@@ -66,6 +66,7 @@
                             </li>
                             {% else %}
                             <li><a href="{{ url_for('account.login') }}">登录</a></li>
+                            <li><a href="{{ url_for('account.register') }}">注册</a></li>
                             {% endif %}
                         </ul>
                         <form class="navbar-form navbar-right hidden-sm" role="search" action="{{ url_for('home.search_products') }}" method="post">

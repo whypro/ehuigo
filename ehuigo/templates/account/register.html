@@ -1,17 +1,21 @@
-{% extends "bootstrap/base.html" %}
-{% import 'bootstrap/wtf.html' as wtf %}
-{% import "bootstrap/fixes.html" as fixes %}
-{% block head %}
-  {{super()}}
-  {{fixes.ie8()}}
+{% extends '_base.html' %}
+{% import "bootstrap/wtf.html" as wtf %}
+{% block subtitle %}注册{% endblock %}
+{% block page_content %}
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="row">
+                        <ol class="breadcrumb">
+                            <li class="active">注册</li>
+                        </ol>
+                        <hr />
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    {% include '_flash.html' %}
+                    <div class="col-md-offset-4 col-md-4">
+                        {{ wtf.quick_form(form, action=url_for('account.register'), form_type='horizontal', horizontal_columns=('sm', 3, 9), id='add-manufacturer-form') }}
+                    </div>
+                </div>
+            </div>
 {% endblock %}
-{% block title %}注册{% endblock %}
-
-
-{% block content %}
-
-    {{ wtf.quick_form(form) }}
-
-
-{% endblock %}
-

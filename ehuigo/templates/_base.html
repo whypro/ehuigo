@@ -1,5 +1,10 @@
 {% extends 'bootstrap/base.html' %}
+{% import "bootstrap/fixes.html" as fixes %}
 {% block html_attribs %} lang="zh-CN"{% endblock %}
+{% block head %}
+    {{super()}}
+    {{fixes.ie8()}}
+{% endblock %}
 {% block metas %}
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta charset="utf-8">

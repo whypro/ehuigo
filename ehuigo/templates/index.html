@@ -49,6 +49,7 @@
 {% endblock %}
 {% block page_content %}
             <div class="row">
+                {% include '_flash.html' %}
                 <div class="col-md-12">
                     <div class="page-header">
                         <h3>热门机型 <small><a href="{{ url_for('home.show_recycle_products') }}">[更多]</a></small></h3>

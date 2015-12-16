@@ -35,7 +35,7 @@ def create_app(config_name):
     login_manager.init_app(app)
 
     Bootstrap(app)
-    print app.extensions['bootstrap']['cdns']
+    # print app.extensions['bootstrap']['cdns']
 
     # logger
     init_app_logger(app)
