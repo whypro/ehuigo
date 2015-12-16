@@ -5,7 +5,8 @@ import datetime
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask import current_app
 from flask.ext.login import UserMixin
-from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
+from itsdangerous import TimedJSONWebSignatureSerializer as TJWSSerializer
+from itsdangerous import BadSignature, SignatureExpired
 
 from ..extensions import db, login_manager
 from ..constants import MAX_LENGTH, USER_STATUS
@@ -35,28 +36,26 @@ class User(UserMixin, db.Model):
         return check_password_hash(self._password, password)
 
     def generate_activation_token(self, expiration=3600):
-        """生成用户激活 token 串"""
-        s = Serializer(current_app.config['SECRET_KEY'], expiration)
-        return s.dumps({'activate': self.id})
+        # 生成账户激活 token
+        s = TJWSSerializer(current_app.config['SECRET_KEY'], expiration)
+        return s.dumps({'user_id': self.id})
 
-    def activate(self, token):
-        """根据 token 激活用户"""
-        s = Serializer(current_app.config['SECRET_KEY'])
+    @staticmethod
+    def load_activation_token(token):
+        # 根据 token 激活用户
+        s = TJWSSerializer(current_app.config['SECRET_KEY'])
         try:
             data = s.loads(token)
-        except Exception as e:
+        except (BadSignature, SignatureExpired) as e:
             print e
-            return False
+            return None
 
-        if data.get('activate') != self.id:
-            return False
-
-        self.status = USER_STATUS['active']
-        db.session.add(self)
-        db.session.commit()
-        return True
+        return data
 
 
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
+
+
+

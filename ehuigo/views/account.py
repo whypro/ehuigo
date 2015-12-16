@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-from flask import Blueprint, redirect, request, url_for, render_template, session, flash
+from flask import Blueprint, redirect, request, url_for, render_template, session, flash, g
 from flask.ext.login import login_user, logout_user, login_required, current_user
 
 from ..models import User
@@ -18,7 +18,7 @@ account = Blueprint('account', __name__, url_prefix='/account')
 def login():
     # 已登录用户则返回首页
     if current_user.is_authenticated():
-        redirect(request.args.get('next') or url_for('admin.index'))
+        return redirect(request.args.get('next') or url_for('admin.index'))
 
     if request.method == 'POST':
         username = request.form.get('username')
@@ -45,6 +45,10 @@ def logout():
 
 @account.route('/register/', methods=['GET', 'POST'])
 def register():
+    # 已登录用户则返回首页
+    if current_user.is_authenticated():
+        return redirect(url_for('admin.index'))
+
     form = RegisterForm()
     if form.validate_on_submit():
         user = User(email=form.email.data, username=form.username.data, password=form.password.data)
@@ -67,18 +71,29 @@ def resend_activation():
 
 
 @account.route('/active/')
-@login_required
 def active():
     token = request.args.get('token')
-    if current_user.status != USER_STATUS['new']:
-        if current_user.status == USER_STATUS['active']:
+    data = User.load_activation_token(token)
+    print data
+    if not data:
+        flash('激活连接不合法或已失效', 'danger')
+        return redirect(url_for('home.index'))
+
+    user_id = data.get('user_id')
+    user = User.query.get(user_id)
+    if not user:
+        flash('该账户还未注册', 'danger')
+        return redirect(url_for('account.register'))
+
+    if user.status != USER_STATUS['new']:
+        if user.status == USER_STATUS['active']:
             flash('账户已激活，请勿重复激活', 'info')
-        elif current_user.status == USER_STATUS['frozen']:
+        elif user.status == USER_STATUS['frozen']:
             flash('账户已被冻结，无法激活', 'danger')
         return redirect(url_for('home.index'))
 
-    if current_user.activate(token):
-        flash('账户激活成功', 'success')
-    else:
-        flash('激活连接已失效', 'danger')
-    return redirect(url_for('home.index'))
+    user.status = USER_STATUS['active']
+    db.session.add(user)
+    db.session.commit()
+    flash('账户激活成功', 'success')
+    return redirect(url_for('account.login'))
