@@ -99,11 +99,27 @@ def edit_product_qa(product_id, category):
     if not price:
         price = Price(product_id=product_id)
 
-    price.recycle_max_price = data.get('recycle_max_price', price.recycle_max_price)
-    price.recycle_min_price = data.get('recycle_min_price', price.recycle_min_price)
-    price.exchange_price = data.get('exchange_price', price.exchange_price)
+    if category == 'recycle':
+        price.recycle_max_price = data['recycle_max_price']
+        price.recycle_min_price = data['recycle_min_price']
+    elif category == 'exchange':
+        price.exchange_price = data['exchange_price']
 
     db.session.add(price)
     db.session.commit()
     flash('保存成功', 'success')
     return jsonify()
+
+
+@api.route('/recycle/product/<int:product_id>/evaluate/', methods=['POST'])
+def evaluate(product_id):
+    product = Product.query.get_or_404(product_id)
+    price = product.price.recycle_max_price
+    min_price = product.price.recycle_min_price
+    data = request.get_json()
+    for answer_id in data['answers']:
+        product_answer = ProductAnswer.query.filter_by(product_id=product_id, answer_id=answer_id).one()
+        price += product_answer.discount    # 加负等于减正
+    if price < min_price: price = min_price
+    print price
+    return jsonify(price=int(price))

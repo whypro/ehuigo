@@ -14,7 +14,7 @@
                 </div>
 
                 <div class="col-md-9 col-sm-8 col-xs-12">
-                    <form class="form-horizontal" action="{{ url_for('home.evaluate', product_id=product.id) }}" method="post">
+                    <form class="form-horizontal">
                         {% for question in product.recycle_questions %}
                         <div class="form-group">
                             <label class="col-md-2 col-sm-2 col-xs-3 control-label">{{ question.content }}</label>
@@ -78,7 +78,7 @@
 
             var data = JSON.stringify({'answers': answers});
             $.ajax({
-                url: "{{ url_for('home.evaluate', product_id=product.id) }}",
+                url: "{{ url_for('api.evaluate', product_id=product.id) }}",
                 type: "POST",
                 data: data,
                 dataType: "json",

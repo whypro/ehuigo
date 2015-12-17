@@ -5,7 +5,7 @@ from flask import Blueprint, render_template, request, jsonify, redirect, abort,
 from sqlalchemy.sql import func
 from sqlalchemy import or_
 
-from ..models import Manufacturer, Product, ProductAnswer
+from ..models import Manufacturer, Product
 
 
 home = Blueprint('home', __name__)
@@ -18,20 +18,8 @@ def index():
     return render_template('index.html', manufacturers=manufacturers, hot_products=hot_products)
 
 
-@home.route('/recycle/product/<int:product_id>/evaluate/', methods=['GET', 'POST'])
-def evaluate(product_id):
-    if request.method == 'POST':
-        product = Product.query.get_or_404(product_id)
-        price = product.price.recycle_max_price
-        min_price = product.price.recycle_min_price
-        data = request.get_json()
-        for answer_id in data['answers']:
-            product_answer = ProductAnswer.query.filter_by(product_id=product_id, answer_id=answer_id).one()
-            price += product_answer.discount    # 加负等于减正
-        if price < min_price: price = min_price
-        print price
-        return jsonify(price=int(price))
-
+@home.route('/recycle/product/<int:product_id>/')
+def show_recycle_product_detail(product_id):
     product = Product.query.get_or_404(product_id)
     return render_template('home/recycle/product_detail.html', product=product)
 
