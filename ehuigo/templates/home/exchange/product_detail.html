@@ -13,9 +13,13 @@
                     </div>
                 </div>
 
+                <div class="col-md-3 col-sm-4 col-xs-12">
+                    <img class="img-responsive" alt="" src="{{ product.photo_url }}" />
+                </div>
+
                 <div class="col-md-9 col-sm-8 col-xs-12">
-                    <form class="form-horizontal" action="{{ url_for('home.evaluate', product_id=product.id) }}" method="post">
-                        {% for question in product.questions %}
+                    <form class="form-horizontal">
+                        {% for question in product.exchange_questions %}
                         <div class="form-group">
                             <label class="col-md-2 col-sm-2 col-xs-3 control-label">{{ question.content }}</label>
                             <div class="col-md-10 col-sm-10 col-xs-9">
@@ -32,25 +36,23 @@
                         <hr />
                         <div class="form-group">
                             <div class="col-md-offset-2 col-sm-offset-2 col-xs-offset-3 col-md-10 col-sm-10 col-xs-9">
-                                <button type="button" class="btn btn-primary pull-left" id="evaluate-btn">估价</button>
+                                <button type="button" class="btn btn-primary pull-left" id="evaluate-btn">换新</button>
                                 {% if g.user.is_authenticated() %}
-                                <a href="{{ url_for('admin.edit_evaluation', product_id=product.id) }}" class="btn btn-warning pull-right">回收设置</a>
+                                <a href="{{ url_for('admin.edit_exchange', product_id=product.id) }}" class="btn btn-warning pull-right">换新设置</a>
                                 {% endif %}
                                 <div class="clearfix"></div>
                             </div>
                         </div>
                     </form>
                 </div>
-                <div class="col-md-3 col-sm-4 col-xs-12">
-                    <img class="img-responsive" alt="" src="{{ product.photo_url }}" />
-                </div>
+
 
                 <div id="show_evaluation_modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="evaluation_report">
                     <div class="modal-dialog">
                         <div class="modal-content">
                             <div class="modal-header">
                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                <h4 class="modal-title" id="evaluation_report">估价单</h4>
+                                <h4 class="modal-title" id="evaluation_report">报价单</h4>
                             </div>
                             <div class="modal-body">
                                 <div class="container-fluid" id="evaluation_result">
@@ -78,14 +80,14 @@
 
             var data = JSON.stringify({'answers': answers});
             $.ajax({
-                url: "{{ url_for('home.evaluate', product_id=product.id) }}",
+                url: "{{ url_for('api.quote', product_id=product.id) }}",
                 type: "POST",
                 data: data,
                 dataType: "json",
                 contentType: "application/json; charset=utf-8",
                 success: function (data) {
                     // alert("success");
-                    $("#evaluation_result p").text("估价结果："+data["price"]+"元");
+                    $("#evaluation_result p").text("以旧换新价："+data["price"]+"元");
                     $('#show_evaluation_modal').modal();
                 }
             });

@@ -111,7 +111,7 @@ def edit_product_qa(product_id, category):
     return jsonify()
 
 
-@api.route('/recycle/product/<int:product_id>/evaluate/', methods=['POST'])
+@api.route('/product/<int:product_id>/evaluate/', methods=['POST'])
 def evaluate(product_id):
     product = Product.query.get_or_404(product_id)
     price = product.price.recycle_max_price
@@ -121,5 +121,17 @@ def evaluate(product_id):
         product_answer = ProductAnswer.query.filter_by(product_id=product_id, answer_id=answer_id).one()
         price += product_answer.discount    # 加负等于减正
     if price < min_price: price = min_price
+    print price
+    return jsonify(price=int(price))
+
+
+@api.route('/product/<int:product_id>/quote/', methods=['POST'])
+def quote(product_id):
+    product = Product.query.get_or_404(product_id)
+    price = product.price.exchange_price
+    data = request.get_json()
+    for answer_id in data['answers']:
+        product_answer = ProductAnswer.query.filter_by(product_id=product_id, answer_id=answer_id).one()
+        price += product_answer.discount    # 加负等于减正
     print price
     return jsonify(price=int(price))

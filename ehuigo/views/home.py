@@ -21,7 +21,17 @@ def index():
 @home.route('/recycle/product/<int:product_id>/')
 def show_recycle_product_detail(product_id):
     product = Product.query.get_or_404(product_id)
+    if not product.for_recycle:
+        abort(404)
     return render_template('home/recycle/product_detail.html', product=product)
+
+
+@home.route('/exchange/product/<int:product_id>/')
+def show_exchange_product_detail(product_id):
+    product = Product.query.get_or_404(product_id)
+    if not product.for_exchange:
+        abort(404)
+    return render_template('home/exchange/product_detail.html', product=product)
 
 
 @home.route('/uploads/<filename>')
