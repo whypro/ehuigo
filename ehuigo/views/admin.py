@@ -2,12 +2,13 @@
 from __future__ import unicode_literals
 import os
 
-from flask import Blueprint, render_template, request, jsonify, redirect, url_for, abort, flash, g
+from flask import Blueprint, render_template, request, redirect, url_for, abort, flash, g
 from flask.ext.login import login_required, current_user
 
 from ..extensions import db
-from ..models import Manufacturer, Product, Question, Answer, ProductQuestion, ProductAnswer, Price
+from ..models import Manufacturer, Product, Question, Answer
 from ..helpers import create_uploader, send_email
+from ..constants import QUESTION_CATEGORY, QUESTION_CATEGORY_REVERSED
 
 admin = Blueprint('admin', __name__, url_prefix='/admin')
 
@@ -162,11 +163,14 @@ def delete_product(product_id):
     return redirect(url_for('admin.show_products', manufacturer_id=manufacturer_id))
 
 
-@admin.route('/questions/')
+@admin.route('/questions/', defaults={'category': 'recycle'})
+@admin.route('/questions/<category>/')
 @login_required
-def show_questions():
-    questions = Question.query.all()
-    return render_template('admin/questions.html', questions=questions)
+def show_questions(category):
+    if category not in QUESTION_CATEGORY.keys():
+        abort(404)
+    questions = Question.query.filter_by(category=QUESTION_CATEGORY[category]).all()
+    return render_template('admin/questions.html', questions=questions, category=category)
 
 
 @admin.route('/question/add/', methods=['POST'])
@@ -176,10 +180,11 @@ def add_question():
     question_remark = request.form.get('question-remark')
     answer_contents = request.form.getlist('answer-content[]')
     answer_remarks = request.form.getlist('answer-remark[]')
-    if not question_content or not answer_contents:
+    category = request.form.get('category')
+    if not question_content or not answer_contents or category not in QUESTION_CATEGORY.keys():
         abort(400)
 
-    question = Question(content=question_content, remark=question_remark)
+    question = Question(content=question_content, remark=question_remark, category=QUESTION_CATEGORY[category])
     db.session.add(question)
     for i, content in enumerate(answer_contents):
         answer = Answer(question=question, content=content, remark=answer_remarks[i])
@@ -187,18 +192,7 @@ def add_question():
     db.session.commit()
 
     flash('添加成功', 'success')
-    return redirect(url_for('admin.show_questions'))
-
-
-@admin.route('/question/<int:question_id>/')
-@login_required
-def get_question(question_id):
-    question = Question.query.get_or_404(question_id)
-    question_dict = dict(id=question_id, content=question.content, remark=question.remark, answers=[])
-    for answer in question.answers:
-        question_dict['answers'].append(dict(id=answer.id, content=answer.content, remark=answer.remark))
-
-    return jsonify(question_dict)
+    return redirect(url_for('admin.show_questions', category=category))
 
 
 @admin.route('/question/<int:question_id>/edit/', methods=['POST'])
@@ -226,9 +220,8 @@ def edit_question(question_id):
         db.session.add(answer)
         
     db.session.commit()
-
     flash('保存成功', 'success')
-    return redirect(url_for('admin.show_questions'))
+    return redirect(url_for('admin.show_questions', category=QUESTION_CATEGORY_REVERSED[question.category]))
 
 
 @admin.route('/question/<question_id>/delete/')
@@ -238,62 +231,21 @@ def delete_question(question_id):
     db.session.delete(question)
     db.session.commit()
     flash('删除成功', 'success')
-    return redirect(url_for('admin.show_questions'))
+    return redirect(url_for('admin.show_questions', category=QUESTION_CATEGORY_REVERSED[question.category]))
 
 
-@admin.route('/product/<int:product_id>/recycle/edit/', methods=['GET', 'POST'])
+@admin.route('/product/<int:product_id>/recycle/edit/')
 @login_required
 def edit_recycle(product_id):
-    if request.method == 'POST':
-        data = request.get_json()
-
-        # 删除
-        original_questions = ProductQuestion.query.filter_by(product_id=product_id).all()
-        for question in original_questions:
-            if question.id not in data['questions']:
-                db.session.delete(question)
-
-        for order, question_id in enumerate(data['questions'], start=1):
-            question_id = int(question_id)
-            product_question = ProductQuestion.query.filter_by(product_id=product_id, question_id=question_id).first()
-            if not product_question:
-                product_question = ProductQuestion(product_id=product_id, question_id=question_id)
-            product_question.order = order
-            db.session.add(product_question)
-
-        db.session.commit()
-
-        for answer in data['answers']:
-            answer_id = int(answer[0])
-            discount = int(answer[1])
-            product_answer = ProductAnswer.query.filter_by(product_id=product_id, answer_id=answer_id).first()
-            if not product_answer:
-                product_answer = ProductAnswer(product_id=product_id, answer_id=answer_id)
-            product_answer.discount = discount
-            db.session.add(product_answer)
-
-        price = Price.query.filter_by(product_id=product_id).first()
-        if not price:
-            price = Price(product_id=product_id)
-
-        price.recycle_max_price = data['recycle_max_price']
-        price.recycle_min_price = data['recycle_min_price']
-        db.session.add(price)
-
-        db.session.commit()
-        flash('保存成功', 'success')
-        return jsonify(status=200)
-        # product_question = ProductQuestion(product=product, question=question, order=order)
-
     product = Product.query.get_or_404(product_id)
     if not product.for_recycle:
         # 未设置 for_recycle
         flash('请先选中旧机回收选项', 'warning')
         return redirect(url_for('admin.show_products', manufacturer_id=product.manufacturer_id))
 
-    questions = Question.query.all()
+    questions = Question.query.filter_by(category=QUESTION_CATEGORY['recycle']).all()
     discounts = dict()
-    for product_answer in ProductAnswer.query.filter_by(product_id=product_id).all():
+    for product_answer in product.product_recycle_answers:
         discounts[product_answer.answer_id] = product_answer.discount
     # print discounts
     # [{'choices': [], 'price': int}]
@@ -314,58 +266,17 @@ def __travel(questions):
 @login_required
 def edit_exchange(product_id):
     product = Product.query.get_or_404(product_id)
-
-    if request.method == 'POST':
-        exchange_price = request.form.get('exchange-price', '0')
-        exchange_price = float(exchange_price)
-        product.price.exchange_price = exchange_price
-        db.session.add(product)
-        db.session.commit()
-        flash('保存成功', 'success')
-        return redirect(url_for('admin.edit_exchange', product_id=product_id))
-
     if not product.for_exchange:
         # 未设置 for_exchange
         flash('请先选中以旧换新选项', 'warning')
         return redirect(url_for('admin.show_products', manufacturer_id=product.manufacturer_id))
 
-    return render_template('admin/exchange.html', product=product)
+    questions = Question.query.filter_by(category=QUESTION_CATEGORY['exchange']).all()
+    discounts = dict()
+    for product_answer in product.product_exchange_answers:
+        discounts[product_answer.answer_id] = product_answer.discount
 
-
-@admin.route('/product/<int:product_id>/recycle/<action>/')
-@login_required
-def set_recycle_product(product_id, action):
-    if action not in ('set', 'unset'):
-        abort(400)
-
-    p = Product.query.get_or_404(product_id)
-    p.for_recycle = True if action == 'set' else False
-    db.session.add(p)
-    price = Price.query.filter_by(product_id=product_id).first()
-    if action == 'set' and not price:
-        price = Price(product_id=product_id)
-        db.session.add(price)
-    db.session.commit()
-
-    return jsonify(status=200)
-
-
-@admin.route('/product/<int:product_id>/exchange/<action>/')
-@login_required
-def set_exchange_product(product_id, action):
-    if action not in ('set', 'unset'):
-        abort(400)
-
-    p = Product.query.get_or_404(product_id)
-    p.for_exchange = True if action == 'set' else False
-    db.session.add(p)
-    price = Price.query.filter_by(product_id=product_id).first()
-    if action == 'set' and not price:
-        price = Price(product_id=product_id)
-        db.session.add(price)
-    db.session.commit()
-
-    return jsonify(status=200)
+    return render_template('admin/exchange.html', product=product, questions=questions, discounts=discounts)
 
 
 @admin.route('/send_test_mail/')

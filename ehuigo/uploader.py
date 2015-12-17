@@ -7,11 +7,12 @@ from flask import current_app
 from oss.oss_api import OssAPI
 
 
+class InvalidUploadFileException(Exception):
+        pass
+
+
 class Uploader(object):
 
-    class InvalidFileException(Exception):
-        pass
-    
     @staticmethod
     def _sha1(data):
         """
@@ -32,7 +33,7 @@ class Uploader(object):
     def save(self, file_storage):
         file_data = file_storage.read()
         if not self._is_valid_ext(file_storage.filename, current_app.config['UPLOAD_ALLOWED_EXT']) or not self._is_valid_size(file_data):
-            raise InvalidFileException
+            raise InvalidUploadFileException
         basename = self._sha1(file_data)
         ext = os.path.splitext(file_storage.filename)[-1]
         filename = basename + ext

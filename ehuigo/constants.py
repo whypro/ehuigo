@@ -25,3 +25,12 @@ USER_STATUS = {
     'new': 1,      # 新注册，未激活
     'frozen': 2,   # 被冻结
 }
+
+
+QUESTION_CATEGORY = {
+    'recycle': 1,
+    'exchange': 2,
+}
+
+
+QUESTION_CATEGORY_REVERSED = dict((v, k) for k, v in QUESTION_CATEGORY.items())

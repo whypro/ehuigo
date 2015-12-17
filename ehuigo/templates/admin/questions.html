@@ -9,8 +9,8 @@
                 <div class="col-md-9 col-sm-9">
                     <div class="row">
                         <ul class="nav nav-tabs">
-                            <li role="presentation" class="active"><a>旧机回收</a></li>
-                            <li role="presentation"><a href="#">以旧换新</a></li>
+                            <li role="presentation"{% if category == 'recycle' %} class="active"{% endif %}><a href="{{ url_for('admin.show_questions', category='recycle') }}">旧机回收</a></li>
+                            <li role="presentation"{% if category == 'exchange' %} class="active"{% endif %}><a href="{{ url_for('admin.show_questions', category='exchange') }}">以旧换新</a></li>
                         </ul>
                         <hr />
                     </div>
@@ -101,7 +101,7 @@
                                                 <div class="form-group text-center">
                                                     <button id="add-answer-btn" class="btn btn-default" type="button"><span class="glyphicon glyphicon-plus" aria-label="add-answer-label"></span></button>
                                                 </div>
-
+                                                <input type="hidden" name="category" value="{{ category }}">
                                             </form>
                                         </div>
                                         <div class="modal-footer">

@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
-import hashlib
 
 from ..models import Manufacturer, Question, Answer, Product, User, Price
 
@@ -92,11 +91,7 @@ def init_questions_and_answers(session):
     session.commit()
 
 
-def init_user(session, email, password, nickname):
-    u = User(
-        email=email, 
-        password=hashlib.sha1(password).hexdigest(), 
-        nickname=nickname
-    )
+def init_user(session, email, password, username):
+    u = User(email=email, password=password, username=username)
     session.add(u)
     session.commit()

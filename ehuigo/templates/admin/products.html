@@ -107,7 +107,7 @@
             var product_id = $(this).attr("product-id");
             var action = $(this).prop("checked") ? "set": "unset";
             // alert(action);
-            $.get("/admin/product/"+product_id+"/recycle/"+action+"/", function (){
+            $.get("/api/product/"+product_id+"/recycle/"+action+"/", function (){
                 // alert("success");
             });
         });
@@ -115,7 +115,7 @@
             var product_id = $(this).attr("product-id");
             var action = $(this).prop("checked") ? "set": "unset";
             // alert(action);
-            $.get("/admin/product/"+product_id+"/exchange/"+action+"/", function (){
+            $.get("/api/product/"+product_id+"/exchange/"+action+"/", function (){
                 // alert("success");
             });
         });

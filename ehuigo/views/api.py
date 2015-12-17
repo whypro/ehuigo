@@ -1,0 +1,109 @@
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals
+
+from flask import Blueprint, jsonify, abort, flash, request
+from flask.ext.login import login_required
+
+from ..models import Question, Product, Price, ProductQuestion, ProductAnswer
+from ..extensions import db
+from ..constants import QUESTION_CATEGORY
+
+api = Blueprint('api', __name__, url_prefix='/api')
+
+
+@api.route('/question/<int:question_id>/')
+@login_required
+def get_question(question_id):
+    question = Question.query.get_or_404(question_id)
+    question_dict = dict(id=question_id, content=question.content, remark=question.remark, answers=[])
+    for answer in question.answers:
+        question_dict['answers'].append(dict(id=answer.id, content=answer.content, remark=answer.remark))
+
+    return jsonify(question_dict)
+
+
+@api.route('/product/<int:product_id>/recycle/<action>/')
+@login_required
+def set_recycle_product(product_id, action):
+    if action not in ('set', 'unset'):
+        abort(400)
+
+    p = Product.query.get_or_404(product_id)
+    p.for_recycle = True if action == 'set' else False
+    db.session.add(p)
+    price = Price.query.filter_by(product_id=product_id).first()
+    if action == 'set' and not price:
+        price = Price(product_id=product_id)
+        db.session.add(price)
+    db.session.commit()
+
+    return jsonify()
+
+
+@api.route('/product/<int:product_id>/exchange/<action>/')
+@login_required
+def set_exchange_product(product_id, action):
+    if action not in ('set', 'unset'):
+        abort(400)
+
+    p = Product.query.get_or_404(product_id)
+    p.for_exchange = True if action == 'set' else False
+    db.session.add(p)
+    price = Price.query.filter_by(product_id=product_id).first()
+    if action == 'set' and not price:
+        price = Price(product_id=product_id)
+        db.session.add(price)
+    db.session.commit()
+
+    return jsonify()
+
+
+@api.route('/product/<int:product_id>/<category>/edit/', methods=['POST'])
+@login_required
+def edit_product_qa(product_id, category):
+    if category not in QUESTION_CATEGORY.keys():
+        abort(404)
+
+    product = Product.query.get_or_404(product_id)
+    data = request.get_json()
+    # 删除
+    if category == 'recycle':
+        for product_question in product.product_recycle_questions:
+            if product_question.id not in data['questions']:
+                db.session.delete(product_question)
+    elif category == 'exchange':
+        for product_question in product.product_exchange_questions:
+            if product_question.id not in data['questions']:
+                db.session.delete(product_question)
+
+    for order, question_id in enumerate(data['questions'], start=1):
+        question_id = int(question_id)
+        product_question = ProductQuestion.query.filter_by(product_id=product_id, question_id=question_id).first()
+        if not product_question:
+            product_question = ProductQuestion(product_id=product_id, question_id=question_id)
+        product_question.order = order
+        db.session.add(product_question)
+
+    db.session.commit()
+
+    for answer in data['answers']:
+        answer_id = int(answer[0])
+        discount = int(answer[1])
+        product_answer = ProductAnswer.query.filter_by(product_id=product_id, answer_id=answer_id).first()
+        if not product_answer:
+            product_answer = ProductAnswer(product_id=product_id, answer_id=answer_id)
+        product_answer.discount = discount
+        db.session.add(product_answer)
+
+    price = Price.query.filter_by(product_id=product_id).first()
+    if not price:
+        price = Price(product_id=product_id)
+
+    price.recycle_max_price = data.get('recycle_max_price', price.recycle_max_price)
+    price.recycle_min_price = data.get('recycle_min_price', price.recycle_min_price)
+    price.exchange_price = data.get('exchange_price', price.exchange_price)
+
+    db.session.add(price)
+    db.session.commit()
+    flash('保存成功', 'success')
+    return jsonify()

@@ -20,8 +20,8 @@
                         {% include '_flash.html' %}
                         <form class="form-horizontal">
                             <div class="form-group">
-                                <label for="recycle-max-price" class="col-sm-2 control-label">最高价格</label>
-                                <div class="col-sm-10">
+                                <label for="recycle-max-price" class="col-sm-3 control-label">最高回收价</label>
+                                <div class="col-sm-9">
                                     <div class="input-group">
                                         <div class="input-group-addon">￥</div>
                                         <input type="text" name="recycle-max-price" class="form-control" id="recycle-max-price" value="{{ product.price.recycle_max_price|int }}">
@@ -29,8 +29,8 @@
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label for="recycle-min-price" class="col-sm-2 control-label">最低价格</label>
-                                <div class="col-sm-10">
+                                <label for="recycle-min-price" class="col-sm-3 control-label">最低回收价</label>
+                                <div class="col-sm-9">
                                     <div class="input-group">
                                         <div class="input-group-addon">￥</div>
                                         <input type="text" name="recycle-min-price" class="form-control" id="recycle-min-price" value="{{ product.price.recycle_min_price|int }}">
@@ -39,7 +39,7 @@
                             </div>
                         </form>
                         <div class="panel-group" id="questions" role="tablist" aria-multiselectable="true">
-                            {% for question in product.questions %}
+                            {% for question in product.recycle_questions %}
                             <div class="panel panel-default question-panel" id="question-{{ question.id }}-panel" question-id="{{ question.id }}">
                                 <div class="panel-heading" role="tab" id="question-{{ question.id }}-heading">
                                     <h3 class="panel-title">
@@ -85,7 +85,7 @@
                         <hr />
                         <ul class="list-group" id="rest-quesions">
                             {% for question in questions %}
-                            <li class="list-group-item" question-id="{{ question.id }}" question-content="{{ question.content }}"{% if question in product.questions %} style="display:none;"{% endif %}>
+                            <li class="list-group-item" question-id="{{ question.id }}" question-content="{{ question.content }}"{% if question in product.recycle_questions %} style="display:none;"{% endif %}>
                                 {{ question.content }}
                                 {% if question.remark %}<small>{{ question.remark }}</small>{% endif %}
                                 <a class="btn btn-primary btn-xs pull-right" id="add-question-{{ question.id }}">添加</a>
@@ -189,11 +189,11 @@
             var data = JSON.stringify({
                 'questions': questions, 
                 'answers': answers, 
-                'recycle_max_price': recycle_max_price, 
+                'recycle_max_price': recycle_max_price,
                 'recycle_min_price': recycle_min_price
             });
             $.ajax({
-                url: "{{ url_for('admin.edit_recycle', product_id=product.id) }}",
+                url: "{{ url_for('api.edit_product_qa', product_id=product.id, category='recycle') }}",
                 type: "POST",
                 data: data,
                 dataType: "json",

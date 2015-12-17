@@ -22,8 +22,8 @@
                         
                         <form class="form-horizontal" action="{{ url_for('admin.edit_exchange', product_id=product.id) }}" method="post" id="exchange-price-form">
                             <div class="form-group">
-                                <label for="exchange-price" class="col-sm-3 control-label">以旧换新价格</label>
-                                <div class="col-sm-9">
+                                <label for="exchange-price" class="col-sm-2 control-label">换新价</label>
+                                <div class="col-sm-10">
                                     <div class="input-group">
                                         <div class="input-group-addon">￥</div>
                                         <input type="text" name="exchange-price" class="form-control" id="exchange-price" value="{{ product.price.exchange_price|int }}">
@@ -31,14 +31,64 @@
                                 </div>
                             </div>
                         </form>
+
+                        <div class="panel-group" id="questions" role="tablist" aria-multiselectable="true">
+                            {% for question in product.exchange_questions %}
+                            <div class="panel panel-default question-panel" id="question-{{ question.id }}-panel" question-id="{{ question.id }}">
+                                <div class="panel-heading" role="tab" id="question-{{ question.id }}-heading">
+                                    <h3 class="panel-title">
+                                        <a class="collapsed" role="button" data-toggle="collapse" data-parent="#questions" href="#question-{{ question.id }}-collapse" aria-expanded="false" aria-controls="question-{{ question.id }}-collapse">
+                                            {{ question.content }}
+                                        </a>
+                                        {% if question.remark %}<small>{{ question.remark }}</small>{% endif %}
+                                        <div class="pull-right">
+                                            <button class="btn btn-xs btn-danger remove-question-btn" question-id="{{ question.id }}" id="remove-question-{{ question.id }}">删除</button>
+                                        </div>
+                                        <div class="clearfix"></div>
+                                    </h3>
+                                </div>
+                                <div id="question-{{ question.id }}-collapse" class="panel-collapse collapse" role="tabpanel" aria-labelledby="question-{{ question.id }}-heading">
+                                    <div class="panel-body">
+                                        <form class="form-horizontal">
+                                            {% for answer in question.answers %}
+                                            <div class="form-group">
+                                                <label for="answer-{{ answer.id }}-discount" class="col-sm-2 control-label">{{ answer.content }}</label>
+                                                <div class="col-sm-10">
+                                                    <input type="text" class="form-control answer-discount" id="answer-{{ answer.id }}-discount" answer-id="{{ answer.id }}" value="{{ discounts[answer.id]|d('0')|int }}">
+                                                </div>
+                                            </div>
+                                            {% endfor %}
+                                        </form>
+
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
                         
                         <hr />
-                        <button class="btn btn-success pull-left" id="save-exchange-price">保存</button>
+                        <button class="btn btn-success pull-left" id="save-questions">保存</button>
                         <a class="btn btn-default pull-right" href="{{ url_for('admin.show_products', manufacturer_id=product.manufacturer.id) }}">取消</a>
                         <div class="clearfix"></div>
                     </div>
                     <div class="col-md-4">
-                        
+                        <h4>候选问题</h4>
+                        <hr />
+                        <ul class="list-group" id="rest-quesions">
+                            {% for question in questions %}
+                            <li class="list-group-item" question-id="{{ question.id }}" question-content="{{ question.content }}"{% if question in product.exchange_questions %} style="display:none;"{% endif %}>
+                                {{ question.content }}
+                                {% if question.remark %}<small>{{ question.remark }}</small>{% endif %}
+                                <a class="btn btn-primary btn-xs pull-right" id="add-question-{{ question.id }}">添加</a>
+                                <ul class="hidden" id="question-{{ question.id }}-answers">
+                                    {% for answer in question.answers %}
+                                    <li class="hidden" answer-id="{{ answer.id }}" answer-content="{{ answer.content }}"></li>
+                                    {% endfor %}
+                                </ul>
+                                <div class="clearfix"></div>
+                            </li>
+                            {% endfor %}
+                        </ul>
                     </div>
 
                 </div>
@@ -47,9 +97,103 @@
 {% block page_scripts %}
 <script>
     $(document).ready(function(){
-        $("#save-exchange-price").click(function () {
-            // alert("submit");
-            $("#exchange-price-form").submit();
+        $(".remove-question-btn").on("click", function () {
+            // alert(question_id);
+            var question_id = $(this).attr("question-id");
+            $("#add-question-"+question_id).parent().show();
+            $("#question-"+question_id+"-panel").remove();
+        });
+
+        $("[id^='add-question-']").click(function () {
+            var question_id = $(this).parent().attr("question-id");
+            var question_content = $(this).parent().attr("question-content");
+            var question_remark = $(this).prev("small").text();
+            var new_question_remark = ''
+            if (question_remark != "") {
+                new_question_remark += '<small>'+question_remark+'</small>';
+            }
+            var form_html = "";
+            $("#question-"+question_id+"-answers li").each(function () {
+                var answer_id = $(this).attr('answer-id');
+                var answer_content = $(this).attr('answer-content');
+
+                form_html += (
+                    '               <div class="form-group">' +
+                    '                   <label for="answer-'+answer_id+'-discount" class="col-sm-2 control-label">'+answer_content+'</label>' +
+                    '                   <div class="col-sm-10">' +
+                    '                       <input type="text" class="form-control answer-discount" id="answer-'+answer_id+'-discount" answer-id="'+answer_id+'" value="0">' +
+                    '                   </div>' +
+                    '               </div>'
+                )
+            });
+
+            $("#questions").append(
+                '<div class="panel panel-default question-panel" id="question-'+question_id+'-panel" question-id="'+question_id+'">' +
+                '    <div class="panel-heading" role="tab" id="question-'+question_id+'-heading">' +
+                '        <h3 class="panel-title">' +
+                '            <a class="collapsed" role="button" data-toggle="collapse" data-parent="#questions" href="#question-'+question_id+'-collapse" aria-expanded="false" aria-controls="question-'+question_id+'-collapse">' +
+                '                '+question_content +
+                '            </a>' +
+                '            '+new_question_remark+
+                '           <div class="pull-right">' +
+                '               <button class="btn btn-xs btn-danger" id="remove-question-'+question_id+'">删除</button>' +
+                '           </div>' +
+                '           <div class="clearfix">' +
+                '        </h3>' +
+                '    </div>' +
+                '    <div id="question-'+question_id+'-collapse" class="panel-collapse collapse" role="tabpanel" aria-labelledby="question-'+question_id+'-heading">' +
+                '        <div class="panel-body">' +
+                '            <form class="form-horizontal">' +
+                form_html +
+                '            </form>' +
+                '        </div>' +
+                '    </div>' +
+                '</div>'
+            );
+
+            $("#remove-question-"+question_id).on("click", function () {
+                // alert(question_id);
+                $("#add-question-"+question_id).parent().show();
+                $("#question-"+question_id+"-panel").remove();
+            });
+
+            $(this).parent().hide();
+
+        });
+
+        $("#save-questions").click(function () {
+            var questions = [];
+            $("div.question-panel").each(function () {
+                // console.log($(this).attr("question-id"));
+                questions.push($(this).attr("question-id"));
+            });
+
+            var answers = [];
+            $("input.answer-discount").each(function () {
+                answers.push([$(this).attr("answer-id"), $(this).val()]);
+                // console.log($(this).attr("answer-id"));
+                // console.log($(this).val());
+            });
+
+            var exchange_price = $("#exchange-price").val();
+
+            var data = JSON.stringify({
+                'questions': questions,
+                'answers': answers,
+                'exchange_price': exchange_price,
+            });
+            $.ajax({
+                url: "{{ url_for('api.edit_product_qa', product_id=product.id, category='exchange') }}",
+                type: "POST",
+                data: data,
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                success: function (data) {
+                    // alert("success");
+                    location.reload();
+                }
+            });
+            // console.log(answers);
         });
     });
 </script>
