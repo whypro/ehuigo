@@ -59,7 +59,7 @@
                 {% for product in hot_products %}
                 <div class="col-md-3 col-sm-3 col-xs-6">
                     <div class="thumbnail">
-                        <a href="{{ url_for('home.evaluate', product_id=product.id) }}">
+                        <a href="{{ url_for('home.show_recycle_product_detail', product_id=product.id) }}">
                         <img alt="{{ product.model }}" src="{{ product.photo_url }}" /></a>
                         <div class="caption">
                             <h4>{{ product.model }}</h4>
