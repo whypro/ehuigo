@@ -142,7 +142,7 @@
             var question_id = $(this).parent().parent().parent().parent().attr("question-id");
 
             if (!$('#edit-question-'+question_id).length) {
-                $.get("/admin/question/"+question_id+"/", function(data) {
+                $.get("/api/question/"+question_id+"/", function(data) {
                     var question_content = data["content"];
                     var question_remark = data["remark"] == null ? "" : data["remark"];
                     var answers = data["answers"];
