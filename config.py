@@ -11,9 +11,6 @@ class Config(object):
     # JSON_SORT_KEY = False
     # JSONIFY_PRETTYPRINT_REGULAR = False
 
-    # Flask-SQLAlchemy Debugging Option
-    # SQLALCHEMY_ECHO = True
-
     HOT_PRODUCT_NUM = 4
     HOT_MANUFACTURER_NUM = 6
 
@@ -22,13 +19,13 @@ class Config(object):
     UPLOAD_ALLOWED_EXT = ['jpg', 'png', 'bmp', 'gif']
     UPLOAD_MAX_SIZE = 4 * 1024 * 1024    # 4M
 
-    MAIL_SERVER = 'smtp.126.com'
-    MAIL_PORT = 994
+    MAIL_SERVER = 'smtp.mxhichina.com'
+    MAIL_PORT = 465
     MAIL_USE_SSL = True
-    MAIL_USERNAME = 'whypro'
+    MAIL_USERNAME = 'noreply@ehuigo.cn'
     MAIL_PASSWORD = ''
 
-    EHUIGO_MAIL_SENDER = '易回购 <whypro@126.com>'
+    EHUIGO_MAIL_SENDER = '易回购 <noreply@ehuigo.cn>'
 
     @staticmethod
     def init_app(app):
@@ -54,6 +51,8 @@ class DevelopmentConfig(Config):
 
     DEBUG = True
     SQLALCHEMY_TRACK_MODIFICATIONS = True
+    # Flask-SQLAlchemy Debugging Option
+    # SQLALCHEMY_ECHO = True
 
     BOOTSTRAP_USE_MINIFIED = False
     BOOTSTRAP_SERVE_LOCAL = True

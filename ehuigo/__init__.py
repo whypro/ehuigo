@@ -2,7 +2,7 @@
 from __future__ import unicode_literals
 import logging
 
-from flask import Flask, redirect, url_for, g, render_template
+from flask import Flask, redirect, url_for, g, render_template, request, jsonify
 from flask.ext.login import LoginManager, current_user
 from flask.ext.bootstrap import Bootstrap
 
@@ -70,12 +70,24 @@ def config_before_request(app):
 def config_error_handlers(app):
     @app.errorhandler(400)
     def bad_request(e):
+        if request.accept_mimetypes.accept_json and not request.accept_mimetypes.accept_html:
+            response = jsonify({'error': 'bad request'})
+            response.status_code = 400
+            return response
         return render_template('error/400.html'), 400
 
     @app.errorhandler(404)
     def page_not_found(e):
+        if request.accept_mimetypes.accept_json and not request.accept_mimetypes.accept_html:
+            response = jsonify({'error': 'page not found'})
+            response.status_code = 404
+            return response
         return render_template('error/404.html'), 404
 
     @app.errorhandler(500)
     def internal_server_error(e):
+        if request.accept_mimetypes.accept_json and not request.accept_mimetypes.accept_html:
+            response = jsonify({'error': 'internal server error'})
+            response.status_code = 500
+            return response
         return render_template('error/500.html'), 500
