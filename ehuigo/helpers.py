@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 from threading import Thread
+from smtplib import SMTPServerDisconnected
+from ssl import SSLError
+import time
 
 from flask import current_app, render_template, request
 from flask.ext.mail import Message
@@ -17,9 +20,18 @@ def create_uploader():
     return uploader
 
 
-def _async_send_email(app, msg):
+def _async_send_email(app, msg, retry=3):
     with app.app_context():
-        mail.send(msg)
+        for i in range(retry):
+            try:
+                mail.send(msg)
+            except SSLError as e:
+                app.logger.error(e)
+            except SMTPServerDisconnected as e:
+                app.logger.error(e)
+            else:
+                break
+            time.sleep(1)
 
 
 def send_email(to, subject, template, **kwargs):
