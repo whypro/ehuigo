@@ -26,6 +26,11 @@ class Config(object):
     MAIL_PASSWORD = ''
 
     EHUIGO_MAIL_SENDER = '易回购 <noreply@ehuigo.cn>'
+    EHUIGO_ADMINS = ['whypro@live.cn']
+
+    # SQLAlchemy 慢查询日志
+    SQLALCHEMY_RECORD_QUERIES = True
+    FLASK_SLOW_DB_QUERY_TIME = 0.5
 
     @staticmethod
     def init_app(app):
@@ -52,7 +57,7 @@ class DevelopmentConfig(Config):
     DEBUG = True
     SQLALCHEMY_TRACK_MODIFICATIONS = True
     # Flask-SQLAlchemy Debugging Option
-    # SQLALCHEMY_ECHO = True
+    SQLALCHEMY_ECHO = True
 
     BOOTSTRAP_USE_MINIFIED = False
     BOOTSTRAP_SERVE_LOCAL = True
@@ -98,7 +103,6 @@ class ACEConfig(Config):
         database=DB_DATABASE
     )
 
-    DEBUG = True
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
     OSS_ENDPOINT = 'static.ehuigo.cn'

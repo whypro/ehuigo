@@ -3,5 +3,6 @@
 .idea/
 venv/
 uploads/
+tmp/
 ehuigo.sqlite
 ehuigo.sublime-*

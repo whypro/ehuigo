@@ -2,7 +2,7 @@
 from __future__ import unicode_literals
 import os
 
-from flask import Blueprint, render_template, request, redirect, url_for, abort, flash, g
+from flask import Blueprint, render_template, request, redirect, url_for, abort, flash, g, current_app
 from flask.ext.login import login_required, current_user
 
 from ..extensions import db
@@ -283,7 +283,8 @@ def edit_exchange(product_id):
 @login_required
 def send_test_mail():
     if current_user.email:
-        send_email(current_user.email, '测试邮件', 'mail/test.html')
+        send_email(current_user.email, '测试邮件', 'mail/test.html', username=current_user.username)
+        flash('测试邮件发送成功', 'success')
     return redirect(url_for('admin.index'))
 
 

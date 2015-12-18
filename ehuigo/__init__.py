@@ -2,12 +2,11 @@
 from __future__ import unicode_literals
 import logging
 
-from flask import Flask, redirect, url_for, g, render_template, request, jsonify
-from flask.ext.login import LoginManager, current_user
-from flask.ext.bootstrap import Bootstrap
+from flask import Flask, render_template, request, jsonify
+from flask.ext.sqlalchemy import get_debug_queries
 
 from . import views
-from .extensions import db, migrate, mail, login_manager
+from .extensions import db, migrate, mail, login_manager, bootstrap
 from .models import User
 
 from config import config
@@ -18,6 +17,10 @@ def create_app(config_name):
 
     # config
     app.config.from_object(config[config_name])
+    config[config_name].init_app(app)
+
+    # logger
+    init_app_logger(app)
 
     # blueprint
     app.register_blueprint(views.home)
@@ -34,13 +37,10 @@ def create_app(config_name):
 
     login_manager.init_app(app)
 
-    Bootstrap(app)
+    bootstrap.init_app(app)
     # print app.extensions['bootstrap']['cdns']
 
-    # logger
-    init_app_logger(app)
-
-    config_before_request(app)
+    config_request_handlers(app)
     config_error_handlers(app)
 
     return app
@@ -57,14 +57,27 @@ def init_app_logger(app):
     )
 
     file_handler.setFormatter(formatter)
-    file_handler.setLevel(logging.ERROR)
+    file_handler.setLevel(logging.WARNING)
     app.logger.addHandler(file_handler)
 
 
-def config_before_request(app):
+def config_request_handlers(app):
     @app.before_request
     def before_request():
-        g.user = current_user
+        pass
+        # g.user = current_user
+
+    @app.after_request
+    def after_request(response):
+        # 慢查询监视
+        for query in get_debug_queries():
+            if query.duration >= app.config['FLASK_SLOW_DB_QUERY_TIME']:
+                app.logger.warning(
+                    'Slow query: {0}\nParameters: {1}\nDuration: {2}\nContext: {3}\n'.format(
+                        query.statement, query.parameters, query.duration, query.context
+                    )
+                )
+        return response
 
 
 def config_error_handlers(app):

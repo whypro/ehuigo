@@ -17,6 +17,13 @@ from ehuigo.scripts.init_data import init_manufacturers_and_products, init_quest
 from config import config
 
 
+# 覆盖检测
+COV = None
+if os.environ.get('FLASK_COVERAGE'):
+    import coverage
+    COV = coverage.coverage(branch=True, include='ehuigo/*')
+    COV.start()
+
 config_name = 'development'
 
 app = create_app(config_name)
@@ -134,11 +141,37 @@ def restore():
 
 
 @manager.command
-def test():
+def test(coverage=False):
     """Run the unit tests."""
+    if coverage and not os.environ.get('FLASK_COVERAGE'):
+        import sys
+        os.environ['FLASK_COVERAGE'] = '1'
+        os.execvp(sys.executable, [sys.executable]+sys.argv)
+
     import unittest
     tests = unittest.TestLoader().discover('tests')
     unittest.TextTestRunner(verbosity=2).run(tests)
+
+    if COV:
+        COV.stop()
+        COV.save()
+        print 'Coverage Summary:'
+        COV.report()
+        basedir = os.path.abspath(os.path.dirname(__file__))
+        covdir = os.path.join(basedir, 'tmp/coverage')
+        COV.html_report(directory=covdir)
+        print 'HTML version: file://{0}/index.html'.format(covdir)
+        COV.erase()
+
+
+@manager.command
+def profile(length=25, profile_dir='tmp/profiler'):
+    """Start the application under the code profiler."""
+    from werkzeug.contrib.profiler import ProfilerMiddleware
+    if not os.path.exists(profile_dir):
+        os.makedirs(profile_dir)
+    app.wsgi_app = ProfilerMiddleware(app.wsgi_app, restrictions=[length], profile_dir=profile_dir)
+    app.run()
 
 
 if __name__ == '__main__':

@@ -25,10 +25,10 @@ def _async_send_email(app, msg):
 def send_email(to, subject, template, **kwargs):
     msg = Message(subject=subject, sender=current_app.config['EHUIGO_MAIL_SENDER'], recipients=[to])
     msg.html = render_template(template, **kwargs)
-    # thread = Thread(target=_async_send_email, args=[current_app, msg])
-    # thread.start()
-    # return thread
-    mail.send(msg)
+    thread = Thread(target=_async_send_email, args=[current_app._get_current_object(), msg])
+    thread.start()
+    return thread
+    # mail.send(msg)
 
 
 def get_client_ip():

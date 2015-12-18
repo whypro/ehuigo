@@ -102,7 +102,7 @@ class Question(db.Model):
     remark = db.Column(db.Unicode(MAX_LENGTH['question_remark']))     # 备注
     category = db.Column(db.Integer, default=QUESTION_CATEGORY['recycle'])
 
-    answers = db.relationship('Answer', backref='question', passive_deletes=True)
+    answers = db.relationship('Answer', backref='question', passive_deletes=True, lazy='joined')
 
 
 class Answer(db.Model):
