@@ -86,6 +86,8 @@ class Price(db.Model):
     recycle_max_price = db.Column(db.Numeric(10, 2), default=0)
     recycle_min_price = db.Column(db.Numeric(10, 2), default=0)
     exchange_price = db.Column(db.Numeric(10, 2), default=0)
+    jd_price = db.Column(db.Numeric(10, 2))
+    official_price = db.Column(db.Numeric(10, 2))
 
 
 class Album(object):

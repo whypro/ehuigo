@@ -61,9 +61,9 @@ def search_products():
     if not key:
         abort(400)
     search_string = '%{key}%'.format(key=key)
-    products_1 = Product.query.filter(Product.model.like(search_string))
+    products_1 = Product.query.filter(Product.model.like(search_string), Product.for_recycle==True)
     subqry = Manufacturer.query.filter(or_(Manufacturer.name.like(search_string), Manufacturer.alias.like(search_string))).subquery()
-    products_2 = Product.query.filter(Product.manufacturer_id==subqry.c.id)
+    products_2 = Product.query.filter(Product.manufacturer_id==subqry.c.id, Product.for_recycle==True)
     products = products_1.union(products_2).all()
     
     return render_template('home/recycle/products_search.html', products=products, key=key)

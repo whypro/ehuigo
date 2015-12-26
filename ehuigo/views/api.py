@@ -104,6 +104,8 @@ def edit_product_qa(product_id, category):
         price.recycle_min_price = data['recycle_min_price']
     elif category == 'exchange':
         price.exchange_price = data['exchange_price']
+        price.jd_price = data['jd_price']
+        price.official_price = data['official_price']
 
     db.session.add(price)
     db.session.commit()

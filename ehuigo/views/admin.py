@@ -262,7 +262,7 @@ def __travel(questions):
     pass
 
 
-@admin.route('/product/<int:product_id>/exchange/edit/', methods=['GET', 'POST'])
+@admin.route('/product/<int:product_id>/exchange/edit/')
 @login_required
 def edit_exchange(product_id):
     product = Product.query.get_or_404(product_id)
