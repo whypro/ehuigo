@@ -55,7 +55,7 @@
                 <div class="col-md-3 col-sm-4 col-xs-12">
                     <img class="img-responsive" alt="" src="{{ product.photo_url }}" />
                     <div>
-                        <h4>{{ product.model }} <br><small>（{{ product.price.brief_intro if product.price.brief_intro else 'N/A' }}）</small></h4>
+                        <h4>{{ product.model }}{% if product.price.brief_intro %} <br><small>（{{ product.price.brief_intro }}）</small>{% endif %}</h4>
                         <h3 class="text-danger text-right">换购价：<span id="exchange-price-span">{{ product.price.exchange_price|int }}</span></h3>
                         <h4 class="text-danger text-right">会员价：{{ product.price.member_price|int }}</h4>
                         <del class="pull-left">京东价：{{ product.price.jd_price|int }}</del>&nbsp;
@@ -70,14 +70,13 @@
                     <form class="form-horizontal">
                         {% for question in product.exchange_questions %}
                         <div class="form-group">
-                            <div class="row">
+                            <div class="row" style="border-bottom: 1px #ddd dashed;">
                                 <label class="col-md-2 col-sm-2 col-xs-3 control-label">{{ question.content }}</label>
                                 <div class="col-md-10 col-sm-10 col-xs-9">
                                     {% for answer in question.answers %}
-                                        <div class="col-md-3 col-sm-6 col-xs-6">
-                                            <input class="answer-input" type="radio" name="question-{{ question.id }}" id="answer-{{ answer.id }}" value="{{ answer.id }}" autocomplete="off"{% if not loop.index0 %} checked{% endif %} data-labelauty="{{ answer.content }}&nbsp;<small>{% if answer.remark %}（{{ answer.remark }}）{% endif %}</small>">
-                                            {# <span><small>{% if answer.remark %}（{{ answer.remark }}）{% endif %}</small></span>  #}
-                                        </div>
+                                    <div class="col-md-3 col-sm-6 col-xs-6">
+                                        <input class="answer-input" type="radio" name="question-{{ question.id }}" id="answer-{{ answer.id }}" value="{{ answer.id }}" autocomplete="off"{% if not loop.index0 %} checked{% endif %} data-labelauty="{{ answer.content }}{% if answer.remark %}&nbsp;<small>（{{ answer.remark }}）</small>{% endif %}">
+                                    </div>
                                     {% endfor %}
                                 </div>
                             </div>
