@@ -85,9 +85,11 @@ class Price(db.Model):
     product_id = db.Column(db.Integer, db.ForeignKey('product.id', ondelete='CASCADE'))            # 物品 ID
     recycle_max_price = db.Column(db.Numeric(10, 2), default=0)
     recycle_min_price = db.Column(db.Numeric(10, 2), default=0)
-    exchange_price = db.Column(db.Numeric(10, 2), default=0)
-    jd_price = db.Column(db.Numeric(10, 2))
-    official_price = db.Column(db.Numeric(10, 2))
+    exchange_price = db.Column(db.Numeric(10, 2), default=0)    # 换购价
+    member_price = db.Column(db.Numeric(10, 2), default=0)      # 会员价
+    jd_price = db.Column(db.Numeric(10, 2))                     # 京东价
+    official_price = db.Column(db.Numeric(10, 2))               # 官方价
+    brief_intro = db.Column(db.UnicodeText)                     # 促销语
 
 
 class Album(object):

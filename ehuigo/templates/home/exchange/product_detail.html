@@ -1,5 +1,41 @@
 {% extends '_base.html' %}
 {% block subtitle %}{{ product.model }} | 以旧换新{% endblock %}
+{% block styles %}
+    {{ super() }}
+    <link rel="stylesheet" href="{{ url_for('static', filename='jquery-labelauty.css') }}">
+    <style>
+        input.labelauty + label > span.labelauty-unchecked-image,
+        input.labelauty + label > span.labelauty-checked-image
+        {
+            width: 16px;
+            height: 30px;
+        }
+
+        input.labelauty + label > span.labelauty-unchecked,
+        input.labelauty + label > span.labelauty-checked
+        {
+            line-height: 30px;
+        }
+        input.labelauty + label {
+            font-size: 16px;
+        }
+        input.labelauty:checked + label
+        {
+            background-color: #FFB90F;
+            color: #ffffff;
+        }
+
+        input.labelauty:checked:not([disabled]) + label:hover
+        {
+            background-color: #FFD700;
+        }
+
+        .control-label {
+            font-size: 16px;
+            line-height: 30px;
+        }
+    </style>
+{% endblock %}
 {% block page_content %}
             <div class="row">
                 <div class="col-md-12">
@@ -15,19 +51,27 @@
 
                 <div class="col-md-3 col-sm-4 col-xs-12">
                     <img class="img-responsive" alt="" src="{{ product.photo_url }}" />
+                    <div>
+                        <h4>{{ product.model }} <small>（{{ product.price.brief_intro }}）</small></h4>
+                        <h3 class="text-danger">换购价：<span id="exchange-price-span">{{ product.price.exchange_price|int }}</span></h3>
+                        <h4 class="text-danger">会员价：{{ product.price.member_price|int }}</h4>
+                        <del>京东价：{{ product.price.jd_price|int }}</del><br>
+                        <del>官方价：{{ product.price.official_price|int }}</del>
+                    </div>
                 </div>
 
                 <div class="col-md-9 col-sm-8 col-xs-12">
                     <form class="form-horizontal">
                         {% for question in product.exchange_questions %}
                         <div class="form-group">
-                            <label class="col-md-2 col-sm-2 col-xs-3 control-label">{{ question.content }}</label>
-                            <div class="col-md-10 col-sm-10 col-xs-9">
-                                <div data-toggle="buttons">
+                            <div class="row">
+                                <label class="col-md-2 col-sm-2 col-xs-3 control-label">{{ question.content }}</label>
+                                <div class="col-md-10 col-sm-10 col-xs-9">
                                     {% for answer in question.answers %}
-                                    <label class="btn{% if not loop.index0 %} btn-success active{% else %} btn-default{% endif %}">
-                                        <input class="answer-input" type="radio" name="question-{{ question.id }}" id="answer-{{ answer.id }}" value="{{ answer.id }}" autocomplete="off"{% if not loop.index0 %} checked{% endif %}>{{ answer.content }}{% if answer.remark %}<small>（{{ answer.remark }}）</small>{% endif %}
-                                    </label>
+                                        <div class="col-md-3 col-sm-6 col-xs-6">
+                                            <input class="answer-input" type="radio" name="question-{{ question.id }}" id="answer-{{ answer.id }}" value="{{ answer.id }}" autocomplete="off"{% if not loop.index0 %} checked{% endif %} data-labelauty="{{ answer.content }}">
+                                            <span><small>{% if answer.remark %}（{{ answer.remark }}）{% endif %}</small></span>
+                                        </div>
                                     {% endfor %}
                                 </div>
                             </div>
@@ -36,7 +80,7 @@
                         <hr />
                         <div class="form-group">
                             <div class="col-md-offset-2 col-sm-offset-2 col-xs-offset-3 col-md-10 col-sm-10 col-xs-9">
-                                <button type="button" class="btn btn-primary pull-left" id="evaluate-btn">抢购</button>
+                                <button type="button" class="btn btn-primary pull-left" id="evaluate-btn">立即抢购</button>
                                 {% if current_user.is_authenticated() %}
                                 <a href="{{ url_for('admin.edit_exchange', product_id=product.id) }}" class="btn btn-warning pull-right">设置</a>
                                 {% endif %}
@@ -45,6 +89,8 @@
                         </div>
                     </form>
                 </div>
+
+
 
 
                 <div id="show_evaluation_modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="evaluation_report">
@@ -69,8 +115,11 @@
             </div>
 {% endblock %}
 {% block page_scripts %}
+<script src="{{ url_for('static', filename='jquery-labelauty.js') }}"></script>
 <script>
     $(document).ready(function(){
+        $(".answer-input").labelauty();
+
         $("#evaluate-btn").click(function () {
             var answers = [];
             $("input.answer-input:checked").each(function () {
@@ -89,23 +138,33 @@
                     // alert("success");
                     $("#evaluation_result p").text("以旧换新价："+data["price"]+"元");
                     $('#show_evaluation_modal').modal();
+                    $("#exchange-price-span").text(data['price']);
                 }
             });
         });
 
+
         $(".answer-input").change(function () {
-            var labels = $(this).parent().parent().children("label");
-            labels.removeClass("btn-success");
-            labels.addClass("btn-default");
+            var answers = [];
+            $("input.answer-input:checked").each(function () {
+                answers.push($(this).val());
+            });
+            console.log(answers);
 
-            if ($(this).prop("checked")) {
-                $(this).parent().removeClass("btn-default");
-                $(this).parent().addClass("btn-success");
-            }
-            console.log($(this));
-
-            
+            var data = JSON.stringify({'answers': answers});
+            $.ajax({
+                url: "{{ url_for('api.quote', product_id=product.id) }}",
+                type: "POST",
+                data: data,
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                success: function (data) {
+                    // alert("success");
+                    $("#exchange-price-span").text(data['price']);
+                }
+            });
         });
+
     });
 </script>
 {% endblock %}

@@ -31,11 +31,11 @@
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label for="official-price" class="col-sm-2 control-label">官方价</label>
+                                <label for="member-price" class="col-sm-2 control-label">会员价</label>
                                 <div class="col-sm-10">
                                     <div class="input-group">
                                         <div class="input-group-addon">￥</div>
-                                        <input type="text" name="official-price" class="form-control" id="official-price" value="{{ product.price.official_price|int }}">
+                                        <input type="text" name="member-price" class="form-control" id="member-price" value="{{ product.price.member_price|int }}">
                                     </div>
                                 </div>
                             </div>
@@ -46,6 +46,21 @@
                                         <div class="input-group-addon">￥</div>
                                         <input type="text" name="jd-price" class="form-control" id="jd-price" value="{{ product.price.jd_price|int }}">
                                     </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="official-price" class="col-sm-2 control-label">官方价</label>
+                                <div class="col-sm-10">
+                                    <div class="input-group">
+                                        <div class="input-group-addon">￥</div>
+                                        <input type="text" name="official-price" class="form-control" id="official-price" value="{{ product.price.official_price|int }}">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="brief-intro" class="col-sm-2 control-label">促销简介</label>
+                                <div class="col-sm-10">
+                                    <textarea name="brief-intro" class="form-control" id="brief-intro">{{ product.price.brief_intro if product.price.brief_intro != None else '' }}</textarea>
                                 </div>
                             </div>
                         </form>
@@ -194,15 +209,19 @@
             });
 
             var exchange_price = $("#exchange-price").val();
-            var official_price = $("#official-price").val();
+            var member_price = $("#member-price").val();
             var jd_price = $("#jd-price").val();
+            var official_price = $("#official-price").val();
+            var brief_intro = $("#brief-intro").val();
 
             var data = JSON.stringify({
                 questions: questions,
                 answers: answers,
                 exchange_price: exchange_price,
+                member_price: member_price,
+                jd_price: jd_price,
                 official_price: official_price,
-                jd_price: jd_price
+                brief_intro: brief_intro
             });
             $.ajax({
                 url: "{{ url_for('api.edit_product_qa', product_id=product.id, category='exchange') }}",
