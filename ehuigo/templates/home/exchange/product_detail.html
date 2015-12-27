@@ -75,7 +75,7 @@
                                 <div class="col-md-10 col-sm-10 col-xs-9">
                                     {% for answer in question.answers %}
                                         <div class="col-md-3 col-sm-6 col-xs-6">
-                                            <input class="answer-input" type="radio" name="question-{{ question.id }}" id="answer-{{ answer.id }}" value="{{ answer.id }}" autocomplete="off"{% if not loop.index0 %} checked{% endif %} data-labelauty="{{ answer.content }}">
+                                            <input class="answer-input" type="radio" name="question-{{ question.id }}" id="answer-{{ answer.id }}" value="{{ answer.id }}" autocomplete="off"{% if not loop.index0 %} checked{% endif %} data-labelauty="{{ answer.content }}&nbsp;<small>{% if answer.remark %}（{{ answer.remark }}）{% endif %}</small>">
                                             {# <span><small>{% if answer.remark %}（{{ answer.remark }}）{% endif %}</small></span>  #}
                                         </div>
                                     {% endfor %}
