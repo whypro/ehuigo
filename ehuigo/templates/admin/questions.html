@@ -12,7 +12,7 @@
                             <li role="presentation"{% if category == 'recycle' %} class="active"{% endif %}><a href="{{ url_for('admin.show_questions', category='recycle') }}">旧机回收</a></li>
                             <li role="presentation"{% if category == 'exchange' %} class="active"{% endif %}><a href="{{ url_for('admin.show_questions', category='exchange') }}">以旧换新</a></li>
                         </ul>
-                        <hr />
+                        <hr>
                     </div>
                     <div class="row">
                         {% include '_flash.html' %}

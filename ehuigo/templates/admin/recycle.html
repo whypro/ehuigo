@@ -13,7 +13,7 @@
                             <li><a href="{{ url_for('admin.show_products', manufacturer_id=product.manufacturer.id) }}">{{ product.manufacturer.name }}</a></li>
                             <li class="active">{{ product.model }}</li>
                         </ol>
-                        <hr />
+                        <hr>
                     </div>
 
                     <div class="col-md-8">
@@ -71,7 +71,7 @@
                             </div>
                             {% endfor %}
                         </div>
-                        <hr />
+                        <hr>
                         <button class="btn btn-success pull-left" id="save-questions">保存</button>
                         <a class="btn btn-default pull-right" href="{{ url_for('admin.show_products', manufacturer_id=product.manufacturer.id) }}">取消</a>
                         <div class="clearfix"></div>
@@ -82,7 +82,7 @@
                     </div>
                     <div class="col-md-4">
                         <h4>候选问题</h4>
-                        <hr />
+                        <hr>
                         <ul class="list-group" id="rest-quesions">
                             {% for question in questions %}
                             <li class="list-group-item" question-id="{{ question.id }}" question-content="{{ question.content }}"{% if question in product.recycle_questions %} style="display:none;"{% endif %}>

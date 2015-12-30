@@ -3,19 +3,18 @@
 {% block page_content %}
             <div class="row">
                 <div class="col-md-12">
-                    <div class="row">
-                        <ol class="breadcrumb">
-                            <li><a href="{{ url_for('home.show_exchange_manufacturers') }}">以旧换新</a></li>
-                            <li class="active">所有品牌</li>
-                        </ol>
-                        <hr />
-                    </div>
+                    <ol class="breadcrumb">
+                        <li><a href="{{ url_for('home.show_exchange_manufacturers') }}">以旧换新</a></li>
+                        <li class="active">所有品牌</li>
+                    </ol>
+                    <hr>
                 </div>
-
+            </div>
+            <div class="row">
                 {% for manufacturer in manufacturers %}
                 <div class="col-md-2 col-sm-2 col-xs-4">
                     <a href="{{ url_for('home.show_exchange_products', manufacturer_id=manufacturer.id) }}" class="thumbnail">
-                        <img alt="{{ manufacturer.name }}" src="{{ manufacturer.logo_url }}" />
+                        <img alt="{{ manufacturer.name }}" src="{{ manufacturer.logo_url }}">
                     </a>
                 </div>
                 {% endfor %}

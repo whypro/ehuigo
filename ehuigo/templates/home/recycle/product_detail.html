@@ -23,13 +23,13 @@
         */
         input.labelauty:checked + label
         {
-            background-color: #FFB90F;
+            background-color: #FF9900;
             color: #ffffff;
         }
 
         input.labelauty:checked:not([disabled]) + label:hover
         {
-            background-color: #FFD700;
+            background-color: #FFC700;
         }
         /*
         .control-label {
@@ -42,47 +42,48 @@
 {% block page_content %}
             <div class="row">
                 <div class="col-md-12">
-                    <div class="row">
-                        <ol class="breadcrumb">
-                            <li><a href="{{ url_for('home.show_recycle_manufacturers') }}">旧机回收</a></li>
-                            <li><a href="{{ url_for('home.show_recycle_products', manufacturer_id=product.manufacturer.id) }}">{{ product.manufacturer.name }}</a></li>
-                            <li class="active">{{ product.model }}</li>
-                        </ol>
-                        <hr />
-                    </div>
+                    <ol class="breadcrumb">
+                        <li><a href="{{ url_for('home.show_recycle_manufacturers') }}">旧机回收</a></li>
+                        <li><a href="{{ url_for('home.show_recycle_products', manufacturer_id=product.manufacturer.id) }}">{{ product.manufacturer.name }}</a></li>
+                        <li class="active">{{ product.model }}</li>
+                    </ol>
+                    <hr />
                 </div>
-
-                <div class="col-md-9 col-sm-8 col-xs-12">
-                    <form class="form-horizontal">
-                        {% for question in product.recycle_questions %}
-                        <div class="form-group">
-                            <div class="row" style="border-bottom: 1px #ddd dashed;">
-                                <label class="col-md-2 col-sm-2 col-xs-3 control-label">{{ question.content }}</label>
-                                <div class="col-md-10 col-sm-10 col-xs-9">
-                                    {% for answer in question.answers %}
-                                    <div class="col-md-3 col-sm-6 col-xs-6">
-                                        <input class="answer-input" type="radio" name="question-{{ question.id }}" id="answer-{{ answer.id }}" value="{{ answer.id }}" autocomplete="off"{% if not loop.index0 %} checked{% endif %} data-labelauty="{{ answer.content }}{% if answer.remark %}&nbsp;<small>（{{ answer.remark }}）</small>{% endif %}">
-                                        {# <span><small>{% if answer.remark %}（{{ answer.remark }}）{% endif %}</small></span> #}
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="col-md-9 col-sm-8 col-xs-12">
+                        <form class="form-horizontal">
+                            {% for question in product.recycle_questions %}
+                            <div class="form-group">
+                                <div class="row" style="border-bottom: 1px #ddd dashed;">
+                                    <label class="col-md-2 col-sm-2 col-xs-3 control-label">{{ question.content }}</label>
+                                    <div class="col-md-10 col-sm-10 col-xs-9">
+                                        {% for answer in question.answers %}
+                                        <div class="col-md-3 col-sm-6 col-xs-6">
+                                            <input class="answer-input" type="radio" name="question-{{ question.id }}" id="answer-{{ answer.id }}" value="{{ answer.id }}" autocomplete="off"{% if not loop.index0 %} checked{% endif %} data-labelauty="{{ answer.content }}{% if answer.remark %}&nbsp;<small>（{{ answer.remark }}）</small>{% endif %}">
+                                            {# <span><small>{% if answer.remark %}（{{ answer.remark }}）{% endif %}</small></span> #}
+                                        </div>
+                                        {% endfor %}
                                     </div>
-                                    {% endfor %}
                                 </div>
                             </div>
-                        </div>
-                        {% endfor %}
-                        <hr />
-                        <div class="form-group">
-                            <div class="col-md-offset-2 col-sm-offset-2 col-xs-offset-3 col-md-10 col-sm-10 col-xs-9">
-                                <button type="button" class="btn btn-primary pull-left" id="evaluate-btn">立即估价</button>
-                                {% if current_user.is_authenticated() %}
-                                <a href="{{ url_for('admin.edit_recycle', product_id=product.id) }}" class="btn btn-warning pull-right">设置</a>
-                                {% endif %}
-                                <div class="clearfix"></div>
+                            {% endfor %}
+                            <hr />
+                            <div class="form-group">
+                                <div class="col-md-offset-2 col-sm-offset-2 col-xs-offset-3 col-md-10 col-sm-10 col-xs-9">
+                                    <button type="button" class="btn btn-primary pull-left" id="evaluate-btn">立即估价</button>
+                                    {% if current_user.is_authenticated() %}
+                                    <a href="{{ url_for('admin.edit_recycle', product_id=product.id) }}" class="btn btn-warning pull-right">设置</a>
+                                    {% endif %}
+                                    <div class="clearfix"></div>
+                                </div>
                             </div>
-                        </div>
-                    </form>
-                </div>
-                <div class="col-md-3 col-sm-4 col-xs-12">
-                    <img class="img-responsive" alt="" src="{{ product.photo_url }}" />
+                        </form>
+                    </div>
+                    <div class="col-md-3 col-sm-4 col-xs-12">
+                        <img class="img-responsive" alt="" src="{{ product.photo_url }}" />
+                    </div>
                 </div>
 
                 <div id="show_evaluation_modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="evaluation_report">
