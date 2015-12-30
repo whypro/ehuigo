@@ -1,11 +1,15 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
+import io
 
-from flask import Blueprint, render_template, request, jsonify, redirect, abort, current_app, send_from_directory
+from flask import Blueprint, render_template, request, jsonify, redirect, abort, current_app, send_from_directory, send_file, session
 from sqlalchemy.sql import func
 from sqlalchemy import or_
+from captcha.image import ImageCaptcha
 
 from ..models import Manufacturer, Product
+from ..helpers import send_sms, gen_captcha_str
+from ..captcha import create_captcha
 
 
 home = Blueprint('home', __name__)
@@ -110,3 +114,30 @@ def test_error_404():
 @home.route('/500/')
 def test_error_500():
     abort(500)
+
+
+@home.route('/captcha/image/')
+def gen_image_captcha():
+    # 防止恶意刷新
+    # if 'image_captcha_req_count' in session:
+    #     session['image_captcha_req_count'] += 1
+    # else:
+    #     session['image_captcha_req_count'] = 1
+    #
+    # if session['image_captcha_req_count'] > 10:
+    #     abort(403)
+
+    img, captcha_str = create_captcha(
+        size=(80, 34), chars=gen_captcha_str(4), img_type="PNG",
+        font_type="ehuigo/static/fonts/ALGER.TTF",
+    )
+    f = io.BytesIO()
+    img.save(f, 'PNG')
+    f.seek(0)
+    # print captcha_str
+    session['image_captcha'] = captcha_str.upper()
+    return send_file(f, mimetype='image/png', cache_timeout=0)
+
+    # image = ImageCaptcha(width=80, height=30, fonts=['ehuigo/static/fonts/ALGER.TTF'], font_sizes=(30, 25, 35 ))
+    # f = image.generate(captcha_str)
+    # return send_file(f, mimetype='image/png')

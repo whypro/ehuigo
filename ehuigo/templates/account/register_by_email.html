@@ -1,0 +1,84 @@
+{% extends '_base.html' %}
+{% import "bootstrap/wtf.html" as wtf %}
+{% block subtitle %}注册{% endblock %}
+{% block page_content %}
+<div class="row">
+  <ol class="breadcrumb">
+    <li class="active">注册</li>
+  </ol>
+  <hr>
+</div>
+<div class="row">
+  {% include '_flash.html' %}
+  <div class="">
+    <form class="form-horizontal" id="register-form" method="post" action="{{ url_for('account.register_by_email') }}">
+      <div class="form-group{% if form.email.errors %} has-error{% endif %}">
+        {{ form.email.label(class_='col-sm-offset-4 col-sm-1 control-label') }}
+        <div class="col-sm-3">
+          {{ form.email(class_='form-control', required=form.email.flags.required, placeholder='请输入电子邮箱地址') }}
+        </div>
+        <div class="col-sm-offset-5 col-sm-3">
+            <p class="help-block">{{ ', '.join(form.email.errors) }}</p>
+        </div>
+      </div>
+      <div class="form-group{% if form.password.errors %} has-error{% endif %}">
+        {{ form.password.label(class_='col-sm-offset-4 col-sm-1 control-label') }}
+        <div class="col-sm-3">
+          {{ form.password(class_='form-control', required=form.password.flags.required, placeholder='请输入密码') }}
+        </div>
+        <div class="col-sm-offset-5 col-sm-3">
+          <p class="help-block">{{ ', '.join(form.password.errors) }}</p>
+        </div>
+      </div>
+      <div class="form-group{% if form.password_confirm.errors %} has-error{% endif %}">
+        {{ form.password_confirm.label(class_='col-sm-offset-4 col-sm-1 control-label') }}
+        <div class="col-sm-3">
+          {{ form.password_confirm(class_='form-control', required=form.password_confirm.flags.required, placeholder='请再次输入密码') }}
+        </div>
+        <div class="col-sm-offset-5 col-sm-3">
+          <p class="help-block">{{ ', '.join(form.password_confirm.errors) }}</p>
+        </div>
+      </div>
+      {#
+      <div class="form-group{% if form.cellphone.errors %} has-error{% endif %}">
+        {{ form.cellphone.label(class_='col-sm-offset-4 col-sm-1 control-label') }}
+        <div class="col-sm-3">
+          {{ form.cellphone(class_='form-control', required=form.cellphone.flags.required, placeholder='请输入手机号码') }}
+        </div>
+        <div class="col-sm-offset-5 col-sm-3">
+            <p class="help-block">{{ ', '.join(form.cellphone.errors) }}</p>
+        </div>
+      </div>
+      #}
+      <div class="form-group{% if form.image_captcha.errors %} has-error{% endif %}">
+        {{ form.image_captcha.label(class_='col-sm-offset-4 col-sm-1 control-label') }}
+        <div class="col-sm-3">
+          {{ form.image_captcha(class_='form-control', required=form.image_captcha.flags.required, placeholder='请输入图片验证码', autocomplete='off') }}
+        </div>
+        <div><img class="img-responsive" id="image-captcha-img" src="{{ url_for('home.gen_image_captcha') }}")></div>
+        <div class="col-sm-offset-5 col-sm-3">
+          <p class="help-block">{{ ', '.join(form.image_captcha.errors) }}</p>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <div class="col-sm-offset-5 col-sm-3">
+          {{ form.submit(class_='btn btn-default btn-success') }}
+          <a class="pull-right btn btn-default" href="{{ url_for('account.register') }}">手机注册</a>
+          <div class="clearfix"></div>
+        </div>
+      </div>
+      {{ form.hidden_tag() }}
+    </form>
+  </div>
+</div>
+{% endblock %}
+{% block page_scripts %}
+<script>
+  $(document).ready(function () {
+    $("#image-captcha-img").click(function () {
+      $(this).attr("src", "{{ url_for('home.gen_image_captcha') }}?t="+jQuery.now());
+    });
+  });
+</script>
+{% endblock %}

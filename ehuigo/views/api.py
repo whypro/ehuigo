@@ -1,12 +1,14 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
+import re
 
-from flask import Blueprint, jsonify, abort, flash, request
+from flask import Blueprint, jsonify, abort, flash, request, session
 from flask.ext.login import login_required
 
 from ..models import Question, Product, Price, ProductQuestion, ProductAnswer
 from ..extensions import db
-from ..constants import QUESTION_CATEGORY
+from ..constants import QUESTION_CATEGORY, REG_EXP_PHONE
+from ..helpers import gen_captcha_str, send_sms
 
 api = Blueprint('api', __name__, url_prefix='/api')
 
@@ -139,3 +141,29 @@ def quote(product_id):
         price += product_answer.discount    # 加负等于减正
     print price
     return jsonify(price=int(price))
+
+
+@api.route('/captcha/sms/send/', methods=['POST'])
+def send_sms_captcha():
+    # return jsonify()
+    SMS_CAPTCHA_TEMPLATE_ID = 1
+    SMS_CAPTCHA_EXPIRE = 5
+    data = request.get_json()
+    phone = data['phone']
+    image_captcha = data['image_captcha'].upper()
+    # check phone
+    if not re.match(REG_EXP_PHONE, phone):
+        abort(400)
+
+    # print image_captcha, session['image_captcha']
+    if image_captcha != session.pop('image_captcha', None):
+        abort(401)
+
+    captcha_str = gen_captcha_str(6, digits_only=True)
+    session['sms_captcha'] = captcha_str.upper()
+    resp_json = send_sms(
+        [phone],
+        template_id=SMS_CAPTCHA_TEMPLATE_ID,
+        template_data=[captcha_str, SMS_CAPTCHA_EXPIRE]
+    )
+    return jsonify(resp_json)

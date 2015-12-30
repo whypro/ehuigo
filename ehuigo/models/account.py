@@ -18,7 +18,7 @@ class User(UserMixin, db.Model):
     email = db.Column(db.String(MAX_LENGTH['email']), unique=True, nullable=False)
     _password = db.Column('password', db.String(MAX_LENGTH['password']), nullable=False)
     username = db.Column(db.String(MAX_LENGTH['username']), unique=True)
-    mobile = db.Column(db.String(MAX_LENGTH['mobile']))
+    cellphone = db.Column(db.String(MAX_LENGTH['cellphone']), unique=True)
     reg_time = db.Column(db.DateTime, default=datetime.datetime.now)
     reg_ip = db.Column(db.String(MAX_LENGTH['ip']))
     status = db.Column(db.Integer, default=USER_STATUS['new'])

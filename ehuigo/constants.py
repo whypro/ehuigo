@@ -6,7 +6,7 @@ MAX_LENGTH = {
     'email': 80,
     'username': 20,
     'password': 128,
-    'mobile': 20,
+    'cellphone': 20,
     'ip': 20,
     'path': 255,
 
@@ -21,9 +21,12 @@ MAX_LENGTH = {
 
 
 USER_STATUS = {
-    'active': 0,   # 已激活，正常用户
-    'new': 1,      # 新注册，未激活
-    'frozen': 2,   # 被冻结
+    'new': 0x00,  # 新注册，未激活
+    #  已激活，正常用户
+    'email_confirmed': 0x01,
+    'cellphone_confirmed': 0x02,
+    'frozen': 0x04,   # 被冻结
+    'admin': 0x80  # 管理员
 }
 
 
@@ -34,3 +37,6 @@ QUESTION_CATEGORY = {
 
 
 QUESTION_CATEGORY_REVERSED = dict((v, k) for k, v in QUESTION_CATEGORY.items())
+
+
+REG_EXP_PHONE = '^(0|86|17951)?(13[0-9]|15[012356789]|17[678]|18[0-9]|14[57])[0-9]{8}$'

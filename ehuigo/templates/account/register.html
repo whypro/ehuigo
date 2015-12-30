@@ -2,20 +2,138 @@
 {% import "bootstrap/wtf.html" as wtf %}
 {% block subtitle %}注册{% endblock %}
 {% block page_content %}
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="row">
-                        <ol class="breadcrumb">
-                            <li class="active">注册</li>
-                        </ol>
-                        <hr />
-                    </div>
-                </div>
-                <div class="col-md-12">
-                    {% include '_flash.html' %}
-                    <div class="col-md-offset-4 col-md-4">
-                        {{ wtf.quick_form(form, action=url_for('account.register'), form_type='horizontal', horizontal_columns=('sm', 3, 9), id='add-manufacturer-form') }}
-                    </div>
-                </div>
-            </div>
+<div class="row">
+  <ol class="breadcrumb">
+    <li class="active">注册</li>
+  </ol>
+  <hr>
+</div>
+<div class="row">
+  {% include '_flash.html' %}
+  <div class="">
+    <form class="form-horizontal" id="register-form" method="post" action="{{ url_for('account.register') }}">
+      <div class="form-group{% if form.cellphone.errors %} has-error{% endif %}">
+        {{ form.cellphone.label(class_='col-sm-offset-4 col-sm-1 control-label') }}
+        <div class="col-sm-3">
+          {{ form.cellphone(class_='form-control', required=form.cellphone.flags.required, placeholder='请输入手机号码') }}
+        </div>
+        <div class="col-sm-2"><button class="btn btn-primary" id="get-sms-captcha-button">获取验证码</button></div>
+        <div class="col-sm-offset-5 col-sm-3">
+            <p class="help-block">{{ ', '.join(form.cellphone.errors) }}</p>
+        </div>
+      </div>
+      <div class="form-group{% if form.password.errors %} has-error{% endif %}">
+        {{ form.password.label(class_='col-sm-offset-4 col-sm-1 control-label') }}
+        <div class="col-sm-3">
+          {{ form.password(class_='form-control', required=form.password.flags.required, placeholder='请输入密码') }}
+        </div>
+        <div class="col-sm-offset-5 col-sm-3">
+          <p class="help-block">{{ ', '.join(form.password.errors) }}</p>
+        </div>
+      </div>
+      <div class="form-group{% if form.password_confirm.errors %} has-error{% endif %}">
+        {{ form.password_confirm.label(class_='col-sm-offset-4 col-sm-1 control-label') }}
+        <div class="col-sm-3">
+          {{ form.password_confirm(class_='form-control', required=form.password_confirm.flags.required, placeholder='请再次输入密码') }}
+        </div>
+        <div class="col-sm-offset-5 col-sm-3">
+          <p class="help-block">{{ ', '.join(form.password_confirm.errors) }}</p>
+        </div>
+      </div>
+      <div class="form-group{% if form.sms_captcha.errors %} has-error{% endif %}">
+        {{ form.sms_captcha.label(class_='col-sm-offset-4 col-sm-1 control-label') }}
+        <div class="col-sm-3">
+          {{ form.sms_captcha(class_='form-control', required=form.sms_captcha.flags.required, placeholder='请输入短信验证码', autocomplete='off') }}
+        </div>
+        <div class="col-sm-offset-5 col-sm-3">
+          <p class="help-block">{{ ', '.join(form.sms_captcha.errors) }}</p>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <div class="col-sm-offset-5 col-sm-3">
+          {{ form.submit(class_='btn btn-default btn-success') }}
+          <a class="pull-right btn btn-default" href="{{ url_for('account.register_by_email') }}">邮箱注册</a>
+          <div class="clearfix"></div>
+        </div>
+      </div>
+      {{ form.hidden_tag() }}
+    </form>
+
+    <div class="modal fade" id="send-sms-captcha-modal" tabindex="-1" role="dialog" aria-labelledby="send-sms-captcha-modal-label">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="send-sms-captcha-modal-label">获取短信验证码</h4>
+          </div>
+          <div class="modal-body">
+            <form class="form-inline text-center">
+              <div class="form-group">
+                <label for="image-captcha" class="control-label">验证码</label>
+                <input type="text" class="form-control" id="image-captcha">
+                <img id="image-captcha-img" src="">
+              </div>
+            </form>
+            <p>点击发送按钮后，您的号码为 <span class="text-danger" id="cellphone-suffix-span"></span> 的手机将会收到一条短信，请注意查收，并按照提示进行操作。</p>
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-primary" id="send-sms-captcha-button" type="button" >发送</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+{% endblock %}
+{% block page_scripts %}
+<script>
+  $(document).ready(function () {
+    $("#get-sms-captcha-button").click(function () {
+      var cellphone = $("#cellphone").val();
+      var reg = /^(0|86|17951)?(13[0-9]|15[012356789]|17[678]|18[0-9]|14[57])[0-9]{8}$/;
+      if(!reg.test(cellphone)) {
+        $("#cellphone").parent().parent().addClass("has-error");
+        $("#cellphone").focus();
+        // alert('您的手机号码输入有误，请重新输入');
+        return false;
+      }
+      $("#cellphone-suffix-span").text(cellphone);
+      $("#image-captcha").parent().removeClass("has-error");
+      $("#image-captcha").val("");
+      $("#image-captcha-img").attr("src", "{{ url_for('home.gen_image_captcha') }}?t="+jQuery.now());
+      $("#send-sms-captcha-modal").modal('show');
+      return false;
+    });
+    $("#send-sms-captcha-button").click(function () {
+      var data = JSON.stringify({
+        phone: $("#cellphone").val(),
+        image_captcha: $("#image-captcha").val()
+      });
+      $.ajax({
+        url: "{{ url_for('api.send_sms_captcha') }}",
+        type: "POST",
+        data: data,
+        dataType: "json",
+        contentType: "application/json; charset=utf-8",
+        success: function (data) {
+          $("#send-sms-captcha-modal").modal('hide');
+          $("#sms_captcha").parent().parent().addClass("has-warning");
+          $("#sms_captcha").focus();
+          // alert('短信验证码发送成功');
+        },
+        error: function (e) {
+          $("#image-captcha").parent().addClass("has-error");
+          // alert('短信验证码发送失败，请重新输入图片验证码');
+          $("#image-captcha-img").attr("src", "{{ url_for('home.gen_image_captcha') }}?t="+jQuery.now());
+        }
+      });
+    });
+
+    $("#image-captcha-img").click(function () {
+      $(this).attr("src", "{{ url_for('home.gen_image_captcha') }}?t="+jQuery.now());
+    });
+  });
+</script>
 {% endblock %}

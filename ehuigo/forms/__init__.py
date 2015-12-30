@@ -1,2 +1,2 @@
-from .account import RegisterForm
+from .account import RegisterForm, RegisterByEmailForm
 
