@@ -12,32 +12,30 @@
                 </div>
                 <div class="col-md-12">
                     {% include '_flash.html' %}
-                    <div class="col-md-offset-4 col-md-4">
-                        <form class="form-horizontal" id="add-manufacturer-form" method="post" action="{{ url_for('account.login') }}">
-                            <div class="form-group">
-                                <label for="login-name" class="col-sm-3 control-label">用户</label>
-                                <div class="col-sm-9">
-                                    <input type="text" name="login-name" class="form-control" id="login-name">
-                                </div>
+                    <form class="form-horizontal" id="add-manufacturer-form" method="post" action="{{ url_for('account.login') }}">
+                        <div class="form-group">
+                            <label for="login-name" class="col-md-offset-4 col-md-1 control-label">用户</label>
+                            <div class="col-md-3">
+                                <input type="text" name="login-name" class="form-control" id="login-name">
                             </div>
-                            <div class="form-group">
-                                <label for="password" class="col-sm-3 control-label">密码</label>
-                                <div class="col-sm-9">
-                                    <input type="password" name="password" class="form-control" id="password">
-                                </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="password" class="col-md-offset-4 col-md-1 control-label">密码</label>
+                            <div class="col-md-3">
+                                <input type="password" name="password" class="form-control" id="password">
                             </div>
-                            {#
-                            <div class="checkbox">
-                                <label>
-                                    <input type="checkbox" name="remember-me"> 记住我
-                                </label>
-                            </div>
-                            #}
-                            <div class="col-md-offset-2">
-                                <button type="submit" class="btn btn-default">登录</button>
-                            </div>
-                        </form>
-                    </div>
+                        </div>
+                        {#
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox" name="remember-me"> 记住我
+                            </label>
+                        </div>
+                        #}
+                        <div class="col-md-offset-5 col-md-2">
+                            <button type="submit" class="btn btn-success">登录</button>
+                        </div>
+                    </form>
                 </div>
             </div>
 {% endblock %}

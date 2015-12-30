@@ -134,18 +134,22 @@ def evaluate(product_id):
 @api.route('/product/<int:product_id>/quote/', methods=['POST'])
 def quote(product_id):
     product = Product.query.get_or_404(product_id)
-    price = product.price.exchange_price
+    exchange_price = product.price.exchange_price
+    member_price = product.price.member_price
     data = request.get_json()
     for answer_id in data['answers']:
         product_answer = ProductAnswer.query.filter_by(product_id=product_id, answer_id=answer_id).one()
-        price += product_answer.discount    # 加负等于减正
-    print price
-    return jsonify(price=int(price))
+        exchange_price += product_answer.discount    # 加负等于减正
+        member_price += product_answer.discount    # 加负等于减正
+    print exchange_price, member_price
+    return jsonify(exchange_price=int(exchange_price), member_price=int(member_price))
 
 
 @api.route('/captcha/sms/send/', methods=['POST'])
 def send_sms_captcha():
-    # return jsonify()
+    import time
+    time.sleep(1)
+    return jsonify()
     SMS_CAPTCHA_TEMPLATE_ID = 1
     SMS_CAPTCHA_EXPIRE = 5
     data = request.get_json()

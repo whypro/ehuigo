@@ -56,12 +56,8 @@
                     <img class="img-responsive" alt="" src="{{ product.photo_url }}" />
                     <div>
                         <h4>{{ product.model }}{% if product.price.brief_intro %} <br><small>（{{ product.price.brief_intro }}）</small>{% endif %}</h4>
-                        <h3 class="text-danger text-right">换购价：<span id="exchange-price-span">{{ product.price.exchange_price|int }}</span></h3>
-                        <h4 class="text-danger text-right">会员价：{{ product.price.member_price|int }}</h4>
-                        <del class="pull-left">京东价：{{ product.price.jd_price|int }}</del>&nbsp;
-                        <del class="pull-right">官方价：{{ product.price.official_price|int }}</del>
-                        <div class="clearfix"></div>
-
+                        <h3 class="text-right text-danger"><strong>换购价：<span id="exchange-price-span">{{ product.price.exchange_price|int }}</span></strong></h3>
+                        <h4 class="text-right text-danger">会员价：<span id="member-price-span">{{ product.price.member_price|int }}</span></h4>
                         <hr>
                     </div>
                 </div>
@@ -75,7 +71,7 @@
                                 <div class="col-md-10 col-sm-10 col-xs-9">
                                     {% for answer in question.answers %}
                                     <div class="col-md-3 col-sm-6 col-xs-6">
-                                        <input class="answer-input" type="radio" name="question-{{ question.id }}" id="answer-{{ answer.id }}" value="{{ answer.id }}" autocomplete="off"{% if not loop.index0 %} checked{% endif %} data-labelauty="{{ answer.content }}{% if answer.remark %}&nbsp;<small>（{{ answer.remark }}）</small>{% endif %}">
+                                        <input class="answer-input" type="radio" name="question-{{ question.id }}" id="answer-{{ answer.id }}" value="{{ answer.id }}" autocomplete="off" data-labelauty="{{ answer.content }}{% if answer.remark %}&nbsp;<small>（{{ answer.remark }}）</small>{% endif %}">
                                     </div>
                                     {% endfor %}
                                 </div>
@@ -165,7 +161,8 @@
                 contentType: "application/json; charset=utf-8",
                 success: function (data) {
                     // alert("success");
-                    $("#exchange-price-span").text(data['price']);
+                    $("#exchange-price-span").text(data['exchange_price']);
+                    $("#member-price-span").text(data['member_price']);
                 }
             });
         });

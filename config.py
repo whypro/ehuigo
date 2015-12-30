@@ -19,6 +19,10 @@ class Config(object):
     UPLOAD_ALLOWED_EXT = ['jpg', 'png', 'bmp', 'gif']
     UPLOAD_MAX_SIZE = 4 * 1024 * 1024    # 4M
 
+    # SQLAlchemy 慢查询日志
+    SQLALCHEMY_RECORD_QUERIES = True
+    FLASK_SLOW_DB_QUERY_TIME = 0.5
+
     MAIL_SERVER = 'smtp.mxhichina.com'
     MAIL_PORT = 465
     MAIL_USE_SSL = True
@@ -28,9 +32,11 @@ class Config(object):
     EHUIGO_MAIL_SENDER = '易回购 <noreply@ehuigo.cn>'
     EHUIGO_ADMINS = ['whypro@live.cn']
 
-    # SQLAlchemy 慢查询日志
-    SQLALCHEMY_RECORD_QUERIES = True
-    FLASK_SLOW_DB_QUERY_TIME = 0.5
+    # 云通讯配置
+    YUNTONGXUN_BASE_URL = 'https://sandboxapp.cloopen.com:8883'
+    YUNTONGXUN_ACCOUNT_SID = ''
+    YUNTONGXUN_AUTH_TOKEN = ''
+    YUNTONGXUN_APP_ID = ''
 
     @staticmethod
     def init_app(app):
@@ -89,9 +95,9 @@ class ACEConfig(Config):
 
     # 数据库配置
     DB_HOST = 'rds7z20k1nqpnmd558xy.mysql.rds.aliyuncs.com'
-    DB_DATABASE = 'rjpa045c4i94u4nz'
-    DB_USERNAME = 'rjpa045c4i94u4nz'
-    DB_PASSWORD = '20151105'
+    DB_DATABASE = ''
+    DB_USERNAME = ''
+    DB_PASSWORD = ''
     DB_PORT = 3306
 
     # FLASK-SQLALCHEMY
@@ -106,8 +112,8 @@ class ACEConfig(Config):
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
     OSS_ENDPOINT = 'static.ehuigo.cn'
-    KEY_ID = 'xi0qjghwneAdNtkQ'
-    KEY_SECRET = '8z1MUO3NQt6oJVdQD0qAxNaXBnWH9D'
+    KEY_ID = ''
+    KEY_SECRET = ''
     OSS_BUCKET_NAME = 'ehuigo'
 
 

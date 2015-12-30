@@ -24,7 +24,11 @@
                                 <!-- 描述 -->
                             </p>
                             <p>
-                                <span class="label label-danger">会员价：{{ product.price.exchange_price|int }} 元！</span>
+                                <h4><span class="label label-danger">换购价：{{ product.price.exchange_price|int }} 元！</span></h4>
+                            </p>
+                            <p>
+                                <span class="label label-default"><del>京东价：{{ product.price.jd_price|int }} 元</del></span>&nbsp;
+                                <span class="label label-default"><del>官方价：{{ product.price.official_price|int }} 元</del></span>
                             </p>
                         </div>
                     </div>
