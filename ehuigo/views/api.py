@@ -147,9 +147,9 @@ def quote(product_id):
 
 @api.route('/captcha/sms/send/', methods=['POST'])
 def send_sms_captcha():
-    import time
-    time.sleep(1)
-    return jsonify()
+    # import time
+    # time.sleep(1)
+    # return jsonify()
     SMS_CAPTCHA_TEMPLATE_ID = 1
     SMS_CAPTCHA_EXPIRE = 5
     data = request.get_json()
