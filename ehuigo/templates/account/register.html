@@ -15,11 +15,11 @@
     {% include '_flash.html' %}
     <form class="form-horizontal" id="register-form" method="post" action="{{ url_for('account.register') }}">
       <div class="form-group{% if form.cellphone.errors %} has-error{% endif %}">
-        {{ form.cellphone.label(class_='col-md-offset-4 col-md-1 control-label') }}
-        <div class="col-md-3">
+        {{ form.cellphone.label(class_='col-md-offset-4 col-md-1 col-xs-12 control-label') }}
+        <div class="col-md-3 col-xs-7">
           {{ form.cellphone(class_='form-control', required=form.cellphone.flags.required, placeholder='请输入手机号码') }}
         </div>
-        <div class="col-md-2"><button class="btn btn-primary" id="get-sms-captcha-button" data-loading-text="请注意查收短信">获取验证码</button></div>
+        <div class="col-md-2 col-xs-5"><button class="btn btn-primary" id="get-sms-captcha-button" data-loading-text="请注意查收短信" data-failed-text="发送失败，请稍后重试">获取验证码</button></div>
         <div class="col-md-offset-5 col-md-3">
             <p class="help-block">{{ ', '.join(form.cellphone.errors) }}</p>
         </div>
@@ -73,7 +73,7 @@
             <form class="form-inline text-center">
               <div class="form-group">
                 <label for="image-captcha" class="control-label">验证码</label>
-                <input type="text" class="form-control" id="image-captcha">
+                <input type="text" class="form-control" id="image-captcha" placeholder="请输入图片验证码">
                 <img id="image-captcha-img" src="">
               </div>
             </form>
@@ -95,11 +95,13 @@
       var cellphone = $("#cellphone").val();
       var reg = /^(0|86|17951)?(13[0-9]|15[012356789]|17[678]|18[0-9]|14[57])[0-9]{8}$/;
       if(!reg.test(cellphone)) {
-        $("#cellphone").parent().parent().addClass("has-error");
+        $("#cellphone").parent().addClass("has-error");
         $("#cellphone").focus();
         // alert('您的手机号码输入有误，请重新输入');
         return false;
       }
+      $("#send-sms-captcha-button").button("reset");
+      $("#cellphone").parent().removeClass("has-error");
       $("#cellphone-suffix-span").text(cellphone);
       $("#image-captcha").parent().removeClass("has-error");
       $("#image-captcha").val("");
@@ -109,10 +111,6 @@
     });
     $("#send-sms-captcha-button").click(function () {
       $(this).button("loading");
-      $("#get-sms-captcha-button").button("loading");
-      setTimeout(function () {
-        $("#get-sms-captcha-button").button("reset");
-      }, 60 * 1000);
       var data = JSON.stringify({
         phone: $("#cellphone").val(),
         image_captcha: $("#image-captcha").val()
@@ -125,15 +123,30 @@
         contentType: "application/json; charset=utf-8",
         success: function (data) {
           $("#send-sms-captcha-modal").modal('hide');
-          $("#sms_captcha").parent().parent().addClass("has-warning");
-          $("#sms_captcha").focus();
-          // alert('短信验证码发送成功');
-          $("#send-sms-captcha-button").button("reset");
+          if (data['statusCode'] != "000000") {
+            $("#get-sms-captcha-button").button("failed");
+            $("#get-sms-captcha-button").prop("disabled", true);
+            setTimeout(function () {
+              $("#get-sms-captcha-button").button("reset");
+              $("#get-sms-captcha-button").prop("disabled", false);
+            }, 60 * 1000);
+          } else {
+            // alert('短信验证码发送成功');
+            $("#sms_captcha").parent().addClass("has-warning");
+            $("#sms_captcha").focus();
+            $("#get-sms-captcha-button").button("loading");
+            setTimeout(function () {
+              $("#get-sms-captcha-button").button("reset");
+            }, 60 * 1000);
+          }
+
         },
         error: function (e) {
           $("#image-captcha").parent().addClass("has-error");
           // alert('短信验证码发送失败，请重新输入图片验证码');
           $("#image-captcha-img").attr("src", "{{ url_for('home.gen_image_captcha') }}?t="+jQuery.now());
+          $("#image-captcha").val("");
+          $("#image-captcha").focus();
           $("#send-sms-captcha-button").button("reset");
         }
       });
