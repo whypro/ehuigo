@@ -292,6 +292,6 @@ def send_test_mail():
 @admin.before_request
 @login_required
 def before_request():
-    if current_user.status != 3:
+    if not current_user.status.is_admin:
         flash('权限不足', 'warning')
         return redirect(url_for('home.index'))

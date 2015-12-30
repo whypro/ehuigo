@@ -5,11 +5,10 @@ from flask import Blueprint, redirect, request, url_for, render_template, sessio
 from flask.ext.login import login_user, logout_user, login_required, current_user
 from sqlalchemy import or_
 
-from ..models import User
+from ..models import User, UserStatus
 from ..forms import RegisterForm, RegisterByEmailForm
 from ..extensions import db
 from ..helpers import send_email, get_client_ip
-from ..constants import USER_STATUS
 
 
 account = Blueprint('account', __name__, url_prefix='/account')
@@ -59,6 +58,7 @@ def register():
             password=form.password.data,
             cellphone=form.cellphone.data,
             reg_ip=get_client_ip(),
+            status=UserStatus()
         )
         db.session.add(user)
         db.session.commit()
@@ -78,15 +78,14 @@ def register_by_email():
 
     form = RegisterByEmailForm()
     if form.validate_on_submit():
-        print 'hehe'
         user = User(
             email=form.email.data,
             # username=form.username.data,
             password=form.password.data,
             # cellphone=form.cellphone.data,
             reg_ip=get_client_ip(),
+            status=UserStatus()
         )
-        print user
         db.session.add(user)
         db.session.commit()
         token = user.generate_activation_token()
@@ -111,14 +110,14 @@ def activate():
         flash('该账户还未注册', 'danger')
         return redirect(url_for('account.register'))
 
-    if user.status != USER_STATUS['new']:
-        if user.status == USER_STATUS['active']:
-            flash('账户已激活，请勿重复激活', 'info')
-        elif user.status == USER_STATUS['frozen']:
-            flash('账户已被冻结，无法激活', 'danger')
+    if user.status.email_confirmed:
+        flash('账户已激活，请勿重复激活', 'info')
         return redirect(url_for('home.index'))
+    # elif user.status == USER_STATUS['frozen']:
+    #     flash('账户已被冻结，无法激活', 'danger')
 
-    user.status = USER_STATUS['active']
+    user.status.email_confirmed = True
+    # user_status = UserStatus.query.filter(user_id=user.id)
     db.session.add(user)
     db.session.commit()
     flash('账户激活成功', 'success')

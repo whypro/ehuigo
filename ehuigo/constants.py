@@ -20,16 +20,6 @@ MAX_LENGTH = {
 }
 
 
-USER_STATUS = {
-    'new': 0x00,  # 新注册，未激活
-    #  已激活，正常用户
-    'email_confirmed': 0x01,
-    'cellphone_confirmed': 0x02,
-    'frozen': 0x04,   # 被冻结
-    'admin': 0x80  # 管理员
-}
-
-
 QUESTION_CATEGORY = {
     'recycle': 1,
     'exchange': 2,

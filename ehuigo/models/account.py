@@ -9,7 +9,17 @@ from itsdangerous import TimedJSONWebSignatureSerializer as TJWSSerializer
 from itsdangerous import BadSignature, SignatureExpired
 
 from ..extensions import db, login_manager
-from ..constants import MAX_LENGTH, USER_STATUS
+from ..constants import MAX_LENGTH
+
+
+class UserStatus(db.Model):
+
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id', ondelete='CASCADE'))
+    cellphone_confirmed = db.Column(db.Boolean, default=False)
+    email_confirmed = db.Column(db.Boolean, default=False)
+    is_admin = db.Column(db.Boolean, default=False)
+    banned = db.Column(db.Boolean, default=False)
 
 
 class User(UserMixin, db.Model):
@@ -21,7 +31,7 @@ class User(UserMixin, db.Model):
     cellphone = db.Column(db.String(MAX_LENGTH['cellphone']), unique=True)
     reg_time = db.Column(db.DateTime, default=datetime.datetime.now)
     reg_ip = db.Column(db.String(MAX_LENGTH['ip']))
-    status = db.Column(db.Integer, default=USER_STATUS['new'])
+    status = db.relationship('UserStatus', passive_deletes=True, uselist=False)
     avatar = db.Column(db.String(MAX_LENGTH['path']))
 
     @property
