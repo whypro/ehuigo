@@ -58,13 +58,14 @@ def register():
             password=form.password.data,
             cellphone=form.cellphone.data,
             reg_ip=get_client_ip(),
-            status=UserStatus()
+            status=UserStatus(cellphone_confirmed=True)
         )
         db.session.add(user)
         db.session.commit()
-        token = user.generate_activation_token()
-        send_email(user.email, '账户激活', 'mail/activation.html', user=user, token=token)
-        flash('注册成功，您的邮箱 {email} 将会收到一封激活邮件，请在一小时内查收邮件进行账户激活'.format(email=user.email), 'success')
+        # token = user.generate_activation_token()
+        # send_email(user.email, '账户激活', 'mail/activation.html', user=user, token=token)
+        # flash('注册成功，您的邮箱 {email} 将会收到一封激活邮件，请在一小时内查收邮件进行账户激活'.format(email=user.email), 'success')
+        flash('注册成功')
         return redirect(url_for('account.login'))
     return render_template('account/register.html', form=form)
 

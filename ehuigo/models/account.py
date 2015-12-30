@@ -25,7 +25,7 @@ class UserStatus(db.Model):
 class User(UserMixin, db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
-    email = db.Column(db.String(MAX_LENGTH['email']), unique=True, nullable=False)
+    email = db.Column(db.String(MAX_LENGTH['email']), unique=True)
     _password = db.Column('password', db.String(MAX_LENGTH['password']), nullable=False)
     username = db.Column(db.String(MAX_LENGTH['username']), unique=True)
     cellphone = db.Column(db.String(MAX_LENGTH['cellphone']), unique=True)
