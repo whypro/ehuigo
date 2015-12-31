@@ -111,3 +111,18 @@ class UserProfileForm(Form):
     def validate_username(self, field):
         if field.data != current_user.username and User.query.filter_by(username=field.data).first():
             raise ValidationError('该用户名已被注册')
+
+
+class UserSecurityForm(Form):
+    password_old = PasswordField('原密码', validators=[InputRequired()])
+    password = PasswordField('新密码', validators=[
+        InputRequired(),
+        Length(1, MAX_LENGTH['password'], '长度不合法'),
+        EqualTo('password_confirm', message='两次输入的密码不一致')
+    ])
+    password_confirm = PasswordField('密码确认', validators=[InputRequired()])
+    submit = SubmitField('修改')
+
+    def validate_password_old(self, field):
+        if not current_user.verify_password(field.data):
+            raise ValidationError('原密码不正确')

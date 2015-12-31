@@ -10,7 +10,7 @@
                         #}
 
                         <li{% if sider_active == 'security' %} class="active"{% endif %}>
-                            <a href="">账户安全</a>
+                            <a href="{{ url_for('account.edit_security', user_id=current_user.id) }}">账户安全</a>
                         </li>
                     </ul>
                     <hr />

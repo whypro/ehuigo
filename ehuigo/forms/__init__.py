@@ -1,3 +1,3 @@
-from .account import RegisterForm, RegisterByEmailForm, UserProfileForm
+from .account import RegisterForm, RegisterByEmailForm, UserProfileForm, UserSecurityForm
 
 

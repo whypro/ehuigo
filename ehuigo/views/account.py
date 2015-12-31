@@ -6,7 +6,7 @@ from flask.ext.login import login_user, logout_user, login_required, current_use
 from sqlalchemy import or_
 
 from ..models import User, UserStatus
-from ..forms import RegisterForm, RegisterByEmailForm, UserProfileForm
+from ..forms import RegisterForm, RegisterByEmailForm, UserProfileForm, UserSecurityForm
 from ..extensions import db
 from ..helpers import send_email, get_client_ip, create_uploader
 
@@ -160,3 +160,22 @@ def edit_profile(user_id):
         return redirect(url_for('account.edit_profile', user_id=user_id))
 
     return render_template('account/profile_edit.html', form=form, user=user)
+
+
+@account.route('/<int:user_id>/security/edit/', methods=['GET', 'POST'])
+@login_required
+def edit_security(user_id):
+    if user_id != current_user.id:
+        abort(403)
+
+    user = User.query.get_or_404(user_id)
+    form = UserSecurityForm(obj=user)
+    if form.validate_on_submit():
+        user.password = form.password.data
+        db.session.add(user)
+        db.session.commit()
+
+        flash('修改成功', 'success')
+        return redirect(url_for('account.edit_security', user_id=user_id))
+
+    return render_template('account/security_edit.html', form=form)
