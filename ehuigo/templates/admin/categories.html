@@ -1,0 +1,48 @@
+{% extends '_base.html' %}
+{% block subtitle %}分类管理{% endblock %}
+{% block page_content %}
+<div class="row">
+
+  {% set sider_active = 'categories' %}
+  {% include 'admin/_sider.html' %}
+
+  <div class="col-md-9 col-sm-9">
+    <div class="row">
+      <ol class="breadcrumb">
+        <li class="active">分类管理</li>
+      </ol>
+      <hr>
+    </div>
+    <div class="row">
+      {% include '_flash.html' %}
+      <div class="col-md-12">
+        <form method="post" action="{{ url_for('admin.add_category') }}">
+          <input name="category-name" type="text">
+          <input type="submit" value="新增">
+        </form>
+        <hr>
+        {% for category in categories %}
+          <div class="btn-group">
+            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              {{ category.name }}&nbsp;
+              <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu">
+              <li><a href="#">重命名</a></li>
+              <li><a href="{{ url_for('admin.delete_category', category_id=category.id) }}" onclick="return confirm('删除将不可恢复。确定删除吗？');">删除</a></li>
+            </ul>
+          </div>
+        {% endfor %}
+
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block page_scripts %}
+<script>
+    $(document).ready(function () {
+
+    });
+</script>
+{% endblock %}

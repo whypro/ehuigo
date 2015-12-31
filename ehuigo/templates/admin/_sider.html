@@ -12,6 +12,9 @@
                         <li{% if sider_active == 'questions' %} class="active"{% endif %}>
                             <a href="{{ url_for('admin.show_questions') }}">选项管理</a>
                         </li>
+                        <li{% if sider_active == 'categories' %} class="active"{% endif %}>
+                            <a href="{{ url_for('admin.show_categories') }}">分类管理</a>
+                        </li>
                     </ul>
                     <hr />
                 </div>

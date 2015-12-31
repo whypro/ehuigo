@@ -34,6 +34,17 @@
                                     </div>
                                 </div>
                                 <div class="form-group">
+                                    <label for="product-category" class="col-sm-2 control-label">产品分类</label>
+                                    <div class="col-sm-10">
+                                        <select class="form-control" name="product-category" id="product-category">
+                                            <option value="0"{% if not product.category_id %} selected="selected"{% endif %}>默认分类</option>
+                                            {% for category in categories %}
+                                            <option value="{{ category.id }}"{% if product.category_id == category.id %} selected="selected"{% endif %}>{{ category.name }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group">
                                     <label for="product-photo" class="col-sm-2 control-label">产品图片</label>
                                     <div class="col-sm-10">
                                         <input type="file" name="product-photo" class="form-control" id="product-photo">

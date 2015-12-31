@@ -1,0 +1,62 @@
+{% extends '_base.html' %}
+{% block subtitle %}账号安全{% endblock %}
+{% block page_content %}
+  <div class="row">
+    {% set sider_active = 'security' %}
+    {% include 'account/_sider.html' %}
+    <div class="col-md-9 col-sm-9">
+      <div class="row">
+        <ol class="breadcrumb">
+          <li><a>用户中心</a></li>
+          <li class="active">账号安全</li>
+        </ol>
+        <hr>
+      </div>
+      <div class="row">
+        <div class="col-md-8">
+          {% include '_flash.html' %}
+          <form class="form-horizontal" method="post" action="{{ url_for('account.edit_security', user_id=current_user.id) }}" id="edit-security-form">
+            <div class="form-group{% if form.password_old.errors %} has-error{% endif %}">
+              {{ form.password_old.label(class_='col-sm-2 control-label') }}
+              <div class="col-sm-10">
+                {{ form.password_old(class_='form-control') }}
+              </div>
+              <div class="col-md-offset-2 col-md-10">
+                <p class="help-block">{{ ', '.join(form.password_old.errors) }}</p>
+              </div>
+            </div>
+            <div class="form-group{% if form.password.errors %} has-error{% endif %}">
+              {{ form.password.label(class_='col-sm-2 control-label') }}
+              <div class="col-sm-10">
+                {{ form.password(class_='form-control') }}
+              </div>
+              <div class="col-md-offset-2 col-md-10">
+                <p class="help-block">{{ ', '.join(form.password.errors) }}</p>
+              </div>
+            </div>
+            <div class="form-group{% if form.password_confirm.errors %} has-error{% endif %}">
+              {{ form.password_confirm.label(class_='col-sm-2 control-label') }}
+              <div class="col-sm-10">
+                {{ form.password_confirm(class_='form-control') }}
+              </div>
+              <div class="col-md-offset-2 col-md-10">
+                <p class="help-block">{{ ', '.join(form.password_confirm.errors) }}</p>
+              </div>
+            </div>
+            {{ form.submit(class_='btn btn-success pull-left') }}
+            {{ form.hidden_tag() }}
+            <a href="" class="btn btn-default pull-right">取消</a>
+          </form>
+        </div>
+        <div class="col-md-4">
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+{% block page_scripts %}
+<script>
+    $(document).ready(function () {
+    });
+</script>
+{% endblock %}

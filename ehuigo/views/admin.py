@@ -6,7 +6,7 @@ from flask import Blueprint, render_template, request, redirect, url_for, abort,
 from flask.ext.login import login_required, current_user
 
 from ..extensions import db
-from ..models import Manufacturer, Product, Question, Answer
+from ..models import Manufacturer, Product, Question, Answer, Category
 from ..helpers import create_uploader, send_email
 from ..constants import QUESTION_CATEGORY, QUESTION_CATEGORY_REVERSED
 
@@ -136,6 +136,8 @@ def edit_product(product_id):
     if request.method == 'POST':
         model = request.form.get('product-model')
         product.model = model
+        category_id = int(request.form.get('product-category'))
+        product.category_id = category_id if category_id else None
 
         fs = request.files.get('product-photo')
         if fs:
@@ -149,7 +151,8 @@ def edit_product(product_id):
         flash('保存成功', 'success')
         return redirect(url_for('admin.edit_product', product_id=product_id))
 
-    return render_template('admin/product_detail.html', product=product)
+    categories = Category.query.all()
+    return render_template('admin/product_detail.html', product=product, categories=categories)
 
 
 @admin.route('/product/<int:product_id>/delete/')
@@ -295,3 +298,26 @@ def before_request():
     if not current_user.status.is_admin:
         flash('权限不足', 'warning')
         return redirect(url_for('home.index'))
+
+
+@admin.route('/categories/')
+def show_categories():
+    categories = Category.query.all()
+    return render_template('admin/categories.html', categories=categories)
+
+
+@admin.route('/category/add/', methods=['POST'])
+def add_category():
+    name = request.form.get('category-name')
+    category = Category(name=name)
+    db.session.add(category)
+    db.session.commit()
+    return redirect(url_for('admin.show_categories'))
+
+
+@admin.route('/category/<int:category_id>/delete/')
+def delete_category(category_id):
+    category = Category.query.get_or_404(category_id)
+    db.session.delete(category)
+    db.session.commit()
+    return redirect(url_for('admin.show_categories'))

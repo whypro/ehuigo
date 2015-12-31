@@ -8,6 +8,12 @@
 
                 <div class="col-md-9 col-sm-9">
                     <div class="row">
+                      <ol class="breadcrumb">
+                        <li class="active">分类管理</li>
+                      </ol>
+                      <hr>
+                    </div>
+                    <div class="row">
                         <ul class="nav nav-tabs">
                             <li role="presentation"{% if category == 'recycle' %} class="active"{% endif %}><a href="{{ url_for('admin.show_questions', category='recycle') }}">旧机回收</a></li>
                             <li role="presentation"{% if category == 'exchange' %} class="active"{% endif %}><a href="{{ url_for('admin.show_questions', category='exchange') }}">以旧换新</a></li>

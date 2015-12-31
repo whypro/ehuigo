@@ -9,6 +9,13 @@ from ..extensions import db
 from ..constants import MAX_LENGTH, QUESTION_CATEGORY
 
 
+class Category(db.Model):
+
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.Unicode(MAX_LENGTH['manufacturer_name']), nullable=False)
+    products = db.relationship('Product', backref='category', passive_deletes=True)
+
+
 class Manufacturer(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
@@ -36,6 +43,7 @@ class Product(db.Model):
     model = db.Column(db.Unicode(MAX_LENGTH['product_model']))           # 型号
     version = db.Column(db.Unicode(MAX_LENGTH['product_version']))         # 版本
     photo = db.Column(db.Unicode(MAX_LENGTH['path']))          # 图片路径
+    category_id = db.Column(db.Integer, db.ForeignKey('category.id', ondelete='SET NULL'))  # 制造商 ID
 
     for_recycle = db.Column(db.Boolean, default=False)
     for_exchange = db.Column(db.Boolean, default=False)
