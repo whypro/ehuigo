@@ -66,7 +66,7 @@
                                     <div class="col-md-10 col-sm-9 col-xs-12">
                                         {% for answer in question.answers %}
                                         <div class="col-md-3 col-sm-6 col-xs-6">
-                                            <input class="answer-input" type="radio" name="question-{{ question.id }}" id="answer-{{ answer.id }}" value="{{ answer.id }}" autocomplete="off"{% if not loop.index0 %} checked{% endif %} data-labelauty="{{ answer.content }}{% if answer.remark %}&nbsp;<small>（{{ answer.remark }}）</small>{% endif %}">
+                                            <input class="answer-input" type="radio" name="question-{{ question.id }}" id="answer-{{ answer.id }}" value="{{ answer.id }}" autocomplete="off"{% if not loop.index0 %} checked{% endif %} data-labelauty="{{ answer.content }}{% if answer.remark %}&nbsp;<small>（{{ answer.remark }}）</small>{% endif %}" answer-content="{{ answer.content }}">
                                             {# <span><small>{% if answer.remark %}（{{ answer.remark }}）{% endif %}</small></span> #}
                                         </div>
                                         {% endfor %}
@@ -120,8 +120,13 @@
 
         $("#evaluate-btn").click(function () {
             var answers = [];
+            $("#evaluation_result p").empty();
+            $("#evaluation_result p").append("品牌：{{ product.manufacturer.name }}<br>型号：{{ product.model }}<br>");
             $("input.answer-input:checked").each(function () {
                 answers.push($(this).val());
+                var question_content = $(this).parent().parent().prev("label").text();
+                var answer_content = $(this).attr("answer-content");
+                $("#evaluation_result p").append(question_content+"："+answer_content+"<br>");
             });
             console.log(answers);
 
@@ -134,7 +139,7 @@
                 contentType: "application/json; charset=utf-8",
                 success: function (data) {
                     // alert("success");
-                    $("#evaluation_result p").text("估价结果："+data["price"]+"元");
+                    $("#evaluation_result p").append("<h4 class=\"text-danger\">估价结果："+data["price"]+"元</h4>");
                     $('#show_evaluation_modal').modal();
                 }
             });
