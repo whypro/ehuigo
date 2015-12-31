@@ -1,20 +1,23 @@
-                <div class="col-md-3 col-sm-3">
-                    <ul class="nav nav-pills nav-stacked">
-                        <li{% if sider_active == 'manufacturers' %} class="active"{% endif %}>
-                            <a href="{{ url_for('admin.show_manufacturers') }}">品牌管理</a>
-                        </li>
-                        {#
-                        <li{% if sider_active == 'products' %} class="active"{% endif %}>
-                            <a href="{{ url_for('admin.show_products') }}">产品管理</a>
-                        </li>
-                        #}
+<div class="col-md-3 col-sm-3">
+  <ul class="nav nav-pills nav-stacked">
+    <li{% if sider_active == 'manufacturers' %} class="active"{% endif %}>
+      <a href="{{ url_for('admin.show_manufacturers') }}">品牌管理</a>
+    </li>
+    {#
+    <li{% if sider_active == 'products' %} class="active"{% endif %}>
+        <a href="{{ url_for('admin.show_products') }}">产品管理</a>
+    </li>
+    #}
 
-                        <li{% if sider_active == 'questions' %} class="active"{% endif %}>
-                            <a href="{{ url_for('admin.show_questions') }}">选项管理</a>
-                        </li>
-                        <li{% if sider_active == 'categories' %} class="active"{% endif %}>
-                            <a href="{{ url_for('admin.show_categories') }}">分类管理</a>
-                        </li>
-                    </ul>
-                    <hr />
-                </div>
+    <li{% if sider_active == 'questions' %} class="active"{% endif %}>
+        <a href="{{ url_for('admin.show_questions') }}">选项管理</a>
+    </li>
+    <li{% if sider_active == 'categories' %} class="active"{% endif %}>
+        <a href="{{ url_for('admin.show_categories') }}">分类管理</a>
+    </li>
+    <li{% if sider_active == 'users' %} class="active"{% endif %}>
+        <a href="{{ url_for('admin.show_users') }}">用户管理</a>
+    </li>
+  </ul>
+  <hr>
+</div>

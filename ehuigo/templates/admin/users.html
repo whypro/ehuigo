@@ -1,0 +1,50 @@
+{% extends '_base.html' %}
+{% block subtitle %}用户管理{% endblock %}
+{% block page_content %}
+<div class="row">
+  {% set sider_active = 'users' %}
+  {% include 'admin/_sider.html' %}
+
+  <div class="col-md-9 col-sm-9">
+    <div class="row">
+      <ol class="breadcrumb">
+        <li class="active">用户管理</li>
+      </ol>
+      <hr>
+    </div>
+    <div class="row">
+      {% include '_flash.html' %}
+      <table class="table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>用户名</th>
+            <th>手机号</th>
+            <th>电子邮箱</th>
+            <th>状态</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for user in users %}
+          <tr>
+            <th scope="row">{{ user.id }}</th>
+            <td>{{ user.username }}</td>
+            <td{% if user.status.cellphone_confirmed %} class="success" title="已确认"{% endif %}>{{ user.cellphone }}</td>
+            <td{% if user.status.email_confirmed %} class="success" title="已确认"{% endif %}>{{ user.email }}</td>
+            <td>{% if user.status.is_admin %}管理员{% endif %}&nbsp;{% if user.status.banned %}封禁{% endif %}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+{% block page_scripts %}
+<script>
+    $(document).ready(function () {
+
+    });
+</script>
+{% endblock %}

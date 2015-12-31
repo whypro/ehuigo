@@ -6,7 +6,7 @@ from flask import Blueprint, render_template, request, redirect, url_for, abort,
 from flask.ext.login import login_required, current_user
 
 from ..extensions import db
-from ..models import Manufacturer, Product, Question, Answer, Category
+from ..models import Manufacturer, Product, Question, Answer, Category, User
 from ..helpers import create_uploader, send_email
 from ..constants import QUESTION_CATEGORY, QUESTION_CATEGORY_REVERSED
 
@@ -321,3 +321,9 @@ def delete_category(category_id):
     db.session.delete(category)
     db.session.commit()
     return redirect(url_for('admin.show_categories'))
+
+
+@admin.route('/users/')
+def show_users():
+    users = User.query.all()
+    return render_template('admin/users.html', users=users)
