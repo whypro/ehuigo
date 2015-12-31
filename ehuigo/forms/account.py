@@ -2,8 +2,9 @@
 from __future__ import unicode_literals
 
 from flask import session
+from flask.ext.login import current_user
 from flask.ext.wtf import Form
-from wtforms import StringField, PasswordField, SubmitField
+from wtforms import StringField, PasswordField, SubmitField, FileField
 from wtforms.validators import InputRequired, Length, Email, EqualTo, Optional, Regexp, DataRequired
 from wtforms import ValidationError
 
@@ -86,3 +87,27 @@ class RegisterByEmailForm(Form):
         # print field.data.upper(), session['image_captcha']
         if field.data.upper() != session['image_captcha']:
             raise ValidationError('验证码不正确')
+
+
+class UserProfileForm(Form):
+    username = StringField('用户名', validators=[
+        InputRequired(),
+        Length(1, MAX_LENGTH['username'], '长度不合法'),
+        Regexp('[\u4e00-\u9fa5A-Za-z0-9_]+$', message='用户名不能包含除简体汉字、字母、数字和下划线之外的字符')
+    ])
+    # cellphone = StringField('手机号', validators=[
+    #     InputRequired(),
+    #     Length(1, MAX_LENGTH['cellphone'], '长度不合法'),
+    #     Regexp(REG_EXP_PHONE, message='无效的手机号码')
+    # ])
+    # email = StringField('电子邮箱', validators=[
+    #     InputRequired(),
+    #     Length(1, MAX_LENGTH['email'], '长度不合法'),
+    #     Email('无效的邮箱格式')
+    # ])
+    avatar = FileField('头像')
+    submit = SubmitField('保存')
+
+    def validate_username(self, field):
+        if field.data != current_user.username and User.query.filter_by(username=field.data).first():
+            raise ValidationError('该用户名已被注册')

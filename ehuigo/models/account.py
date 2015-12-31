@@ -35,6 +35,16 @@ class User(UserMixin, db.Model):
     avatar = db.Column(db.String(MAX_LENGTH['path']))
 
     @property
+    def avatar_url(self):
+        url = '/static/images/users/default.png'
+        if self.avatar:
+            if self.avatar.startswith('/') or self.avatar.startswith('http'):
+                url = self.avatar
+            else:
+                url = '/' + current_app.config['UPLOAD_PREFIX'] + '/' + self.avatar
+        return url
+
+    @property
     def password(self):
         raise AttributeError('raw_password is not a readable attribute')
     
