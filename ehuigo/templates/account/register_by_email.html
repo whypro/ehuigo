@@ -58,7 +58,7 @@
         <div class="col-md-3">
           {{ form.image_captcha(class_='form-control', required=form.image_captcha.flags.required, placeholder='请输入图片验证码', autocomplete='off') }}
         </div>
-        <div><img class="img-responsive" id="image-captcha-img" src="{{ url_for('home.gen_image_captcha') }}")></div>
+        <div class="col-md-4"><img class="img-responsive" id="image-captcha-img" src="{{ url_for('home.gen_image_captcha') }}")></div>
         <div class="col-md-offset-5 col-md-3">
           <p class="help-block">{{ ', '.join(form.image_captcha.errors) }}</p>
         </div>

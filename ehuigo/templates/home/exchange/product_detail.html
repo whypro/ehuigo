@@ -21,6 +21,11 @@
             font-size: 16px;
         }
         */
+        input.labelauty + label {
+            width: 100%;
+            text-align: center;
+        }
+
         input.labelauty:checked + label
         {
             background-color: #339933;
@@ -67,8 +72,8 @@
                             {% for question in product.exchange_questions %}
                             <div class="form-group">
                                 <div class="row" style="border-bottom: 1px #ddd dashed;">
-                                    <label class="col-md-2 col-sm-2 col-xs-3 control-label">{{ question.content }}</label>
-                                    <div class="col-md-10 col-sm-10 col-xs-9">
+                                    <label class="col-md-2 col-sm-3 col-xs-12 control-label">{{ question.content }}</label>
+                                    <div class="col-md-10 col-sm-9 col-xs-12">
                                         {% for answer in question.answers %}
                                         <div class="col-md-3 col-sm-6 col-xs-6">
                                             <input class="answer-input" type="radio" name="question-{{ question.id }}" id="answer-{{ answer.id }}" value="{{ answer.id }}" autocomplete="off" data-labelauty="{{ answer.content }}{% if answer.remark %}&nbsp;<small>（{{ answer.remark }}）</small>{% endif %}">
@@ -80,7 +85,7 @@
                             {% endfor %}
                             <hr>
                             <div class="form-group">
-                                <div class="col-md-offset-2 col-sm-offset-2 col-xs-offset-3 col-md-10 col-sm-10 col-xs-9">
+                                <div class="col-md-offset-2 col-sm-offset-3 col-md-10 col-sm-9 col-xs-12">
                                     <button type="button" class="btn btn-primary pull-left" id="evaluate-btn">立即换购</button>
                                     {% if current_user.is_authenticated() %}
                                     <a href="{{ url_for('admin.edit_exchange', product_id=product.id) }}" class="btn btn-warning pull-right">设置</a>

@@ -7,6 +7,7 @@
     <ol class="breadcrumb">
       <li class="active">注册</li>
     </ol>
+    <hr>
   </div>
   <hr>
 </div>
@@ -16,10 +17,10 @@
     <form class="form-horizontal" id="register-form" method="post" action="{{ url_for('account.register') }}">
       <div class="form-group{% if form.cellphone.errors %} has-error{% endif %}">
         {{ form.cellphone.label(class_='col-md-offset-4 col-md-1 col-xs-12 control-label') }}
-        <div class="col-md-3 col-xs-7">
+        <div class="col-md-3">
           {{ form.cellphone(class_='form-control', required=form.cellphone.flags.required, placeholder='请输入手机号码') }}
         </div>
-        <div class="col-md-2 col-xs-5"><button class="btn btn-primary" id="get-sms-captcha-button" data-loading-text="请注意查收短信" data-failed-text="发送失败，请稍后重试">获取验证码</button></div>
+        <div class="col-md-2"><button class="btn btn-primary" id="get-sms-captcha-button" data-loading-text="请注意查收短信" data-failed-text="请稍后重试发送">获取验证码</button></div>
         <div class="col-md-offset-5 col-md-3">
             <p class="help-block">{{ ', '.join(form.cellphone.errors) }}</p>
         </div>
