@@ -7,10 +7,12 @@
 
   <div class="col-md-9 col-sm-9">
     <div class="row">
-      <ol class="breadcrumb">
-        <li class="active">用户管理</li>
-      </ol>
-      <hr>
+      <div class="col-md-12">
+        <ol class="breadcrumb">
+          <li class="active">用户管理</li>
+        </ol>
+        <hr>
+      </div>
     </div>
     <div class="row">
       {% include '_flash.html' %}
@@ -29,8 +31,8 @@
           <tr>
             <th scope="row">{{ user.id }}</th>
             <td>{{ user.username }}</td>
-            <td{% if user.status.cellphone_confirmed %} class="success" title="已确认"{% endif %}>{{ user.cellphone }}</td>
-            <td{% if user.status.email_confirmed %} class="success" title="已确认"{% endif %}>{{ user.email }}</td>
+            <td{% if user.status.cellphone_confirmed %} class="success" title="已验证"{% endif %}>{{ user.cellphone }}</td>
+            <td{% if user.status.email_confirmed %} class="success" title="已验证"{% endif %}>{{ user.email }}</td>
             <td>{% if user.status.is_admin %}管理员{% endif %}&nbsp;{% if user.status.banned %}封禁{% endif %}</td>
           </tr>
           {% endfor %}

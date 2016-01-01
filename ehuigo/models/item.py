@@ -12,7 +12,7 @@ from ..constants import MAX_LENGTH, QUESTION_CATEGORY
 class Category(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.Unicode(MAX_LENGTH['manufacturer_name']), nullable=False)
+    name = db.Column(db.Unicode(MAX_LENGTH['category_name']), nullable=False)
     products = db.relationship('Product', backref='category', passive_deletes=True)
 
 

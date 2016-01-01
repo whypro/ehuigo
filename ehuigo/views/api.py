@@ -5,7 +5,7 @@ import re
 from flask import Blueprint, jsonify, abort, flash, request, session
 from flask.ext.login import login_required
 
-from ..models import Question, Product, Price, ProductQuestion, ProductAnswer
+from ..models import Question, Product, Price, ProductQuestion, ProductAnswer, Region
 from ..extensions import db
 from ..constants import QUESTION_CATEGORY, REG_EXP_PHONE
 from ..helpers import gen_captcha_str, send_sms
@@ -171,3 +171,13 @@ def send_sms_captcha():
         template_data=[captcha_str, SMS_CAPTCHA_EXPIRE]
     )
     return jsonify(resp_json)
+
+
+@api.route('/region/<int:region_id>/children/')
+def get_region_children(region_id):
+    if region_id <= 0:
+        return jsonify(regions=[])
+
+    result = Region.query.filter_by(parent_id=region_id).all()
+    region_children = [(r.id, r.name) for r in result]
+    return jsonify(regions=region_children)

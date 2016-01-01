@@ -27,6 +27,7 @@ def create_app(config_name):
     app.register_blueprint(views.account)
     app.register_blueprint(views.admin)
     app.register_blueprint(views.api)
+    app.register_blueprint(views.order)
 
     # database & migrate
     db.init_app(app)

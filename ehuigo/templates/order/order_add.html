@@ -1,0 +1,135 @@
+{% extends '_base.html' %}
+{% import "bootstrap/wtf.html" as wtf %}
+{% block subtitle %}确认订单{% endblock %}
+{% block page_content %}
+<div class="row">
+  <div class="col-md-12">
+    <ol class="breadcrumb">
+      <li class="active">确认订单</li>
+    </ol>
+    <hr>
+  </div>
+  <hr>
+</div>
+<div class="row">
+  <div class="col-md-12">
+    {% include '_flash.html' %}
+    <form class="form-horizontal" id="register-form" method="post" action="{{ url_for('order.add_order') }}">
+      <div class="form-group{% if form.service_type.errors %} has-error{% endif %}">
+        {{ form.service_type.label(class_='col-md-offset-4 col-md-1 col-xs-12 control-label') }}
+        <div class="col-md-3">
+          {{ form.service_type(class_='form-control') }}
+        </div>
+        <div class="col-md-offset-5 col-md-3">
+            <p class="help-block">{{ ', '.join(form.service_type.errors) }}</p>
+        </div>
+      </div>
+      <div class="form-group{% if form.fullname.errors %} has-error{% endif %}">
+        {{ form.fullname.label(class_='col-md-offset-4 col-md-1 col-xs-12 control-label') }}
+        <div class="col-md-3">
+          {{ form.fullname(class_='form-control', required=form.fullname.flags.required, placeholder='请输入真实姓名') }}
+        </div>
+        <div class="col-md-offset-5 col-md-3">
+            <p class="help-block">{{ ', '.join(form.fullname.errors) }}</p>
+        </div>
+      </div>
+      <div class="form-group{% if form.cellphone.errors %} has-error{% endif %}">
+        {{ form.cellphone.label(class_='col-md-offset-4 col-md-1 col-xs-12 control-label') }}
+        <div class="col-md-3">
+          {{ form.cellphone(class_='form-control', required=form.cellphone.flags.required, placeholder='请输入手机号码') }}
+        </div>
+        <div class="col-md-offset-5 col-md-3">
+            <p class="help-block">{{ ', '.join(form.cellphone.errors) }}</p>
+        </div>
+      </div>
+
+      <div class="form-group{% if form.province.errors %} has-error{% endif %}">
+        {{ form.province.label(class_='col-md-offset-4 col-md-1 col-xs-12 control-label') }}
+        <div class="col-md-3">
+          {{ form.province(class_='form-control') }}
+        </div>
+        <div class="col-md-offset-5 col-md-3">
+            <p class="help-block">{{ ', '.join(form.province.errors) }}</p>
+        </div>
+      </div>
+      <div class="form-group{% if form.city.errors %} has-error{% endif %}">
+        {{ form.city.label(class_='col-md-offset-4 col-md-1 col-xs-12 control-label') }}
+        <div class="col-md-3">
+          {{ form.city(class_='form-control') }}
+        </div>
+        <div class="col-md-offset-5 col-md-3">
+            <p class="help-block">{{ ', '.join(form.city.errors) }}</p>
+        </div>
+      </div>
+      <div class="form-group{% if form.county.errors %} has-error{% endif %}">
+        {{ form.county.label(class_='col-md-offset-4 col-md-1 col-xs-12 control-label') }}
+        <div class="col-md-3">
+          {{ form.county(class_='form-control') }}
+        </div>
+        <div class="col-md-offset-5 col-md-3">
+            <p class="help-block">{{ ', '.join(form.county.errors) }}</p>
+        </div>
+      </div>
+
+      <div class="form-group{% if form.address.errors %} has-error{% endif %}">
+        {{ form.address.label(class_='col-md-offset-4 col-md-1 col-xs-12 control-label') }}
+        <div class="col-md-3">
+          {{ form.address(class_='form-control', required=form.address.flags.required, placeholder='请输入详细地址') }}
+        </div>
+        <div class="col-md-offset-5 col-md-3">
+            <p class="help-block">{{ ', '.join(form.address.errors) }}</p>
+        </div>
+      </div>
+      <div class="form-group{% if form.remark.errors %} has-error{% endif %}">
+        {{ form.remark.label(class_='col-md-offset-4 col-md-1 col-xs-12 control-label') }}
+        <div class="col-md-3">
+          {{ form.remark(class_='form-control', required=form.remark.flags.required, placeholder='请输入备注') }}
+        </div>
+        <div class="col-md-offset-5 col-md-3">
+            <p class="help-block">{{ ', '.join(form.remark.errors) }}</p>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <div class="col-md-offset-5 col-md-3">
+          {{ form.submit(class_='btn btn-default btn-success') }}
+          <a class="pull-right btn btn-default" href="">取消</a>
+          <div class="clearfix"></div>
+        </div>
+      </div>
+      {{ form.hidden_tag() }}
+    </form>
+  </div>
+</div>
+{% endblock %}
+{% block page_scripts %}
+<script>
+  $(document).ready(function () {
+    // $("#province").prepend('<option value="0">请选择省份</option>');
+    $("#province").change(function () {
+      var region_id = $(this).val();
+      $.get("/api/region/"+region_id+"/children/", function (data) {
+        $("#city").empty();
+        $("#city").append('<option value="0">请选择城市</option>');
+        for (var i in data["regions"]) {
+          var region_id = data["regions"][i][0];
+          var region_name = data["regions"][i][1];
+          $("#city").append('<option value="'+region_id+'">'+region_name+'</option>');
+        }
+      });
+    });
+    $("#city").change(function () {
+      var region_id = $(this).val();
+      $.get("/api/region/"+region_id+"/children/", function (data) {
+        $("#county").empty();
+        $("#county").append('<option value="0">请选择县区</option>');
+        for (var i in data["regions"]) {
+          var region_id = data["regions"][i][0];
+          var region_name = data["regions"][i][1];
+          $("#county").append('<option value="'+region_id+'">'+region_name+'</option>');
+        }
+      });
+    });
+  });
+</script>
+{% endblock %}

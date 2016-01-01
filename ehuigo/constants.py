@@ -17,6 +17,9 @@ MAX_LENGTH = {
     'question_remark': 120,
     'answer_content': 60,
     'answer_remark': 120,
+    'category_name': 20,
+    'fullname': 20,
+    'region_name': 100,
 }
 
 
