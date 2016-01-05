@@ -14,7 +14,13 @@
 <div class="row">
   <div class="col-md-12">
     {% include '_flash.html' %}
-    <form class="form-horizontal" id="register-form" method="post" action="{{ url_for('order.add_order') }}">
+    <form class="form-horizontal" id="add-order-form" method="post" action="{{ url_for('order.add_order') }}">
+      <div class="form-group">
+        <label class="col-md-offset-4 col-md-1 col-xs-12 control-label">估价结果</label>
+        <div class="col-md-3">
+          <p class="form-control-static text-right text-danger"><strong>{{ price }} 元</strong></p>
+        </div>
+      </div>
       <div class="form-group{% if form.service_type.errors %} has-error{% endif %}">
         {{ form.service_type.label(class_='col-md-offset-4 col-md-1 col-xs-12 control-label') }}
         <div class="col-md-3">
@@ -92,7 +98,7 @@
 
       <div class="form-group">
         <div class="col-md-offset-5 col-md-3">
-          {{ form.submit(class_='btn btn-default btn-success') }}
+          {{ form.submit(class_='btn btn-default btn-success', onclick='return confirm(\'订单提交后将不能修改。所有信息确认无误，继续提交吗？\');') }}
           <a class="pull-right btn btn-default" href="">取消</a>
           <div class="clearfix"></div>
         </div>

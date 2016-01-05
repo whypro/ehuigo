@@ -2,23 +2,32 @@
 from __future__ import unicode_literals
 import io
 
-from flask import Blueprint, render_template, request, jsonify, redirect, abort, current_app, send_from_directory, send_file, session, url_for
+from flask import Blueprint, render_template, request, jsonify, redirect, abort, current_app, send_from_directory, send_file, session, url_for, flash
+from flask.ext.login import current_user, login_required
 from sqlalchemy.sql import func
 from sqlalchemy import or_
 from captcha.image import ImageCaptcha
 
-from ..models import Region
-from ..helpers import send_sms, gen_captcha_str
+from ..models import Region, RecycleOrder
+from ..helpers import send_sms, gen_captcha_str, gen_order_number
 from ..captcha import create_captcha
 from ..forms import RecycleOrderForm
+from ..extensions import db
 
 
 order = Blueprint('order', __name__, url_prefix='/order')
 
 
 @order.route('/add/', methods=['GET', 'POST'])
+@login_required
 def add_order():
-    form = RecycleOrderForm()
+    if 'recycle' not in session:
+        flash('页面已过期，请重新进行估价', 'danger')
+        current_app.logger.error('Key recycle is not in app session')
+        return redirect(url_for('home.index'))
+
+    # 初始化 form
+    form = RecycleOrderForm(cellphone=current_user.cellphone)
     if form.province.data == 0: form.province.data = None
     if form.city.data == 0: form.city.data = None
     if form.county.data == 0: form.county.data = None
@@ -31,5 +40,26 @@ def add_order():
     form.county.choices = [(0, '请选择县区')] + [(c.id, c.name) for c in counties]
 
     if form.validate_on_submit():
-        return redirect(url_for('order.add_order'))
-    return render_template('order/order_add.html', form=form)
+        province = Region.query.get(form.province.data)
+        city = Region.query.get(form.city.data)
+        county = Region.query.get(form.county.data)
+        recycle_order = RecycleOrder(
+            order_number=gen_order_number(),
+            service_type=form.service_type.data,
+            remark=form.remark.data,
+            user_id=current_user.id,
+            fullname=form.fullname.data,
+            cellphone=form.cellphone.data,
+            address=province.name+city.name+county.name+form.address.data,
+        )
+        db.session.add(recycle_order)
+        db.session.commit()
+        session.pop('recycle')
+        flash('订单创建成功', 'success')
+        return redirect(url_for('account.index'))
+
+    recycle_data = session['recycle']
+    return render_template(
+        'order/order_add.html', form=form,
+        product_id=recycle_data['product_id'], price=recycle_data['price']
+    )

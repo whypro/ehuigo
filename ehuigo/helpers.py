@@ -10,6 +10,7 @@ import urllib2
 import json
 import string
 import random
+import datetime
 
 from flask import current_app, render_template, request
 from flask.ext.mail import Message
@@ -117,3 +118,8 @@ def gen_captcha_str(length, digits_only=False):
     characters = filter(lambda x: x not in 'IloO01', characters)
     result = random.sample(characters, length)
     return ''.join(result)
+
+
+def gen_order_number():
+    # 格式：20160104181823411000
+    return datetime.datetime.now().strftime('%Y%m%d%H%M%S%f')[:-3] + unicode(random.randint(0, 999)).rjust(3, '0')

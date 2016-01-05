@@ -104,7 +104,7 @@
                                 </div>
                             </div>
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-primary">下一步</button>
+                                <button id="create_recycle_order" type="button" class="btn btn-primary">下一步</button>
                                 <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
                             </div>
                         </div><!-- /.modal-content -->
@@ -157,6 +157,9 @@
             console.log($(this));
         });
         */
+        $("#create_recycle_order").click(function () {
+            window.location.href = "{{ url_for('order.add_order') }}";
+        });
     });
 </script>
 {% endblock %}

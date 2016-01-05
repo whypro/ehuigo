@@ -134,8 +134,10 @@ def resend_activation():
     return redirect(url_for('home.index'))
 
 
-def show_profile():
-    pass
+@account.route('/')
+@login_required
+def index():
+    return redirect(url_for('account.edit_profile', user_id=current_user.id))
 
 
 @account.route('/<int:user_id>/profile/edit/', methods=['GET', 'POST'])

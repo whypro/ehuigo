@@ -128,6 +128,9 @@ def evaluate(product_id):
         price += product_answer.discount    # 加负等于减正
     if price < min_price: price = min_price
     print price
+    # 设置 session
+    recycle_data = dict(product_id=product_id, price=int(price))
+    session['recycle'] = recycle_data
     return jsonify(price=int(price))
 
 
