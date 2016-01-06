@@ -43,7 +43,7 @@ class RegisterForm(Form):
     #         raise ValidationError('验证码不正确')
 
     def validate_sms_captcha(self, field):
-        if field.data.upper() != session['sms_captcha']:
+        if self.cellphone != session['sms_captcha']['cellphone'] or field.data.upper() != session['sms_captcha']['captcha']:
             raise ValidationError('短信验证码不正确')
 
 
@@ -111,6 +111,33 @@ class UserProfileForm(Form):
     def validate_username(self, field):
         if field.data != current_user.username and User.query.filter_by(username=field.data).first():
             raise ValidationError('该用户名已被注册')
+
+
+class UserProfileCellphoneForm(Form):
+    cellphone = StringField('手机号', validators=[
+        InputRequired(),
+        Length(1, MAX_LENGTH['cellphone'], '长度不合法'),
+        Regexp(REG_EXP_PHONE, message='无效的手机号码')
+    ])
+    sms_captcha = StringField(
+        u'短信验证码',
+        validators=[InputRequired(message=u'请输入短信验证码')]
+    )
+    submit = SubmitField('保存')
+
+    def validate_cellphone(self, field):
+        if field.data == current_user.cellphone and current_user.status.cellphone_confirmed:
+            raise ValidationError('该手机号已绑定现有账户')
+        elif User.query.filter_by(cellphone=field.data).first():
+            raise ValidationError('该手机号已绑定其他账户')
+
+    def validate_sms_captcha(self, field):
+        print self.cellphone.data
+        print session['sms_captcha']['cellphone']
+        print field.data.upper()
+        print session['sms_captcha']['captcha']
+        if self.cellphone.data != session['sms_captcha']['cellphone'] or field.data.upper() != session['sms_captcha']['captcha']:
+            raise ValidationError('短信验证码不正确')
 
 
 class UserSecurityForm(Form):

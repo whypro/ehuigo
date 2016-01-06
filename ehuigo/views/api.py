@@ -156,10 +156,10 @@ def send_sms_captcha():
     SMS_CAPTCHA_TEMPLATE_ID = 1
     SMS_CAPTCHA_EXPIRE = 5
     data = request.get_json()
-    phone = data['phone']
+    cellphone = data['phone']
     image_captcha = data['image_captcha'].upper()
     # check phone
-    if not re.match(REG_EXP_PHONE, phone):
+    if not re.match(REG_EXP_PHONE, cellphone):
         abort(400)
 
     # print image_captcha, session['image_captcha']
@@ -167,9 +167,9 @@ def send_sms_captcha():
         abort(401)
 
     captcha_str = gen_captcha_str(6, digits_only=True)
-    session['sms_captcha'] = captcha_str.upper()
+    session['sms_captcha'] = dict(cellphone=cellphone, captcha=captcha_str.upper())
     resp_json = send_sms(
-        [phone],
+        [cellphone],
         template_id=SMS_CAPTCHA_TEMPLATE_ID,
         template_data=[captcha_str, SMS_CAPTCHA_EXPIRE]
     )

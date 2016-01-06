@@ -6,7 +6,7 @@ from flask.ext.login import login_user, logout_user, login_required, current_use
 from sqlalchemy import or_
 
 from ..models import User, UserStatus
-from ..forms import RegisterForm, RegisterByEmailForm, UserProfileForm, UserSecurityForm
+from ..forms import RegisterForm, RegisterByEmailForm, UserProfileForm, UserSecurityForm, UserProfileCellphoneForm
 from ..extensions import db
 from ..helpers import send_email, get_client_ip, create_uploader
 
@@ -131,7 +131,7 @@ def resend_activation():
     token = current_user.generate_activation_token()
     send_email(current_user.email, '账户激活', 'mail/activation.html', user=current_user, token=token)
     flash('发送成功，您的邮箱 {email} 将会收到一封激活邮件，请在一小时内查收邮件进行账户激活'.format(email=current_user.email), 'success')
-    return redirect(url_for('home.index'))
+    return redirect(url_for('account.edit_profile'))
 
 
 @account.route('/')
@@ -140,13 +140,10 @@ def index():
     return redirect(url_for('account.edit_profile', user_id=current_user.id))
 
 
-@account.route('/<int:user_id>/profile/edit/', methods=['GET', 'POST'])
+@account.route('/profile/edit/', methods=['GET', 'POST'])
 @login_required
-def edit_profile(user_id):
-    if user_id != current_user.id:
-        abort(403)
-
-    user = User.query.get_or_404(user_id)
+def edit_profile():
+    user = User.query.get_or_404(current_user.id)
     form = UserProfileForm(obj=user)
     if form.validate_on_submit():
         user.username = form.username.data
@@ -159,9 +156,9 @@ def edit_profile(user_id):
         db.session.commit()
 
         flash('保存成功', 'success')
-        return redirect(url_for('account.edit_profile', user_id=user_id))
+        return redirect(url_for('account.edit_profile'))
 
-    return render_template('account/profile_edit.html', form=form, user=user)
+    return render_template('account/profile_edit.html', form=form)
 
 
 @account.route('/<int:user_id>/security/edit/', methods=['GET', 'POST'])
@@ -181,3 +178,17 @@ def edit_security(user_id):
         return redirect(url_for('account.edit_security', user_id=user_id))
 
     return render_template('account/security_edit.html', form=form)
+
+
+@account.route('/profile/cellphone/edit/', methods=['GET', 'POST'])
+def edit_profile_cellphone():
+    form = UserProfileCellphoneForm()
+    if form.validate_on_submit():
+        user = User.query.get_or_404(current_user.id)
+        user.cellphone = form.cellphone.data
+        user.status.cellphone_confirmed = True
+        db.session.add(user)
+        db.session.commit()
+        flash('修改成功', 'success')
+        return redirect(url_for('account.edit_profile', user_id=current_user.id))
+    return render_template('account/profile_cellphone_edit.html', form=form)

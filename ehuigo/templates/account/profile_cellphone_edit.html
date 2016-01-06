@@ -1,0 +1,130 @@
+{% extends '_base.html' %}
+{% block subtitle %}基本资料{% endblock %}
+{% block page_content %}
+  <div class="row">
+    {% set sider_active = 'profile' %}
+    {% include 'account/_sider.html' %}
+    <div class="col-md-9 col-sm-9">
+      <div class="row">
+        <div class="col-md-12">
+        <ol class="breadcrumb">
+          <li><a>用户中心</a></li>
+          <li><a href="{{ url_for('account.edit_profile') }}">基本资料</a></li>
+          <li class="active">绑定手机</li>
+        </ol>
+        <hr>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-8">
+          {% include '_flash.html' %}
+
+          <form class="form-horizontal" method="post" action="{{ url_for('account.edit_profile_cellphone') }}" id="edit-profile-form" enctype="multipart/form-data">
+            <div class="form-group{% if form.cellphone.errors %} has-error{% endif %}">
+              {{ form.cellphone.label(class_='col-md-2 control-label') }}
+              <div class="col-sm-6">
+                {{ form.cellphone(class_='form-control', required=form.cellphone.flags.required, placeholder='请输入手机号码') }}
+              </div>
+              <div class="col-md-offset-2 col-md-6">
+                <p class="help-block">{{ ', '.join(form.cellphone.errors) }}</p>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="control-label col-md-2" for="image-captcha">图片验证码</label>
+              <div class="col-sm-6">
+                <input type="text" class="form-control" id="image-captcha" placeholder="请输入图片验证码" autocomplete="off">
+              </div>
+              <div class="col-md-2">
+                <img id="image-captcha-img" src="{{ url_for('home.gen_image_captcha') }}">
+              </div>
+              <div class="col-md-offset-2 col-md-6">
+                <p class="help-block"></p>
+              </div>
+            </div>
+
+            <div class="form-group{% if form.sms_captcha.errors %} has-error{% endif %}">
+              {{ form.sms_captcha.label(class_='col-md-2 control-label') }}
+              <div class="col-sm-6">
+                {{ form.sms_captcha(class_='form-control', required=form.sms_captcha.flags.required, placeholder='请输入短信验证码', autocomplete='off') }}
+              </div>
+              <div class="col-md-2">
+                <button id="send-sms-captcha-button" class="btn btn-primary" type="button" data-loading-text="请注意查收短信" data-failed-text="请稍后重试发送">获取验证码</button>
+              </div>
+              <div class="col-md-offset-2 col-md-6">
+                <p class="help-block">{{ ', '.join(form.sms_captcha.errors) }}</p>
+              </div>
+            </div>
+            <div class="col-md-offset-2 col-md-6">
+              {{ form.submit(class_='btn btn-success') }}
+              <a href="{{ url_for('account.edit_profile') }}" class="btn btn-default pull-right">取消</a>
+            </div>
+            {{ form.hidden_tag() }}
+          </form>
+        </div>
+
+      </div>
+    </div>
+  </div>
+{% endblock %}
+{% block page_scripts %}
+<script>
+  $(document).ready(function () {
+
+    $("#image-captcha-img").click(function () {
+      $(this).attr("src", "{{ url_for('home.gen_image_captcha') }}?t="+jQuery.now());
+    });
+
+    $("#send-sms-captcha-button").click(function () {
+      var cellphone = $("#cellphone").val();
+      var reg = /^(0|86|17951)?(13[0-9]|15[012356789]|17[678]|18[0-9]|14[57])[0-9]{8}$/;
+      if(!reg.test(cellphone)) {
+        $("#cellphone").parent().addClass("has-error");
+        $("#cellphone").focus();
+        // alert('您的手机号码输入有误，请重新输入');
+        return false;
+      }
+      $("#cellphone").parent().removeClass("has-error");
+      $("#image-captcha").parent().removeClass("has-error");
+      $(this).button("loading");
+      var data = JSON.stringify({
+        phone: cellphone,
+        image_captcha: $("#image-captcha").val()
+      });
+      $.ajax({
+        url: "{{ url_for('api.send_sms_captcha') }}",
+        type: "POST",
+        data: data,
+        dataType: "json",
+        contentType: "application/json; charset=utf-8",
+        success: function (data) {
+          // $("#send-sms-captcha-modal").modal('hide');
+          if (data['statusCode'] != "000000") {
+            $("#send-sms-captcha-button").button("failed");
+            $("#send-sms-captcha-button").prop("disabled", true);
+            setTimeout(function () {
+              $("#send-sms-captcha-button").button("reset");
+              $("#send-sms-captcha-button").prop("disabled", false);
+            }, 60 * 1000);
+          } else {
+            // alert('短信验证码发送成功');
+            $("#sms-captcha").parent().addClass("has-warning");
+            $("#sms-captcha").focus();
+            $("#send-sms-captcha-button").button("loading");
+            setTimeout(function () {
+              $("#send-sms-captcha-button").button("reset");
+            }, 60 * 1000);
+          }
+        },
+        error: function (e) {
+          $("#image-captcha").parent().addClass("has-error");
+          // alert('短信验证码发送失败，请重新输入图片验证码');
+          $("#image-captcha-img").attr("src", "{{ url_for('home.gen_image_captcha') }}?t="+jQuery.now());
+          $("#image-captcha").val("");
+          $("#image-captcha").focus();
+          $("#send-sms-captcha-button").button("reset");
+        }
+      });
+    });
+  });
+</script>
+{% endblock %}
