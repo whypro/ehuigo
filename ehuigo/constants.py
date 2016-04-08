@@ -40,11 +40,24 @@ QUESTION_CATEGORY_REVERSED = dict((v, k) for k, v in QUESTION_CATEGORY.items())
 REG_EXP_PHONE = '^(0|86|17951)?(13[0-9]|15[012356789]|17[678]|18[0-9]|14[57])[0-9]{8}$'
 
 
-RECYCLE_ORDER_STATUS = {
-    'created': 0,       # 用户创建
-    'confirmed': 1,     # 商家确认
-    'sent': 2,          # 用户发货
-    'received': 3,      # 商家确认收货
-    'accepted': 4,      # 商家评估通过
-    'rejected': 5,      # 商家评估未通过
-}
+RECYCLE_SERVICE_TYPE = (
+    (1, 'offline', '上门服务'),
+    (2, 'online', '邮寄服务'),
+)
+
+RECYCLE_ORDER_STATUS_TYPE_OFFLINE = (
+    (1, 'created', '待确认'),
+    (2, 'confirmed', '已确认'),
+    (3, 'coming', '上门取货中'),
+    (4, 'accepted', '如实描述'),
+    (5, 'rejected', '描述不符'),
+)
+
+RECYCLE_ORDER_STATUS_TYPE_ONLINE = (
+    (1, 'created', '待邮寄'),
+    (2, 'sent', '已邮寄'),
+    (3, 'received', '已收件'),
+    (4, 'accepted', '如实描述'),
+    (5, 'rejected', '描述不符'),
+)
+

@@ -14,8 +14,7 @@ class RecycleOrderForm(Form):
     service_type = SelectField('服务方式', coerce=int, validators=[DataRequired()], choices=[
         (0, '请选择服务方式'),
         (1, '上门服务'),
-        (2, '门店服务'),
-        (3, '邮寄服务'),
+        (2, '邮寄服务'),
     ])
     fullname = StringField('姓名', validators=[
         InputRequired(),

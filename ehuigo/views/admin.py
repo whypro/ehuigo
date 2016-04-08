@@ -6,7 +6,7 @@ from flask import Blueprint, render_template, request, redirect, url_for, abort,
 from flask.ext.login import login_required, current_user
 
 from ..extensions import db
-from ..models import Manufacturer, Product, Question, Answer, Category, User
+from ..models import Manufacturer, Product, Question, Answer, Category, User, RecycleOrder
 from ..helpers import create_uploader, send_email
 from ..constants import QUESTION_CATEGORY, QUESTION_CATEGORY_REVERSED
 
@@ -301,12 +301,14 @@ def before_request():
 
 
 @admin.route('/categories/')
+@login_required
 def show_categories():
     categories = Category.query.all()
     return render_template('admin/categories.html', categories=categories)
 
 
 @admin.route('/category/add/', methods=['POST'])
+@login_required
 def add_category():
     name = request.form.get('category-name')
     category = Category(name=name)
@@ -316,6 +318,7 @@ def add_category():
 
 
 @admin.route('/category/<int:category_id>/delete/')
+@login_required
 def delete_category(category_id):
     category = Category.query.get_or_404(category_id)
     db.session.delete(category)
@@ -324,6 +327,23 @@ def delete_category(category_id):
 
 
 @admin.route('/users/')
+@login_required
 def show_users():
     users = User.query.all()
     return render_template('admin/users.html', users=users)
+
+
+@admin.route('/orders/')
+@login_required
+def show_orders():
+    orders = RecycleOrder.query.all()
+    return render_template('admin/orders.html', orders=orders)
+
+
+@admin.route('/order/<int:order_id>/')
+@login_required
+def show_order_detail(order_id):
+    order = RecycleOrder.query.get_or_404(order_id)
+    # return str(order_id)
+    return render_template('admin/order_detail.html', order=order)
+

@@ -140,10 +140,12 @@ def index():
     return redirect(url_for('account.edit_profile', user_id=current_user.id))
 
 
-@account.route('/profile/edit/', methods=['GET', 'POST'])
+@account.route('/<int:user_id>/profile/edit/', methods=['GET', 'POST'])
 @login_required
-def edit_profile():
-    user = User.query.get_or_404(current_user.id)
+def edit_profile(user_id):
+    if user_id != current_user.id:
+        abort(403)
+    user = User.query.get_or_404(user_id)
     form = UserProfileForm(obj=user)
     if form.validate_on_submit():
         user.username = form.username.data
@@ -180,15 +182,17 @@ def edit_security(user_id):
     return render_template('account/security_edit.html', form=form)
 
 
-@account.route('/profile/cellphone/edit/', methods=['GET', 'POST'])
-def edit_profile_cellphone():
+@account.route('/<int:user_id>/profile/cellphone/edit/', methods=['GET', 'POST'])
+def edit_profile_cellphone(user_id):
+    if user_id != current_user.id:
+        abort(403)
     form = UserProfileCellphoneForm()
     if form.validate_on_submit():
-        user = User.query.get_or_404(current_user.id)
+        user = User.query.get_or_404(user_id)
         user.cellphone = form.cellphone.data
         user.status.cellphone_confirmed = True
         db.session.add(user)
         db.session.commit()
         flash('修改成功', 'success')
-        return redirect(url_for('account.edit_profile', user_id=current_user.id))
+        return redirect(url_for('account.edit_profile', user_id=user_id))
     return render_template('account/profile_cellphone_edit.html', form=form)

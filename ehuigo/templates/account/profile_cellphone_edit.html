@@ -9,7 +9,7 @@
         <div class="col-md-12">
         <ol class="breadcrumb">
           <li><a>用户中心</a></li>
-          <li><a href="{{ url_for('account.edit_profile') }}">基本资料</a></li>
+          <li><a href="{{ url_for('account.edit_profile', user_id=current_user.id) }}">基本资料</a></li>
           <li class="active">绑定手机</li>
         </ol>
         <hr>
@@ -19,7 +19,7 @@
         <div class="col-md-8">
           {% include '_flash.html' %}
 
-          <form class="form-horizontal" method="post" action="{{ url_for('account.edit_profile_cellphone') }}" id="edit-profile-form" enctype="multipart/form-data">
+          <form class="form-horizontal" method="post" action="{{ url_for('account.edit_profile_cellphone', user_id=current_user.id) }}" id="edit-profile-form" enctype="multipart/form-data">
             <div class="form-group{% if form.cellphone.errors %} has-error{% endif %}">
               {{ form.cellphone.label(class_='col-md-2 control-label') }}
               <div class="col-sm-6">
@@ -56,7 +56,7 @@
             </div>
             <div class="col-md-offset-2 col-md-6">
               {{ form.submit(class_='btn btn-success') }}
-              <a href="{{ url_for('account.edit_profile') }}" class="btn btn-default pull-right">取消</a>
+              <a href="{{ url_for('account.edit_profile', user_id=current_user.id) }}" class="btn btn-default pull-right">取消</a>
             </div>
             {{ form.hidden_tag() }}
           </form>

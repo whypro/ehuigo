@@ -7,7 +7,7 @@ from sqlalchemy.ext.associationproxy import association_proxy
 from flask import current_app
 
 from ..extensions import db
-from ..constants import MAX_LENGTH, QUESTION_CATEGORY
+from ..constants import MAX_LENGTH, QUESTION_CATEGORY, RECYCLE_SERVICE_TYPE, RECYCLE_ORDER_STATUS_TYPE_OFFLINE, RECYCLE_ORDER_STATUS_TYPE_ONLINE
 
 
 class RecycleOrder(db.Model):
@@ -24,11 +24,27 @@ class RecycleOrder(db.Model):
     user = db.relationship('User', passive_deletes=True)
     carrier = db.Column(db.String(MAX_LENGTH['carrier']))       # 快递公司
     tracking = db.Column(db.String(MAX_LENGTH['tracking']))     # 运单号
-    status = db.Column(db.Integer)  # 订单状态
+    state = db.Column(db.Integer, default=1)  # 订单状态
     create_time = db.Column(db.DateTime, default=datetime.datetime.now)     # 创建时间
     send_time = db.Column(db.DateTime)       # 发货时间
     receive_time = db.Column(db.DateTime)    # 收货时间
-    price = db.Column(db.Numeric(10, 2))    # 价格
+    price = db.Column(db.Numeric(10, 2))     # 价格
+
+    @staticmethod
+    def _search_by_index(obj, index):
+        for v1, v2, v3 in obj:
+            if v1 == index:
+                return v3
+        return None
+
+    def get_state(self):
+        if self.state == 1:
+            return self._search_by_index(RECYCLE_ORDER_STATUS_TYPE_OFFLINE, self.state)
+        elif self.state == 2:
+            return self._search_by_index(RECYCLE_ORDER_STATUS_TYPE_ONLINE, self.state)
+
+    def get_service_type(self):
+        return self._search_by_index(RECYCLE_SERVICE_TYPE, self.service_type)
 
 
 class ExchangeOrder(object):

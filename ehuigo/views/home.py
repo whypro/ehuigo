@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 import io
 
 from flask import Blueprint, render_template, request, jsonify, redirect, abort, current_app, send_from_directory, send_file, session
+from flask.views import MethodView
 from sqlalchemy.sql import func
 from sqlalchemy import or_
 from captcha.image import ImageCaptcha

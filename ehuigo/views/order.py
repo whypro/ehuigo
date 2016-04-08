@@ -63,3 +63,10 @@ def add_order():
         'order/order_add.html', form=form,
         product_id=recycle_data['product_id'], price=recycle_data['price']
     )
+
+
+@order.route('/orders/')
+@login_required
+def show_orders():
+    orders = RecycleOrder.query.filter_by(user_id=current_user.id)
+    return render_template('order/orders.html', orders=orders)

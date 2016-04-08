@@ -18,6 +18,11 @@
     <li{% if sider_active == 'users' %} class="active"{% endif %}>
         <a href="{{ url_for('admin.show_users') }}">用户管理</a>
     </li>
+    <li{% if sider_active == 'orders' %} class="active"{% endif %}>
+        <a href="{{ url_for('admin.show_orders') }}">订单管理</a>
+    </li>
+
+
   </ul>
   <hr>
 </div>

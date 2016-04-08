@@ -1,0 +1,32 @@
+{% extends '_base.html' %}
+{% block subtitle %}订单详情{% endblock %}
+{% block page_content %}
+            <div class="row">
+
+                {% set sider_active = 'orders' %}
+                {% include 'admin/_sider.html' %}
+
+                <div class="col-md-9 col-sm-9">
+                    <div class="row">
+                        <div class="col-md-12">
+                        <ol class="breadcrumb">
+                            <li><a href="{{ url_for('admin.show_orders') }}">订单管理</a></li>
+                            <li class="active">{{ order.order_number }}</li>
+                        </ol>
+                        <hr>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            {% include '_flash.html' %}
+                            <form class="form-horizontal" id="order-form">
+
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+{% endblock %}
+{% block page_scripts %}
+{% endblock %}

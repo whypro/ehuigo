@@ -1,0 +1,59 @@
+{% extends '_base.html' %}
+{% block subtitle %}订单管理{% endblock %}
+{% block page_content %}
+  <div class="row">
+    {% set sider_active = 'orders' %}
+    {% include 'account/_sider.html' %}
+    <div class="col-md-9 col-sm-9">
+      <div class="row">
+        <div class="col-md-12">
+        <ol class="breadcrumb">
+          <li><a>用户中心</a></li>
+          <li class="active">订单管理</li>
+        </ol>
+        <hr>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12">
+          {% include '_flash.html' %}
+          <table class="table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>订单号</th>
+                  <th>姓名</th>
+                  <th>手机</th>
+                  <th>类型</th>
+                  <th>状态</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for order in orders %}
+              <tr>
+                <th scope="row">{{ order.id }}</th>
+                <td><a href="{{ url_for('admin.show_order_detail', order_id=order.id) }}">{{ order.order_number }}</a></td>
+                <td>{{ order.fullname }}</td>
+                <td>{{ order.cellphone }}</td>
+                <td>{{ order.get_service_type() }}</td>
+                <td>{{ order.get_state() }}</td>
+              {#
+                <td{% if user.status.cellphone_confirmed %} class="success" title="已验证"{% endif %}>{{ user.cellphone }}</td>
+                <td{% if user.status.email_confirmed %} class="success" title="已验证"{% endif %}>{{ user.email }}</td>
+                <td>{% if user.status.is_admin %}管理员{% endif %}&nbsp;{% if user.status.banned %}封禁{% endif %}</td>
+               #}
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+{% block page_scripts %}
+<script>
+    $(document).ready(function () {
+    });
+</script>
+{% endblock %}
