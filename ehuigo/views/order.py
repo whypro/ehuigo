@@ -26,6 +26,8 @@ def add_order():
         current_app.logger.error('Key recycle is not in app session')
         return redirect(url_for('home.index'))
 
+    recycle_data = session['recycle']
+
     # 初始化 form
     form = RecycleOrderForm(cellphone=current_user.cellphone)
     if form.province.data == 0: form.province.data = None
@@ -51,17 +53,19 @@ def add_order():
             fullname=form.fullname.data,
             cellphone=form.cellphone.data,
             address=province.name+city.name+county.name+form.address.data,
+            eval_detail=recycle_data['detail'],
+            eval_price=recycle_data['price'],
+            product_id=recycle_data['product_id']
         )
         db.session.add(recycle_order)
         db.session.commit()
         session.pop('recycle')
         flash('订单创建成功', 'success')
-        return redirect(url_for('account.index'))
+        return redirect(url_for('order.show_orders'))
 
-    recycle_data = session['recycle']
     return render_template(
         'order/order_add.html', form=form,
-        product_id=recycle_data['product_id'], price=recycle_data['price']
+        product_id=recycle_data['product_id'], price=recycle_data['price'], detail=recycle_data['detail']
     )
 
 

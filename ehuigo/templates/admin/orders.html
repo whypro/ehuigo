@@ -21,11 +21,14 @@
         <thead>
           <tr>
             <th>#</th>
-            <th>订单号</th>
+              <th>订单号</th>
               <th>姓名</th>
               <th>手机</th>
+              <th>用户名</th>
               <th>类型</th>
               <th>状态</th>
+              <th>品牌型号</th>
+              <th>创建时间</th>
           </tr>
         </thead>
         <tbody>
@@ -35,8 +38,12 @@
             <td><a href="{{ url_for('admin.show_order_detail', order_id=order.id) }}">{{ order.order_number }}</a></td>
             <td>{{ order.fullname }}</td>
             <td>{{ order.cellphone }}</td>
+            <td>{{ order.user.username }}</td>
             <td>{{ order.get_service_type() }}</td>
             <td>{{ order.get_state() }}</td>
+            <td>{{ order.product.manufacturer.name }} {{ order.product.model }}</td>
+            <td>{{ order.create_time }}</td>
+
           {#
             <td{% if user.status.cellphone_confirmed %} class="success" title="已验证"{% endif %}>{{ user.cellphone }}</td>
             <td{% if user.status.email_confirmed %} class="success" title="已验证"{% endif %}>{{ user.email }}</td>

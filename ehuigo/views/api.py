@@ -123,13 +123,15 @@ def evaluate(product_id):
     price = product.price.recycle_max_price
     min_price = product.price.recycle_min_price
     data = request.get_json()
+    detail = ''
     for answer_id in data['answers']:
         product_answer = ProductAnswer.query.filter_by(product_id=product_id, answer_id=answer_id).one()
         price += product_answer.discount    # 加负等于减正
+        detail += (product_answer.answer.question.content + '：' + product_answer.answer.content + '<br>')
     if price < min_price: price = min_price
-    print price
+    # print price
     # 设置 session
-    recycle_data = dict(product_id=product_id, price=int(price))
+    recycle_data = dict(product_id=product_id, price=int(price), detail=detail)
     session['recycle'] = recycle_data
     return jsonify(price=int(price))
 

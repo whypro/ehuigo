@@ -20,7 +20,7 @@ class RecycleOrder(db.Model):
     address = db.Column(db.UnicodeText)
     zip_code = db.Column(db.String(MAX_LENGTH['zip_code']))
     remark = db.Column(db.UnicodeText)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id', ondelete='CASCADE'))
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id', ondelete='SET NULL'))
     user = db.relationship('User', passive_deletes=True)
     carrier = db.Column(db.String(MAX_LENGTH['carrier']))       # 快递公司
     tracking = db.Column(db.String(MAX_LENGTH['tracking']))     # 运单号
@@ -28,7 +28,10 @@ class RecycleOrder(db.Model):
     create_time = db.Column(db.DateTime, default=datetime.datetime.now)     # 创建时间
     send_time = db.Column(db.DateTime)       # 发货时间
     receive_time = db.Column(db.DateTime)    # 收货时间
-    price = db.Column(db.Numeric(10, 2))     # 价格
+    product_id = db.Column(db.Integer, db.ForeignKey('product.id', ondelete='SET NULL'))
+    product = db.relationship('Product', passive_deletes=True)
+    eval_detail = db.Column(db.Text)        # 估价详情
+    eval_price = db.Column(db.Numeric(10, 2))     # 估价金额
 
     @staticmethod
     def _search_by_index(obj, index):
