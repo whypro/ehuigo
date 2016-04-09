@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
-import os
+import datetime
 
 from flask import Blueprint, render_template, request, redirect, url_for, abort, flash, g, current_app
 from flask.ext.login import login_required, current_user
@@ -347,4 +347,19 @@ def show_order_detail(order_id):
     order = RecycleOrder.query.get_or_404(order_id)
     # return str(order_id)
     return render_template('admin/order_detail.html', order=order)
+
+
+@admin.route('/order/<int:order_id>/receive/')
+@login_required
+def receive_order(order_id):
+    order = RecycleOrder.query.get_or_404(order_id)
+    if order.service_type != 2 or order.state != 2:
+        abort(400)
+
+    order.state = 3
+    order.receive_time = datetime.datetime.now()
+    db.session.add(order)
+    db.session.commit()
+    # return str(order_id)
+    return redirect(url_for('admin.show_order_detail', order_id=order.id))
 

@@ -42,7 +42,7 @@
                                         <p class="form-control-static" id="eval-price">
                                             {{ order.eval_price }}&emsp;<a href="javascript:void(0);" id="toggle-eval-detail">详情</a>
                                         </p>
-                                        <p id="eval-detail">
+                                        <p id="eval-detail" style="display: none;">
                                             {{ order.eval_detail|safe }}
                                         </p>
                                     </div>
@@ -145,9 +145,13 @@
                                     </div>
                                 </div>
                                 <div class="col-md-offset-2">
-                                    <button class="btn btn-primary">确认收件</button>&emsp;
+                                    {% if order.service_type == 2 and order.state == 2 %}
+                                    <a class="btn btn-primary" href="{{ url_for('admin.receive_order', order_id=order.id) }}">收件</a>&emsp;
+                                    {% endif %}
+                                    {% if order.service_type == 2 and order.state == 3 %}
                                     <button class="btn btn-success">符合描述</button>&emsp;
                                     <button class="btn btn-danger">不符合描述</button>
+                                    {% endif %}
                                 </div>
                             </form>
                         </div>

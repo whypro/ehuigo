@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 import io
+import datetime
 
 from flask import Blueprint, render_template, request, jsonify, redirect, abort, current_app, send_from_directory, send_file, session, url_for, flash
 from flask.ext.login import current_user, login_required
@@ -92,12 +93,22 @@ def add_tracking(order_id):
     order_ = RecycleOrder.query.get_or_404(order_id)
     if order_.user_id != current_user.id:
         abort(403)
+    print order_.service_type
+    if order_.service_type != 2 or order_.state != 1:
+        abort(400)
 
     form = TrackingAddForm()
-    print form.carrier.choices
+    # print form.carrier.choices
     if form.validate_on_submit():
-        print form.tracking.data
-        print form.carrier.data
+        # print form.tracking.data
+        # print form.carrier.data
+        order_.tracking = form.tracking.data
+        order_.carrier = form.carrier.data
+        order_.state = 2
+        order_.send_time = datetime.datetime.now()
+        db.session.add(order_)
+        db.session.commit()
+        return redirect(url_for('order.show_order_detail', order_id=order_.id))
 
     return render_template('order/tracking_add.html', form=form, order=order_)
 

@@ -41,9 +41,9 @@ class RecycleOrder(db.Model):
         return None
 
     def get_state(self):
-        if self.state == 1:
+        if self.service_type == 1:
             return self._search_by_index(RECYCLE_ORDER_STATUS_TYPE_OFFLINE, self.state)
-        elif self.state == 2:
+        elif self.service_type == 2:
             return self._search_by_index(RECYCLE_ORDER_STATUS_TYPE_ONLINE, self.state)
 
     def get_service_type(self):

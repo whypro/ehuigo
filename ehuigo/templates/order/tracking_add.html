@@ -45,6 +45,7 @@
                 <div class="clearfix"></div>
               </div>
             </div>
+            {{ form.hidden_tag() }}
           </form>
         </div>
       </div>
@@ -54,15 +55,7 @@
 {% block page_scripts %}
 <script>
 $(document).ready(function() {
-  $('#eval-detail').hide();
-  $('#toggle-eval-detail').click(function () {
-      if ($('#eval-detail').is(":hidden")) {
-          $('#eval-detail').show(500);
-      } else {
-          $('#eval-detail').hide(500);
-      }
 
-  });
 });
 </script>
 {% endblock %}
