@@ -2,13 +2,14 @@
 from __future__ import unicode_literals
 import re
 
-from flask import Blueprint, jsonify, abort, flash, request, session
-from flask.ext.login import login_required
+from flask import Blueprint, jsonify, abort, flash, request, session, current_app
+from flask.ext.login import login_required, current_user
 
-from ..models import Question, Product, Price, ProductQuestion, ProductAnswer, Region
+from ..models import Question, Product, Price, ProductQuestion, ProductAnswer, Region, RecycleOrder
 from ..extensions import db
 from ..constants import QUESTION_CATEGORY, REG_EXP_PHONE
 from ..helpers import gen_captcha_str, send_sms
+
 
 api = Blueprint('api', __name__, url_prefix='/api')
 
@@ -146,7 +147,8 @@ def quote(product_id):
         product_answer = ProductAnswer.query.filter_by(product_id=product_id, answer_id=answer_id).one()
         exchange_price += product_answer.discount    # 加负等于减正
         member_price += product_answer.discount    # 加负等于减正
-    print exchange_price, member_price
+    # current_app.logger.debug('{0} {1}'.format(exchange_price, member_price))
+    # print exchange_price, member_price
     return jsonify(exchange_price=int(exchange_price), member_price=int(member_price))
 
 
@@ -186,3 +188,4 @@ def get_region_children(region_id):
     result = Region.query.filter_by(parent_id=region_id).all()
     region_children = [(r.id, r.name) for r in result]
     return jsonify(regions=region_children)
+

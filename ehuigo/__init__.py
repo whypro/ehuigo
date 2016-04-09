@@ -58,7 +58,7 @@ def init_app_logger(app):
     )
 
     file_handler.setFormatter(formatter)
-    file_handler.setLevel(logging.WARNING)
+    file_handler.setLevel(logging.DEBUG)
     app.logger.addHandler(file_handler)
 
 

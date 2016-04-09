@@ -106,7 +106,8 @@ def show_products(manufacturer_id):
 @admin.route('/product/add/', methods=['POST'])
 @login_required
 def add_product():
-    print request.form
+    current_app.logger.debug(request.form)
+    # print request.form
     manufacturer_id = request.form.get('product-manufacturer')
     model = request.form.get('product-model')
 

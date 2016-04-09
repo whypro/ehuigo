@@ -64,7 +64,8 @@ class LocalUploader(Uploader):
         try:
             os.remove(fullname)
         except OSError as e:
-            print '文件不存在'
+            current_app.logger.error('文件不存在')
+            # print '文件不存在'
             # raise e
 
     # def url(self, filename):

@@ -1,2 +1,2 @@
 from .account import RegisterForm, RegisterByEmailForm, UserProfileForm, UserSecurityForm, UserProfileCellphoneForm
-from .order import RecycleOrderForm
+from .order import RecycleOrderForm, TrackingAddForm

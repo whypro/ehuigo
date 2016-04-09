@@ -11,7 +11,7 @@ from captcha.image import ImageCaptcha
 from ..models import Region, RecycleOrder
 from ..helpers import send_sms, gen_captcha_str, gen_order_number
 from ..captcha import create_captcha
-from ..forms import RecycleOrderForm
+from ..forms import RecycleOrderForm, TrackingAddForm
 from ..extensions import db
 
 
@@ -74,3 +74,30 @@ def add_order():
 def show_orders():
     orders = RecycleOrder.query.filter_by(user_id=current_user.id)
     return render_template('order/orders.html', orders=orders)
+
+
+@order.route('/<int:order_id>/')
+@login_required
+def show_order_detail(order_id):
+    order_ = RecycleOrder.query.get_or_404(order_id)
+    if order_.user_id != current_user.id:
+        abort(403)
+    # return str(order_id)
+    return render_template('order/order_detail.html', order=order_)
+
+
+@order.route('/<int:order_id>/tracking/add/', methods=['GET', 'POST'])
+@login_required
+def add_tracking(order_id):
+    order_ = RecycleOrder.query.get_or_404(order_id)
+    if order_.user_id != current_user.id:
+        abort(403)
+
+    form = TrackingAddForm()
+    print form.carrier.choices
+    if form.validate_on_submit():
+        print form.tracking.data
+        print form.carrier.data
+
+    return render_template('order/tracking_add.html', form=form, order=order_)
+

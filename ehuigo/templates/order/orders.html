@@ -26,17 +26,19 @@
                   <th>手机</th>
                   <th>类型</th>
                   <th>状态</th>
+                  <th>操作</th>
               </tr>
             </thead>
             <tbody>
               {% for order in orders %}
               <tr>
                 <th scope="row">{{ order.id }}</th>
-                <td><a href="{{ url_for('admin.show_order_detail', order_id=order.id) }}">{{ order.order_number }}</a></td>
+                <td><a href="{{ url_for('order.show_order_detail', order_id=order.id) }}">{{ order.order_number }}</a></td>
                 <td>{{ order.fullname }}</td>
                 <td>{{ order.cellphone }}</td>
                 <td>{{ order.get_service_type() }}</td>
                 <td>{{ order.get_state() }}</td>
+                <td><a class="btn btn-xs btn-primary" href="{{ url_for('order.add_tracking', order_id=order.id) }}">邮寄</a></td>
               {#
                 <td{% if user.status.cellphone_confirmed %} class="success" title="已验证"{% endif %}>{{ user.cellphone }}</td>
                 <td{% if user.status.email_confirmed %} class="success" title="已验证"{% endif %}>{{ user.email }}</td>

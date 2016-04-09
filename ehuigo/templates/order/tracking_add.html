@@ -1,0 +1,68 @@
+{% extends '_base.html' %}
+{% block subtitle %}邮寄{% endblock %}
+{% block page_content %}
+  <div class="row">
+  {% set sider_active = 'orders' %}
+  {% include 'account/_sider.html' %}
+    <div class="col-md-9 col-sm-9">
+      <div class="row">
+        <div class="col-md-12">
+          <ol class="breadcrumb">
+            <li><a href="{{ url_for('order.show_orders') }}">订单管理</a></li>
+            <li><a href="{{ url_for('order.show_order_detail', order_id=order.id) }}">{{ order.order_number }}</a></li>
+            <li class="active">邮寄</li>
+          </ol>
+          <hr>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12">
+        {% include '_flash.html' %}
+          <form class="form-horizontal" id="tracking-add-form" method="post" action="{{ url_for('order.add_tracking', order_id=order.id) }}">
+            <div class="form-group{% if form.tracking.errors %} has-error{% endif %}">
+              {{ form.tracking.label(class_='col-md-offset-2 col-md-2 col-xs-12 control-label') }}
+              <div class="col-md-4">
+                {{ form.tracking(class_='form-control') }}
+              </div>
+              <div class="col-md-offset-4 col-md-4">
+                <p class="help-block">{{ ', '.join(form.tracking.errors) }}</p>
+              </div>
+            </div>
+
+            <div class="form-group{% if form.carrier.errors %} has-error{% endif %}">
+              {{ form.carrier.label(class_='col-md-offset-2 col-md-2 col-xs-12 control-label') }}
+              <div class="col-md-4">
+                {{ form.carrier(class_='form-control') }}
+              </div>
+              <div class="col-md-offset-4 col-md-4">
+                <p class="help-block">{{ ', '.join(form.carrier.errors) }}</p>
+              </div>
+            </div>
+            <div class="form-group">
+              <div class="col-md-offset-4 col-md-4">
+                {{ form.submit(class_='btn btn-success pull-left') }}
+                <a class="btn btn-default pull-right" href="{{ url_for('order.show_order_detail', order_id=order.id) }}">取消</a>
+                <div class="clearfix"></div>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+{% block page_scripts %}
+<script>
+$(document).ready(function() {
+  $('#eval-detail').hide();
+  $('#toggle-eval-detail').click(function () {
+      if ($('#eval-detail').is(":hidden")) {
+          $('#eval-detail').show(500);
+      } else {
+          $('#eval-detail').hide(500);
+      }
+
+  });
+});
+</script>
+{% endblock %}

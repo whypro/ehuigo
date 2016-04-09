@@ -71,7 +71,8 @@ def send_sms(to, template_id, template_data):
         SigParameter=sig_parameter
     )
     url = urljoin(current_app.config['YUNTONGXUN_BASE_URL'], path)
-    print url
+    current_app.logger.debug(url)
+    # print url
 
     # to 必选 短信接收端手机号码集合，用英文逗号分开，每批发送的手机号数量不得超过100个
     # appId 必选	应用Id
@@ -84,7 +85,8 @@ def send_sms(to, template_id, template_data):
         'datas': template_data
     }
     json_data = json.dumps(data)
-    print json_data
+    current_app.logger.debug(json_data)
+    # print json_data
 
     # Authorization:
     # 1.使用Base64编码（账户Id + 冒号 + 时间戳）其中账户Id根据url的验证级别对应主账户

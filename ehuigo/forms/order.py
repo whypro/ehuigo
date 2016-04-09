@@ -7,7 +7,7 @@ from wtforms.validators import InputRequired, Length, Email, EqualTo, Optional, 
 from wtforms import ValidationError
 
 from ..models import Region
-from ..constants import MAX_LENGTH, REG_EXP_PHONE
+from ..constants import MAX_LENGTH, REG_EXP_PHONE, REG_EXP_TRACKING, CARRIERS
 
 
 class RecycleOrderForm(Form):
@@ -46,3 +46,13 @@ class RecycleOrderForm(Form):
                 region = Region.query.get(field.data)
                 if not region or region.parent_id != self.city.data:
                     raise ValidationError('请重新选择')
+
+
+class TrackingAddForm(Form):
+    tracking = StringField('快递单号', validators=[
+        InputRequired(),
+        Length(1, MAX_LENGTH['tracking'], '长度不合法'),
+        Regexp(REG_EXP_TRACKING, message='无效的快递单号')
+    ])
+    carrier = SelectField('快递公司', coerce=int, validators=[DataRequired()], choices=[(0, '请选择快递公司')]+CARRIERS)
+    submit = SubmitField('邮寄')

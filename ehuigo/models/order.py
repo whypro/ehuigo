@@ -63,3 +63,9 @@ class Region(db.Model):
     order = db.Column(db.Integer, nullable=False)
     name_en = db.Column(db.String(MAX_LENGTH['region_name']), nullable=False)
     shortname_en = db.Column(db.String(MAX_LENGTH['region_name']), nullable=False)
+
+
+class Carrier(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(MAX_LENGTH['carrier']), nullable=False)
+

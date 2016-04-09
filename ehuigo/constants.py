@@ -39,6 +39,8 @@ QUESTION_CATEGORY_REVERSED = dict((v, k) for k, v in QUESTION_CATEGORY.items())
 
 REG_EXP_PHONE = '^(0|86|17951)?(13[0-9]|15[012356789]|17[678]|18[0-9]|14[57])[0-9]{8}$'
 
+REG_EXP_TRACKING = '^\d+$'
+
 
 RECYCLE_SERVICE_TYPE = (
     (1, 'offline', '上门服务'),
@@ -61,3 +63,7 @@ RECYCLE_ORDER_STATUS_TYPE_ONLINE = (
     (5, 'rejected', '描述不符'),
 )
 
+
+CARRIERS = [
+    (1, '圆通速递'),
+]

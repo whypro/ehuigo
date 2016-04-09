@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-from flask import Blueprint, redirect, request, url_for, render_template, session, flash, abort
+from flask import Blueprint, redirect, request, url_for, render_template, session, flash, abort, current_app
 from flask.ext.login import login_user, logout_user, login_required, current_user
 from sqlalchemy import or_
 
@@ -100,7 +100,8 @@ def register_by_email():
 def activate():
     token = request.args.get('token')
     data = User.load_activation_token(token)
-    print data
+    current_app.logger.debug(data)
+    # print data
     if not data:
         flash('激活连接不合法或已失效', 'danger')
         return redirect(url_for('home.index'))
