@@ -7,7 +7,7 @@ from sqlalchemy.ext.associationproxy import association_proxy
 from flask import current_app
 
 from ..extensions import db
-from ..constants import MAX_LENGTH, QUESTION_CATEGORY, RECYCLE_SERVICE_TYPE, RECYCLE_ORDER_STATUS_TYPE_OFFLINE, RECYCLE_ORDER_STATUS_TYPE_ONLINE
+from ..constants import MAX_LENGTH, QUESTION_CATEGORY
 
 
 class RecycleOrder(db.Model):
@@ -33,21 +33,122 @@ class RecycleOrder(db.Model):
     eval_detail = db.Column(db.Text)        # 估价详情
     eval_price = db.Column(db.Numeric(10, 2))     # 估价金额
 
-    @staticmethod
-    def _search_by_index(obj, index):
-        for v1, v2, v3 in obj:
-            if v1 == index:
-                return v3
-        return None
+    ORDER_STATE_CREATED = 1
+    ORDER_STATE_SENT = 2
+    ORDER_STATE_RECEIVED = 3
+    ORDER_STATE_CONFIRMED = 4
+    ORDER_STATE_VISITING = 5
+    ORDER_STATE_ACCEPTED = 6
+    ORDER_STATE_REJECTED = 7
 
-    def get_state(self):
-        if self.service_type == 1:
-            return self._search_by_index(RECYCLE_ORDER_STATUS_TYPE_OFFLINE, self.state)
-        elif self.service_type == 2:
-            return self._search_by_index(RECYCLE_ORDER_STATUS_TYPE_ONLINE, self.state)
+    SERVICE_TYPE_OFFLINE = 1
+    SERVICE_TYPE_ONLINE = 2
+
+    def can_send(self):
+        if self.service_type == self.SERVICE_TYPE_ONLINE:
+            if self.state == self.ORDER_STATE_CREATED:
+                return True
+        return False
+
+    def send(self, tracking, carrier):
+        if self.service_type == self.SERVICE_TYPE_ONLINE:
+            if self.state == self.ORDER_STATE_CREATED:
+                current_app.logger.debug('Order {0} state: CREATED -> SENT'.format(self.id))
+                self.tracking = tracking
+                self.carrier = carrier
+                self.send_time = datetime.datetime.now()
+                self.state = self.ORDER_STATE_SENT
+                return 0
+        return -1
+
+    def can_receive(self):
+        if self.service_type == self.SERVICE_TYPE_ONLINE:
+            if self.state == self.ORDER_STATE_SENT:
+                return True
+        return False
+
+    def receive(self):
+        if self.service_type == self.SERVICE_TYPE_ONLINE:
+            if self.state == self.ORDER_STATE_SENT:
+                current_app.logger.debug('Order {0} state: SENT -> RECEIVED'.format(self.id))
+                self.receive_time = datetime.datetime.now()
+                self.state = self.ORDER_STATE_RECEIVED
+                return 0
+        return -1
+
+    def can_confirm(self):
+        if self.service_type == self.SERVICE_TYPE_OFFLINE:
+            if self.state == self.ORDER_STATE_CREATED:
+                return True
+        return False
+
+    def confirm(self):
+        if self.service_type == self.SERVICE_TYPE_OFFLINE:
+            if self.state == self.ORDER_STATE_CREATED:
+                current_app.logger.debug('Order {0} state: CREATED -> CONFIRMED'.format(self.id))
+                self.state = self.ORDER_STATE_CONFIRMED
+                return 0
+        return -1
+
+    def visit(self):
+        if self.service_type == self.SERVICE_TYPE_OFFLINE:
+            if self.state == self.ORDER_STATE_CONFIRMED:
+                current_app.logger.debug('Order {0} state: CONFIRMED -> VISITING'.format(self.id))
+                self.state = self.ORDER_STATE_VISITING
+                return 0
+        return -1
+
+    def accept(self):
+        if self.service_type == self.SERVICE_TYPE_OFFLINE:
+            if self.state == self.ORDER_STATE_VISITING:
+                current_app.logger.debug('Order {0} state: VISITING -> ACCEPTED'.format(self.id))
+                self.state = self.ORDER_STATE_ACCEPTED
+                return 0
+        elif self.service_type == self.SERVICE_TYPE_ONLINE:
+            if self.state == self.ORDER_STATE_RECEIVED:
+                current_app.logger.debug('Order {0} state: RECEIVED -> ACCEPTED'.format(self.id))
+                self.state = self.ORDER_STATE_ACCEPTED
+                return 0
+        return -1
+
+    def reject(self):
+        if self.service_type == self.SERVICE_TYPE_OFFLINE:
+            if self.state == self.ORDER_STATE_CREATED:
+                current_app.logger.debug('Order {0} state: CREATED -> REJECTED'.format(self.id))
+                self.state = self.ORDER_STATE_REJECTED
+                return 0
+        elif self.service_type == self.SERVICE_TYPE_ONLINE:
+            if self.state == self.ORDER_STATE_RECEIVED:
+                current_app.logger.debug('Order {0} state: RECEIVED -> REJECTED'.format(self.id))
+                self.state = self.ORDER_STATE_REJECTED
+                return 0
+        return -1
+
+    def get_order_state(self):
+        if self.state == self.ORDER_STATE_CREATED:
+            if self.service_type == self.SERVICE_TYPE_OFFLINE:
+                return '待确认'
+            elif self.service_type == self.SERVICE_TYPE_ONLINE:
+                return '待邮寄'
+        elif self.state == self.ORDER_STATE_SENT:
+            return '已邮寄'
+        elif self.state == self.ORDER_STATE_RECEIVED:
+            return '已收件'
+        elif self.state == self.ORDER_STATE_CONFIRMED:
+            return '已确认'
+        elif self.state == self.ORDER_STATE_VISITING:
+            return '上门取货中'
+        elif self.state == self.ORDER_STATE_ACCEPTED:
+            return '如实描述'
+        elif self.state == self.ORDER_STATE_REJECTED:
+            return '描述不符'
 
     def get_service_type(self):
-        return self._search_by_index(RECYCLE_SERVICE_TYPE, self.service_type)
+        if self.service_type == self.SERVICE_TYPE_OFFLINE:
+            return '上门服务'
+        elif self.service_type == self.SERVICE_TYPE_ONLINE:
+            return '邮寄服务'
+
 
 
 class ExchangeOrder(object):

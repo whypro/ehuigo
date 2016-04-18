@@ -116,7 +116,7 @@
                                     <label class="col-sm-2 control-label">状态</label>
                                     <div class="col-sm-10">
                                         <p class="form-control-static">
-                                            {{ order.get_state() }}
+                                            {{ order.get_order_state() }}
                                         </p>
                                     </div>
                                 </div>
@@ -145,10 +145,10 @@
                                     </div>
                                 </div>
                                 <div class="col-md-offset-2">
-                                    {% if order.service_type == 2 and order.state == 1 %}
+                                    {% if order.can_send() %}
                                     <button class="btn btn-primary">邮寄</button>&emsp;
                                     {% endif %}
-                                    {% if order.state == 1 %}
+                                    {% if order.service_type == order.SERVICE_TYPE_OFFLINE and order.state == order.ORDER_STATE_CREATED %}
                                     <button class="btn btn-danger">取消订单</button>
                                     {% endif %}
                                 </div>

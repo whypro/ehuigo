@@ -42,28 +42,6 @@ REG_EXP_PHONE = '^(0|86|17951)?(13[0-9]|15[012356789]|17[678]|18[0-9]|14[57])[0-
 REG_EXP_TRACKING = '^\d+$'
 
 
-RECYCLE_SERVICE_TYPE = (
-    (1, 'offline', '上门服务'),
-    (2, 'online', '邮寄服务'),
-)
-
-RECYCLE_ORDER_STATUS_TYPE_OFFLINE = (
-    (1, 'created', '待确认'),
-    (2, 'confirmed', '已确认'),
-    (3, 'coming', '上门取货中'),
-    (4, 'accepted', '如实描述'),
-    (5, 'rejected', '描述不符'),
-)
-
-RECYCLE_ORDER_STATUS_TYPE_ONLINE = (
-    (1, 'created', '待邮寄'),
-    (2, 'sent', '已邮寄'),
-    (3, 'received', '已收件'),
-    (4, 'accepted', '如实描述'),
-    (5, 'rejected', '描述不符'),
-)
-
-
 CARRIERS = [
     (1, '圆通速递'),
 ]

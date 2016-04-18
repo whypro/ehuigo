@@ -353,11 +353,11 @@ def show_order_detail(order_id):
 @login_required
 def receive_order(order_id):
     order = RecycleOrder.query.get_or_404(order_id)
-    if order.service_type != 2 or order.state != 2:
+
+    if not order.can_receive():
         abort(400)
 
-    order.state = 3
-    order.receive_time = datetime.datetime.now()
+    order.receive()
     db.session.add(order)
     db.session.commit()
     # return str(order_id)

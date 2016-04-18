@@ -93,8 +93,8 @@ def add_tracking(order_id):
     order_ = RecycleOrder.query.get_or_404(order_id)
     if order_.user_id != current_user.id:
         abort(403)
-    print order_.service_type
-    if order_.service_type != 2 or order_.state != 1:
+
+    if not order_.can_send():
         abort(400)
 
     form = TrackingAddForm()
@@ -102,12 +102,10 @@ def add_tracking(order_id):
     if form.validate_on_submit():
         # print form.tracking.data
         # print form.carrier.data
-        order_.tracking = form.tracking.data
-        order_.carrier = form.carrier.data
-        order_.state = 2
-        order_.send_time = datetime.datetime.now()
+        order_.send(tracking=form.tracking.data, carrier=form.carrier.data)
         db.session.add(order_)
         db.session.commit()
+
         return redirect(url_for('order.show_order_detail', order_id=order_.id))
 
     return render_template('order/tracking_add.html', form=form, order=order_)

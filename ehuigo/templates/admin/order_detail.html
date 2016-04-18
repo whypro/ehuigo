@@ -116,7 +116,7 @@
                                     <label class="col-sm-2 control-label">状态</label>
                                     <div class="col-sm-10">
                                         <p class="form-control-static">
-                                            {{ order.get_state() }}
+                                            {{ order.get_order_state() }}
                                         </p>
                                     </div>
                                 </div>
@@ -145,10 +145,14 @@
                                     </div>
                                 </div>
                                 <div class="col-md-offset-2">
-                                    {% if order.service_type == 2 and order.state == 2 %}
+                                    {% if order.can_confirm() %}
+                                    <a class="btn btn-primary" href="">确认上门</a>&emsp;
+                                    <a class="btn btn-danger" href="">关闭订单</a>
+                                    {% endif %}
+                                    {% if order.can_receive() %}
                                     <a class="btn btn-primary" href="{{ url_for('admin.receive_order', order_id=order.id) }}">收件</a>&emsp;
                                     {% endif %}
-                                    {% if order.service_type == 2 and order.state == 3 %}
+                                    {% if order.service_type == order.SERVICE_TYPE_ONLINE and order.state == order.ORDER_STATE_RECEIVED %}
                                     <button class="btn btn-success">符合描述</button>&emsp;
                                     <button class="btn btn-danger">不符合描述</button>
                                     {% endif %}
