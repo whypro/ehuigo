@@ -205,4 +205,7 @@ class Region(db.Model):
 class Carrier(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(MAX_LENGTH['carrier']), nullable=False)
+    code = db.Column(db.String(MAX_LENGTH['carrier']))
+    regexp = db.Column(db.String(MAX_LENGTH['regexp']))
+    priority = db.Column(db.Integer, default=2000)
 

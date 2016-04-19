@@ -9,7 +9,7 @@ from sqlalchemy.sql import func
 from sqlalchemy import or_
 from captcha.image import ImageCaptcha
 
-from ..models import Region, RecycleOrder
+from ..models import Region, RecycleOrder, Carrier
 from ..helpers import send_sms, gen_captcha_str, gen_order_number
 from ..captcha import create_captcha
 from ..forms import RecycleOrderForm, TrackingAddForm
@@ -98,10 +98,12 @@ def add_tracking(order_id):
         abort(400)
 
     form = TrackingAddForm()
+    carriers = Carrier.query.order_by(Carrier.priority.asc()).all()
+    form.carrier.choices = [('', '请选择快递公司')] + [(c.name, c.name) for c in carriers]
     # print form.carrier.choices
     if form.validate_on_submit():
         # print form.tracking.data
-        # print form.carrier.data
+        print form.carrier.data
         order_.send(tracking=form.tracking.data, carrier=form.carrier.data)
         db.session.add(order_)
         db.session.commit()

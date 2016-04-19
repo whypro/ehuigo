@@ -25,6 +25,7 @@ MAX_LENGTH = {
     'zip_code': 10,
     'carrier': 20,
     'tracking': 20,
+    'regexp': 200,
 }
 
 
@@ -40,8 +41,3 @@ QUESTION_CATEGORY_REVERSED = dict((v, k) for k, v in QUESTION_CATEGORY.items())
 REG_EXP_PHONE = '^(0|86|17951)?(13[0-9]|15[012356789]|17[678]|18[0-9]|14[57])[0-9]{8}$'
 
 REG_EXP_TRACKING = '^\d+$'
-
-
-CARRIERS = [
-    (1, '圆通速递'),
-]

@@ -7,7 +7,7 @@ from wtforms.validators import InputRequired, Length, Email, EqualTo, Optional, 
 from wtforms import ValidationError
 
 from ..models import Region
-from ..constants import MAX_LENGTH, REG_EXP_PHONE, REG_EXP_TRACKING, CARRIERS
+from ..constants import MAX_LENGTH, REG_EXP_PHONE, REG_EXP_TRACKING
 
 
 class RecycleOrderForm(Form):
@@ -54,5 +54,5 @@ class TrackingAddForm(Form):
         Length(1, MAX_LENGTH['tracking'], '长度不合法'),
         Regexp(REG_EXP_TRACKING, message='无效的快递单号')
     ])
-    carrier = SelectField('快递公司', coerce=int, validators=[DataRequired()], choices=[(0, '请选择快递公司')]+CARRIERS)
+    carrier = SelectField('快递公司', validators=[DataRequired()])
     submit = SubmitField('邮寄')
