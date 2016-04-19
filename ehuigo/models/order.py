@@ -10,28 +10,7 @@ from ..extensions import db
 from ..constants import MAX_LENGTH, QUESTION_CATEGORY
 
 
-class RecycleOrder(db.Model):
-
-    id = db.Column(db.Integer, primary_key=True)
-    order_number = db.Column(db.String(MAX_LENGTH['order_number']), unique=True, nullable=False)
-    service_type = db.Column(db.Integer, nullable=False)
-    fullname = db.Column(db.String(MAX_LENGTH['fullname']))
-    cellphone = db.Column(db.String(MAX_LENGTH['cellphone']))
-    address = db.Column(db.UnicodeText)
-    zip_code = db.Column(db.String(MAX_LENGTH['zip_code']))
-    remark = db.Column(db.UnicodeText)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id', ondelete='SET NULL'))
-    user = db.relationship('User', passive_deletes=True)
-    carrier = db.Column(db.String(MAX_LENGTH['carrier']))       # 快递公司
-    tracking = db.Column(db.String(MAX_LENGTH['tracking']))     # 运单号
-    state = db.Column(db.Integer, default=1)  # 订单状态
-    create_time = db.Column(db.DateTime, default=datetime.datetime.now)     # 创建时间
-    send_time = db.Column(db.DateTime)       # 发货时间
-    receive_time = db.Column(db.DateTime)    # 收货时间
-    product_id = db.Column(db.Integer, db.ForeignKey('product.id', ondelete='SET NULL'))
-    product = db.relationship('Product', passive_deletes=True)
-    eval_detail = db.Column(db.Text)        # 估价详情
-    eval_price = db.Column(db.Numeric(10, 2))     # 估价金额
+class RecycleOrderStateMixin(object):
 
     ORDER_STATE_CREATED = 1
     ORDER_STATE_SENT = 2
@@ -40,6 +19,7 @@ class RecycleOrder(db.Model):
     ORDER_STATE_VISITING = 5
     ORDER_STATE_ACCEPTED = 6
     ORDER_STATE_REJECTED = 7
+    ORDER_STATE_CANCELLED = 8
 
     SERVICE_TYPE_OFFLINE = 1
     SERVICE_TYPE_ONLINE = 2
@@ -90,6 +70,12 @@ class RecycleOrder(db.Model):
                 return 0
         return -1
 
+    def can_visit(self):
+        if self.service_type == self.SERVICE_TYPE_OFFLINE:
+            if self.state == self.ORDER_STATE_CONFIRMED:
+                return True
+        return False
+
     def visit(self):
         if self.service_type == self.SERVICE_TYPE_OFFLINE:
             if self.state == self.ORDER_STATE_CONFIRMED:
@@ -98,15 +84,26 @@ class RecycleOrder(db.Model):
                 return 0
         return -1
 
+    def can_accept(self):
+        if self.service_type == self.SERVICE_TYPE_OFFLINE:
+            if self.state == self.ORDER_STATE_VISITING:
+                return True
+        elif self.service_type == self.SERVICE_TYPE_ONLINE:
+            if self.state == self.ORDER_STATE_RECEIVED:
+                return True
+        return False
+
     def accept(self):
         if self.service_type == self.SERVICE_TYPE_OFFLINE:
             if self.state == self.ORDER_STATE_VISITING:
                 current_app.logger.debug('Order {0} state: VISITING -> ACCEPTED'.format(self.id))
+                self.receive_time = datetime.datetime.now()
                 self.state = self.ORDER_STATE_ACCEPTED
                 return 0
         elif self.service_type == self.SERVICE_TYPE_ONLINE:
             if self.state == self.ORDER_STATE_RECEIVED:
                 current_app.logger.debug('Order {0} state: RECEIVED -> ACCEPTED'.format(self.id))
+                self.receive_time = datetime.datetime.now()
                 self.state = self.ORDER_STATE_ACCEPTED
                 return 0
         return -1
@@ -121,6 +118,20 @@ class RecycleOrder(db.Model):
             if self.state == self.ORDER_STATE_RECEIVED:
                 current_app.logger.debug('Order {0} state: RECEIVED -> REJECTED'.format(self.id))
                 self.state = self.ORDER_STATE_REJECTED
+                return 0
+        return -1
+
+    def can_cancel(self):
+        if self.service_type == self.SERVICE_TYPE_OFFLINE:
+            if self.state == self.ORDER_STATE_CREATED:
+                return True
+        return False
+
+    def cancel(self):
+        if self.service_type == self.SERVICE_TYPE_OFFLINE:
+            if self.state == self.ORDER_STATE_CREATED:
+                current_app.logger.debug('Order {0} state: CREATED -> CANCELLED'.format(self.id))
+                self.state = self.ORDER_STATE_CANCELLED
                 return 0
         return -1
 
@@ -142,6 +153,8 @@ class RecycleOrder(db.Model):
             return '如实描述'
         elif self.state == self.ORDER_STATE_REJECTED:
             return '描述不符'
+        elif self.state == self.ORDER_STATE_CANCELLED:
+            return '已关闭'
 
     def get_service_type(self):
         if self.service_type == self.SERVICE_TYPE_OFFLINE:
@@ -149,6 +162,29 @@ class RecycleOrder(db.Model):
         elif self.service_type == self.SERVICE_TYPE_ONLINE:
             return '邮寄服务'
 
+
+class RecycleOrder(db.Model, RecycleOrderStateMixin):
+
+    id = db.Column(db.Integer, primary_key=True)
+    order_number = db.Column(db.String(MAX_LENGTH['order_number']), unique=True, nullable=False)
+    service_type = db.Column(db.Integer, nullable=False)
+    fullname = db.Column(db.String(MAX_LENGTH['fullname']))
+    cellphone = db.Column(db.String(MAX_LENGTH['cellphone']))
+    address = db.Column(db.UnicodeText)
+    zip_code = db.Column(db.String(MAX_LENGTH['zip_code']))
+    remark = db.Column(db.UnicodeText)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id', ondelete='SET NULL'))
+    user = db.relationship('User', passive_deletes=True)
+    carrier = db.Column(db.String(MAX_LENGTH['carrier']))       # 快递公司
+    tracking = db.Column(db.String(MAX_LENGTH['tracking']))     # 运单号
+    state = db.Column(db.Integer, default=1)  # 订单状态
+    create_time = db.Column(db.DateTime, default=datetime.datetime.now)     # 创建时间
+    send_time = db.Column(db.DateTime)       # 发货时间
+    receive_time = db.Column(db.DateTime)    # 收货时间
+    product_id = db.Column(db.Integer, db.ForeignKey('product.id', ondelete='SET NULL'))
+    product = db.relationship('Product', passive_deletes=True)
+    eval_detail = db.Column(db.Text)        # 估价详情
+    eval_price = db.Column(db.Numeric(10, 2))     # 估价金额
 
 
 class ExchangeOrder(object):

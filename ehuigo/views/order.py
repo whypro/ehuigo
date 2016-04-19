@@ -30,7 +30,7 @@ def add_order():
     recycle_data = session['recycle']
 
     # 初始化 form
-    form = RecycleOrderForm(cellphone=current_user.cellphone)
+    form = RecycleOrderForm(fullname=current_user.fullname, cellphone=current_user.cellphone)
     if form.province.data == 0: form.province.data = None
     if form.city.data == 0: form.city.data = None
     if form.county.data == 0: form.county.data = None
@@ -110,3 +110,17 @@ def add_tracking(order_id):
 
     return render_template('order/tracking_add.html', form=form, order=order_)
 
+
+@order.route('/<int:order_id>/cancel/')
+@login_required
+def cancel_order(order_id):
+    order = RecycleOrder.query.get_or_404(order_id)
+    if order.user_id != current_user.id:
+        abort(403)
+    if not order.can_cancel():
+        abort(400)
+
+    order.cancel()
+    db.session.add(order)
+    db.session.commit()
+    return redirect(url_for('order.show_order_detail', order_id=order.id))

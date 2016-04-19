@@ -88,6 +88,7 @@
                                         </p>
                                     </div>
                                 </div>
+                                {#
                                 <div class="form-group">
                                     <label class="col-sm-2 control-label">邮编</label>
                                     <div class="col-sm-10">
@@ -96,6 +97,7 @@
                                         </p>
                                     </div>
                                 </div>
+                                #}
                                 <div class="form-group">
                                     <label class="col-sm-2 control-label">备注</label>
                                     <div class="col-sm-10">
@@ -104,6 +106,7 @@
                                         </p>
                                     </div>
                                 </div>
+                                {% if order.service_type == order.SERVICE_TYPE_ONLINE %}
                                 <div class="form-group">
                                     <label class="col-sm-2 control-label">快递</label>
                                     <div class="col-sm-10">
@@ -112,6 +115,7 @@
                                         </p>
                                     </div>
                                 </div>
+                                {% endif %}
                                 <div class="form-group">
                                     <label class="col-sm-2 control-label">状态</label>
                                     <div class="col-sm-10">
@@ -128,6 +132,7 @@
                                         </p>
                                     </div>
                                 </div>
+                                {% if order.service_type == order.SERVICE_TYPE_ONLINE %}
                                 <div class="form-group">
                                     <label class="col-sm-2 control-label">客户邮寄时间</label>
                                     <div class="col-sm-10">
@@ -136,6 +141,7 @@
                                         </p>
                                     </div>
                                 </div>
+                                {% endif %}
                                 <div class="form-group">
                                     <label class="col-sm-2 control-label">收件时间</label>
                                     <div class="col-sm-10">
@@ -146,15 +152,18 @@
                                 </div>
                                 <div class="col-md-offset-2">
                                     {% if order.can_confirm() %}
-                                    <a class="btn btn-primary" href="">确认上门</a>&emsp;
-                                    <a class="btn btn-danger" href="">关闭订单</a>
+                                    <a class="btn btn-primary" href="{{ url_for('admin.confirm_order', order_id=order.id) }}">确认订单</a>&emsp;
+                                    <a class="btn btn-danger" href="{{ url_for('order.cancel_order', order_id=order.id) }}">关闭订单</a>
+                                    {% endif %}
+                                    {% if order.can_visit() %}
+                                    <a class="btn btn-primary" href="{{ url_for('admin.visit_order', order_id=order.id) }}">上门取件</a>&emsp;
                                     {% endif %}
                                     {% if order.can_receive() %}
-                                    <a class="btn btn-primary" href="{{ url_for('admin.receive_order', order_id=order.id) }}">收件</a>&emsp;
+                                    <a class="btn btn-primary" href="{{ url_for('admin.receive_order', order_id=order.id) }}">确认收件</a>&emsp;
                                     {% endif %}
-                                    {% if order.service_type == order.SERVICE_TYPE_ONLINE and order.state == order.ORDER_STATE_RECEIVED %}
-                                    <button class="btn btn-success">符合描述</button>&emsp;
-                                    <button class="btn btn-danger">不符合描述</button>
+                                    {% if order.can_accept() %}
+                                    <a class="btn btn-success" href="{{ url_for('admin.accept_order', order_id=order.id) }}">符合描述</a>&emsp;
+                                    <a class="btn btn-danger" href="{{ url_for('admin.reject_order', order_id=order.id) }}">不符合描述</a>
                                     {% endif %}
                                 </div>
                             </form>

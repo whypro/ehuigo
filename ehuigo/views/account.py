@@ -150,6 +150,8 @@ def edit_profile(user_id):
     form = UserProfileForm(obj=user)
     if form.validate_on_submit():
         user.username = form.username.data
+        user.fullname = form.fullname.data
+        user.alipay = form.alipay.data
         fs = form.avatar.data
         if fs:
             uploader = create_uploader()
@@ -159,7 +161,7 @@ def edit_profile(user_id):
         db.session.commit()
 
         flash('保存成功', 'success')
-        return redirect(url_for('account.edit_profile'))
+        return redirect(url_for('account.edit_profile', user_id=user_id))
 
     return render_template('account/profile_edit.html', form=form)
 

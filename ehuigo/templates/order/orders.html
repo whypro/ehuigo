@@ -38,7 +38,9 @@
                 <td>{{ order.cellphone }}</td>
                 <td>{{ order.get_service_type() }}</td>
                 <td>{{ order.get_order_state() }}</td>
-                <td>{% if order.can_send() %}<a class="btn btn-xs btn-primary" href="{{ url_for('order.add_tracking', order_id=order.id) }}">邮寄</a>{% endif %}</td>
+                <td>
+                  {% if order.can_send() %}<a class="btn btn-xs btn-primary" href="{{ url_for('order.add_tracking', order_id=order.id) }}">邮寄</a>{% endif %}
+                </td>
               {#
                 <td{% if user.status.cellphone_confirmed %} class="success" title="已验证"{% endif %}>{{ user.cellphone }}</td>
                 <td{% if user.status.email_confirmed %} class="success" title="已验证"{% endif %}>{{ user.email }}</td>

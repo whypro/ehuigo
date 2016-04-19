@@ -353,7 +353,6 @@ def show_order_detail(order_id):
 @login_required
 def receive_order(order_id):
     order = RecycleOrder.query.get_or_404(order_id)
-
     if not order.can_receive():
         abort(400)
 
@@ -361,5 +360,57 @@ def receive_order(order_id):
     db.session.add(order)
     db.session.commit()
     # return str(order_id)
+    return redirect(url_for('admin.show_order_detail', order_id=order.id))
+
+
+@admin.route('/order/<int:order_id>/confirm/')
+@login_required
+def confirm_order(order_id):
+    order = RecycleOrder.query.get_or_404(order_id)
+    if not order.can_confirm():
+        abort(400)
+
+    order.confirm()
+    db.session.add(order)
+    db.session.commit()
+    return redirect(url_for('admin.show_order_detail', order_id=order.id))
+
+
+@admin.route('/order/<int:order_id>/visit/')
+@login_required
+def visit_order(order_id):
+    order = RecycleOrder.query.get_or_404(order_id)
+    if not order.can_visit():
+        abort(400)
+
+    order.visit()
+    db.session.add(order)
+    db.session.commit()
+    return redirect(url_for('admin.show_order_detail', order_id=order.id))
+
+
+@admin.route('/order/<int:order_id>/accept/')
+@login_required
+def accept_order(order_id):
+    order = RecycleOrder.query.get_or_404(order_id)
+    if not order.can_accept():
+        abort(400)
+
+    order.accept()
+    db.session.add(order)
+    db.session.commit()
+    return redirect(url_for('admin.show_order_detail', order_id=order.id))
+
+
+@admin.route('/order/<int:order_id>/reject/')
+@login_required
+def reject_order(order_id):
+    order = RecycleOrder.query.get_or_404(order_id)
+    if not order.can_accept():
+        abort(400)
+
+    order.reject()
+    db.session.add(order)
+    db.session.commit()
     return redirect(url_for('admin.show_order_detail', order_id=order.id))
 

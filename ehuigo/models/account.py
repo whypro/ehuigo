@@ -22,17 +22,19 @@ class UserStatus(db.Model):
     banned = db.Column(db.Boolean, default=False)
 
 
-class User(UserMixin, db.Model):
+class User(db.Model, UserMixin):
 
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(MAX_LENGTH['email']), unique=True)
     _password = db.Column('password', db.String(MAX_LENGTH['password']), nullable=False)
     username = db.Column(db.String(MAX_LENGTH['username']), unique=True)
+    fullname = db.Column(db.String(MAX_LENGTH['fullname']))
     cellphone = db.Column(db.String(MAX_LENGTH['cellphone']), unique=True)
     reg_time = db.Column(db.DateTime, default=datetime.datetime.now)
     reg_ip = db.Column(db.String(MAX_LENGTH['ip']))
     status = db.relationship('UserStatus', passive_deletes=True, uselist=False)
     avatar = db.Column(db.String(MAX_LENGTH['path']))
+    alipay = db.Column(db.String(MAX_LENGTH['email']))
 
     @property
     def avatar_url(self):

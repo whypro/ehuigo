@@ -93,7 +93,14 @@ class UserProfileForm(Form):
     username = StringField('用户名', validators=[
         InputRequired(),
         Length(1, MAX_LENGTH['username'], '长度不合法'),
-        Regexp('[\u4e00-\u9fa5A-Za-z0-9_]+$', message='用户名不能包含除简体汉字、字母、数字和下划线之外的字符')
+        Regexp('[\u4e00-\u9fa5A-Za-z0-9_]+$', message='用户名不能包含除简体汉字、字母、数字和下划线之外的字符'),
+    ])
+    fullname = StringField('姓名', validators=[
+        Length(1, MAX_LENGTH['fullname'], '长度不合法'),
+        Regexp('[\u4e00-\u9fa5]+$', message='姓名不能包含除简体汉字之外的字符'),
+    ])
+    alipay = StringField('支付宝', validators=[
+        Length(1, MAX_LENGTH['email'], '长度不合法')
     ])
     # cellphone = StringField('手机号', validators=[
     #     InputRequired(),
