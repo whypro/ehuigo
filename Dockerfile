@@ -2,36 +2,26 @@
 # Using Nginx as Base Image
 FROM debian:wheezy
 
-ENV EHUIGO_DIR $EHUIGO_DIR
+ENV EHUIGO_DIR /home/whypro/codes/ehuigo
 
 RUN apt-get update
-RUN apt-get -y install python python-pip python-dev libmysqlclient-dev nginx gunicorn
+RUN apt-get -y install python python-pip python-dev libmysqlclient-dev nginx python-gevent gunicorn supervisor libjpeg-dev  libfreetype6-dev
 
-RUN useradd -m whypro
-RUN chsh -s /bin/bash whypro
-RUN usermod -G whypro,sudo whypro
 
-#RUN pwd
-USER whypro
 RUN mkdir -p $EHUIGO_DIR
 COPY . $EHUIGO_DIR
-# WORKDIR $EHUIGO_DIR
-
-
-#USER root
-#RUN pwd
-USER root
+WORKDIR $EHUIGO_DIR
 RUN pip install -r requirements.txt
-
-
-ADD $EHUIGO_DIR/etc/supervisord.conf /etc/supervisord.conf
-ADD $EHUIGO_DIR/etc/nginx/ehuigo.conf /etc/nginx/conf.d/ehuigo.conf
+COPY etc/supervisord.conf /etc/supervisord.conf
+COPY etc/nginx.conf /etc/nginx/conf.d/ehuigo.conf
 # RUN chmod 644 /etc/nginx/conf.d/ehuigo.conf
+RUN /etc/init.d/nginx start
 
 # RUN cd $EHUIGO_DIR
 
 # USER ehuigo
 EXPOSE 80
+
 
 CMD supervisord -c /etc/supervisord.conf
 # CMD ["python", "manage.py", "debug"]
