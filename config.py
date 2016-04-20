@@ -26,14 +26,14 @@ class Config(object):
     MAIL_SERVER = 'smtp.mxhichina.com'
     MAIL_PORT = 465
     MAIL_USE_SSL = True
-    MAIL_USERNAME = 'noreply@ehuigo.cn'
+    MAIL_USERNAME = ''
     MAIL_PASSWORD = ''
 
     EHUIGO_MAIL_SENDER = '易回购 <noreply@ehuigo.cn>'
     EHUIGO_ADMINS = ['whypro@live.cn']
 
     # 云通讯配置
-    YUNTONGXUN_BASE_URL = 'https://sandboxapp.cloopen.com:8883'
+    YUNTONGXUN_BASE_URL = ''
     YUNTONGXUN_ACCOUNT_SID = ''
     YUNTONGXUN_AUTH_TOKEN = ''
     YUNTONGXUN_APP_ID = ''
@@ -63,20 +63,19 @@ class DevelopmentConfig(Config):
     DEBUG = True
     SQLALCHEMY_TRACK_MODIFICATIONS = True
     # Flask-SQLAlchemy Debugging Option
-    SQLALCHEMY_ECHO = True
+    # SQLALCHEMY_ECHO = True
 
     BOOTSTRAP_USE_MINIFIED = False
     BOOTSTRAP_SERVE_LOCAL = True
 
 
-class BAEConfig(Config):
-
+class ProductionConfig(Config):
     # 数据库配置
-    DB_HOST = 'sqld.duapp.com'
-    DB_DATABASE = 'kHeMtkVTtzsGvfbmEtLU'
-    DB_USERNAME = 'AF28c466e7dd74686195abc876d4849b'
-    DB_PASSWORD = '2b2f8ac70616dbea89fc2ac2312de1a9'
-    DB_PORT = 4050
+    DB_HOST = os.getenv('DB_HOST')
+    DB_DATABASE = os.getenv('DB_DATABASE')
+    DB_USERNAME = os.getenv('DB_USERNAME')
+    DB_PASSWORD = os.getenv('DB_PASSWORD')
+    DB_PORT = int(os.getenv('DB_PORT', 3306))
 
     # FLASK-SQLALCHEMY
     SQLALCHEMY_DATABASE_URI = 'mysql://{username}:{password}@{host}:{port}/{database}?charset=utf8'.format(
@@ -86,35 +85,14 @@ class BAEConfig(Config):
         port=DB_PORT,
         database=DB_DATABASE
     )
-
     DEBUG = False
-    SQLALCHEMY_TRACK_MODIFICATIONS = False
+    BOOTSTRAP_USE_MINIFIED = True
+    BOOTSTRAP_SERVE_LOCAL = False
 
+    MAIL_USERNAME = os.getenv('MAIL_USERNAME')
+    MAIL_PASSWORD = os.getenv('MAIL_PASSWORD')
 
-class ACEConfig(Config):
-
-    # 数据库配置
-    DB_HOST = 'rds7z20k1nqpnmd558xy.mysql.rds.aliyuncs.com'
-    DB_DATABASE = ''
-    DB_USERNAME = ''
-    DB_PASSWORD = ''
-    DB_PORT = 3306
-
-    # FLASK-SQLALCHEMY
-    SQLALCHEMY_DATABASE_URI = 'mysql://{username}:{password}@{host}:{port}/{database}?charset=utf8'.format(
-        username=DB_USERNAME,
-        password=DB_PASSWORD,
-        host=DB_HOST,
-        port=DB_PORT,
-        database=DB_DATABASE
-    )
-
-    SQLALCHEMY_TRACK_MODIFICATIONS = False
-
-    OSS_ENDPOINT = 'static.ehuigo.cn'
-    KEY_ID = ''
-    KEY_SECRET = ''
-    OSS_BUCKET_NAME = 'ehuigo'
+    UPLOAD_PATH = '/var/ehuigo'
 
 
 class TestConfig(Config):
@@ -130,8 +108,7 @@ class TestConfig(Config):
 
 config = {
     'development': DevelopmentConfig,
-    'bae': BAEConfig,
-    'ace': ACEConfig,
+    'production': ProductionConfig,
     'testing': TestConfig,
     'default': DevelopmentConfig,
 }
