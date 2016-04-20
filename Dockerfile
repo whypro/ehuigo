@@ -15,7 +15,7 @@ RUN pip install -r requirements.txt
 COPY etc/supervisord.conf /etc/supervisord.conf
 COPY etc/nginx.conf /etc/nginx/conf.d/ehuigo.conf
 # RUN chmod 644 /etc/nginx/conf.d/ehuigo.conf
-RUN /etc/init.d/nginx start
+# RUN /etc/init.d/nginx start
 
 # RUN cd $EHUIGO_DIR
 
