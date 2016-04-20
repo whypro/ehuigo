@@ -85,7 +85,7 @@ class ProductionConfig(Config):
         port=DB_PORT,
         database=DB_DATABASE
     )
-    DEBUG = False
+    DEBUG = True
     BOOTSTRAP_USE_MINIFIED = True
     BOOTSTRAP_SERVE_LOCAL = False
 
