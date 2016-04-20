@@ -103,7 +103,7 @@ def add_tracking(order_id):
     # print form.carrier.choices
     if form.validate_on_submit():
         # print form.tracking.data
-        print form.carrier.data
+        # print form.carrier.data
         order_.send(tracking=form.tracking.data, carrier=form.carrier.data)
         db.session.add(order_)
         db.session.commit()

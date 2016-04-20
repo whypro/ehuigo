@@ -43,7 +43,7 @@ manager.add_command('shell', Shell(make_context=_make_shell_context))
 @manager.command
 def debug():
     """Start Server in debug mode"""
-    app.run(host='0.0.0.0', port=5000, debug=True, threaded=True, processes=1)
+    app.run(host='0.0.0.0', port=80, debug=True, threaded=False, processes=4)
 
 
 @manager.command
