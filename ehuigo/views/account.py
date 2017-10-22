@@ -17,7 +17,7 @@ account = Blueprint('account', __name__, url_prefix='/account')
 @account.route('/login/', methods=['GET', 'POST'])
 def login():
     # 已登录用户则返回首页
-    if current_user.is_authenticated():
+    if current_user.is_authenticated:
         return redirect(request.args.get('next') or url_for('admin.index'))
 
     if request.method == 'POST':
@@ -47,7 +47,7 @@ def logout():
 def register():
     """通过手机号注册"""
     # 已登录用户则返回首页
-    if current_user.is_authenticated():
+    if current_user.is_authenticated:
         return redirect(url_for('admin.index'))
 
     form = RegisterForm()
@@ -74,7 +74,7 @@ def register():
 def register_by_email():
     """通过邮箱注册"""
     # 已登录用户则返回首页
-    if current_user.is_authenticated():
+    if current_user.is_authenticated:
         return redirect(url_for('admin.index'))
 
     form = RegisterByEmailForm()

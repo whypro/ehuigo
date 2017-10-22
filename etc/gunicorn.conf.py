@@ -4,9 +4,8 @@ import gevent.monkey
 gevent.monkey.patch_all()
 import multiprocessing
 
-# bind = 'unix:/var/run/ibati.sock'
+bind = 'unix:/var/run/ehuigo.sock'
 # bind = '127.0.0.1:10041'
-bind = '0.0.0.0:80'
 max_requests = 10
 keepalive = 5
 
